@@ -1,0 +1,37 @@
+Package: BaySREn
+Title: BaySREn. An R package to automatise citation collection and screening in Systematic Reviews. Based on Bayesian active machine learning.
+Version: 0.1
+Authors@R: c(
+    person(given = "Angelo",
+           family = "D'Ambrosio",
+           role = c("aut", "cre"),
+           email = "a.dambrosioMD@example.com",
+        	 comment = c(ORCID = "0000-0002-2045-5155")),
+		person(given = "Tjibbe",
+           family = "Donker",
+           role = c("ctb", "aut"),
+           email = "tjibbe.donker@uniklinik-freiburg.de",
+        	 comment = c(ORCID = "0000-0001-9022-4240"))
+        	 )
+Description: Secondary research is of paramount importance to summarise the latest developments in every research field.
+	Nevertheless, conducting a structured collection and analysis of literature (i.e., a Systematic Review) is becoming exceedingly demanding in terms of time and human resources.
+	We propose an integrated framework that streamlines and automates the citation data collection and title/abstract screening phases of Systematic Reviews, limiting human intervention to a minimum.
+	The framework employs automatic citation collection from online scientific databases and importation tools to import citation data collected manually;
+	it uses a Bayesian active machine-learning algorithm to screen relevant citation, requiring human input only at the beginning of the process and to review uncertain classifications.
+	Finally, the framework provides a tool to generate search queries with online scientific databases based on an already labelled corpus of citation data.
+License: MIT + file LICENSE
+URL: https://github.com/bakaburg1/baysren
+BugReports: https://github.com/bakaburg1/baysren/issues
+Imports:
+    dplyr (>= 1.0.2),
+    stringr (>= 1.4.0),
+    magrittr (>= 2.0.1)
+Suggests:
+    partykit,
+    rpart,
+    testthat (>= 3.0.0)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Config/testthat/edition: 3
