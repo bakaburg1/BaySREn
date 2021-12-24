@@ -36,14 +36,14 @@ You can install the development version of BaySREn from
 devtools::install_github("bakaburg1/BaySREn")
 ```
 
-## Acquisition of the records
+## Acquisition of the citation data
 
 Once the framework is loaded, the user defines an initial search query
 which needs to be as specific as possible while still generating a
 sufficient number of positive matches:
 
 ``` r
-source('R/Setup.R') # Load the framework
+library(BaySREn) # Load the framework
 
 # Initial query to be built on domain knowledge. It accepts OR, AND, NOT boolean
 # operators and round brackets to group terms.
