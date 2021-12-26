@@ -16,33 +16,31 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' # These all work:
 #'
-#' data <- import_data('data.csv')
+#' data <- import_data("data.csv")
 #'
-#' data <- import_data('data.xlsx', sheet = 2)
+#' data <- import_data("data.xlsx", sheet = 2)
 #'
-#' data <- import_data('data.rds')
+#' data <- import_data("data.rds")
 #'
 #' data <- import_data(data)
 #' }
 import_data <- function(input, ...) {
+  if (is.character(input) | is.factor(input)) {
+    if (str_detect(input, "\\.xlsx?$")) {
+      return(read_excel(input, guess_max = 10^6, ...))
+    } else if (str_detect(input, "\\.csv$")) {
+      return(read_csv(input, guess_max = 10^6, col_types = cols(), ...))
+    } else if (str_detect(input, "\\.rds$")) {
+      return(read_rds(input))
+    }
+  } else if (is.data.frame(input)) {
+    return(input)
+  }
 
-	if (is.character(input) | is.factor(input)) {
-		if (str_detect(input, '\\.xlsx?$')) {
-			return(read_excel(input, guess_max = 10^6, ...))
-		} else if (str_detect(input, '\\.csv$')) {
-			return(read_csv(input, guess_max = 10^6, col_types = cols(), ...))
-		} else if (str_detect(input, '\\.rds$')) {
-			return(read_rds(input))
-		}
-	} else if (is.data.frame(input)) {
-		return(input)
-	}
-
-	stop('Input should be an existing csv/excel/rds file path or a data.frame, found "', class(input),'".')
+  stop('Input should be an existing csv/excel/rds file path or a data.frame, found "', class(input), '".')
 }
 
 
@@ -55,13 +53,17 @@ import_data <- function(input, ...) {
 #' @return The cleaned data frame.
 #'
 clean_record_textfields <- function(df) {
-	mutate(df,
-				 across(where(is.character),
-				 			 ~ str_replace_all(.x, c(' *; *' = ';', '["\']+' = ' ')) %>%
-				 			 	str_squish() %>%
-				 			 	{replace(., . %in% c('', 'NA'), NA)}
-				 )
-	)
+  mutate(
+    df,
+    across(
+      where(is.character),
+      ~ str_replace_all(.x, c(" *; *" = ";", '["\']+' = " ")) %>%
+        str_squish() %>%
+        {
+          replace(., . %in% c("", "NA"), NA)
+        }
+    )
+  )
 }
 
 
@@ -85,28 +87,28 @@ clean_record_textfields <- function(df) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' journal <- perform_search_session(
 #'   query = query, year_query = year_filter,
-#'   session_name = 'Session1', query_name = 'Query1',
-#'   records_folder = 'Records',
-#'   journal = 'Session_journal.csv')
+#'   session_name = "Session1", query_name = "Query1",
+#'   records_folder = "Records",
+#'   journal = "Session_journal.csv"
+#' )
 #'
-#'   # using the journal as data frame
-#'   paths <- extract_source_file_paths(journal)
+#' # using the journal as data frame
+#' paths <- extract_source_file_paths(journal)
 #'
-#'   # using the journal path
-#'   paths <- extract_source_file_paths('Session_journal.csv')
+#' # using the journal path
+#' paths <- extract_source_file_paths("Session_journal.csv")
 #' }
 extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
-																			queries = journal$Query_ID,
-																			sources = journal$Source,
-																			records_folder = 'Records') {
-	import_data(journal) %>%
-		filter(Session_ID %in% sessions, Query_ID %in% queries, Source %in% sources) %>%
-		with(file.path(records_folder, Session_ID, Query_ID, Output_file)) %>%
-		unique()
+                                      queries = journal$Query_ID,
+                                      sources = journal$Source,
+                                      records_folder = "Records") {
+  import_data(journal) %>%
+    filter(Session_ID %in% sessions, Query_ID %in% queries, Source %in% sources) %>%
+    with(file.path(records_folder, Session_ID, Query_ID, Output_file)) %>%
+    unique()
 }
 
 #' Parse Pubmed raw data
@@ -124,48 +126,54 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
 #'
 #'
 #' @examples
-#'
 #' \dontrun{
-#' dataRaw <- readr::read_file(file.path("Records", "Session 1", 'Query',
-#'   'Pubmed.nbib'))
+#' dataRaw <- readr::read_file(file.path(
+#'   "Records", "Session 1", "Query",
+#'   "Pubmed.nbib"
+#' ))
 #'
 #' parse_pubmed(dataRaw)
 #' }
 parse_pubmed <- function(entries, timestamp = now()) { # Probably
-	entries <- entries %>%
-		str_remove_all('\\r') %>%
-		str_replace_all('\\n\\s\\s+', ' ') %>%
-		str_trim() %>%
-		str_split('\\n+(?=PMID-)') %>% unlist
+  entries <- entries %>%
+    str_remove_all("\\r") %>%
+    str_replace_all("\\n\\s\\s+", " ") %>%
+    str_trim() %>%
+    str_split("\\n+(?=PMID-)") %>%
+    unlist()
 
-	tags <- c('TI', 'BTI', 'AB', 'JT', 'TA', 'DP')
-	info <- lapply(tags, function(tag) {
-		str_extract(entries, sprintf('(?<=\\n)%s *- .+', tag)) %>% str_remove('[A-Z]+ *- ')
-	}) %>% setNames(tags) %>% bind_cols()
+  tags <- c("TI", "BTI", "AB", "JT", "TA", "DP")
+  info <- lapply(tags, function(tag) {
+    str_extract(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% str_remove("[A-Z]+ *- ")
+  }) %>%
+    setNames(tags) %>%
+    bind_cols()
 
-	tags <- c('FAU', 'PT', 'MH', 'OT')
-	info <- cbind(info, lapply(tags, function(tag) {
-		str_extract_all(entries, sprintf('(?<=\\n)%s *- .+', tag)) %>% sapply(function(x) str_remove(x, '[A-Z]+ *- ') %>% paste0(collapse = '; '))
-	}) %>% setNames(tags) %>% bind_cols())
+  tags <- c("FAU", "PT", "MH", "OT")
+  info <- cbind(info, lapply(tags, function(tag) {
+    str_extract_all(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% sapply(function(x) str_remove(x, "[A-Z]+ *- ") %>% paste0(collapse = "; "))
+  }) %>% setNames(tags) %>% bind_cols())
 
-	tags <- c('LID', 'AID')
-	info <- cbind(info, lapply(tags, function(tag) {
-		str_extract(entries, sprintf('(?<=\\n)%s *- .+(?= \\[doi\\])', tag)) %>% str_remove('[A-Z]+ *- ')
-	}) %>% setNames(tags) %>% bind_cols())
+  tags <- c("LID", "AID")
+  info <- cbind(info, lapply(tags, function(tag) {
+    str_extract(entries, sprintf("(?<=\\n)%s *- .+(?= \\[doi\\])", tag)) %>% str_remove("[A-Z]+ *- ")
+  }) %>% setNames(tags) %>% bind_cols())
 
-	info$PMID = str_extract(entries, '(?<=PMID- )\\d+')
+  info$PMID <- str_extract(entries, "(?<=PMID- )\\d+")
 
-	info %>% transmute(
-		Order = 1:n(),
-		ID = paste0('PMID:', PMID), Title = coalesce(TI, BTI),
-		Abstract = AB, DOI = coalesce(LID, AID),
-		Authors = FAU, URL = paste0('https://pubmed.ncbi.nlm.nih.gov/', PMID),
-		Journal = JT, Journal_short = TA, Article_type = PT, Mesh = MH,
-		Author_keywords = OT, Published = DP,
-		Source = 'Pubmed',
-		Source_type = 'parsed',
-		Creation_date = timestamp
-	) %>% clean_record_textfields()
+  info %>%
+    transmute(
+      Order = 1:n(),
+      ID = paste0("PMID:", PMID), Title = coalesce(TI, BTI),
+      Abstract = AB, DOI = coalesce(LID, AID),
+      Authors = FAU, URL = paste0("https://pubmed.ncbi.nlm.nih.gov/", PMID),
+      Journal = JT, Journal_short = TA, Article_type = PT, Mesh = MH,
+      Author_keywords = OT, Published = DP,
+      Source = "Pubmed",
+      Source_type = "parsed",
+      Creation_date = timestamp
+    ) %>%
+    clean_record_textfields()
 }
 
 #' Parse Web of Science raw data
@@ -183,32 +191,33 @@ parse_pubmed <- function(entries, timestamp = now()) { # Probably
 #'
 #'
 #' @examples
-#'
 #' \dontrun{
-#' dataRaw <- import_data(file.path("Records", "Session 1", 'Query', 'WOS.csv'))
+#' dataRaw <- import_data(file.path("Records", "Session 1", "Query", "WOS.csv"))
 #'
 #' parse_wos(dataRaw)
 #' }
 parse_wos <- function(entries, timestamp = now()) {
-	entries %>% transmute(
-		Order = 1:n(),
-		ID = `UT (Unique WOS ID)`,
-		Title = `Article Title`,
-		Abstract, DOI,
-		Authors = `Author Full Names`,
-		Journal = `Source Title`,
-		Journal_short = `Journal ISO Abbreviation`,
-		Article_type = `Document Type`,
-		Author_keywords = `Author Keywords`,
-		Keywords = `Keywords Plus`,
-		Topic = `WoS Categories`,
-		N_citations = `Times Cited, All Databases`,
-		Published = paste(`Publication Date`, `Publication Year`),
-		PMID = `Pubmed Id`,
-		Source = 'WOS',
-		Source_type = 'parsed',
-		Creation_date = timestamp
-	) %>% clean_record_textfields()
+  entries %>%
+    transmute(
+      Order = 1:n(),
+      ID = `UT (Unique WOS ID)`,
+      Title = `Article Title`,
+      Abstract, DOI,
+      Authors = `Author Full Names`,
+      Journal = `Source Title`,
+      Journal_short = `Journal ISO Abbreviation`,
+      Article_type = `Document Type`,
+      Author_keywords = `Author Keywords`,
+      Keywords = `Keywords Plus`,
+      Topic = `WoS Categories`,
+      N_citations = `Times Cited, All Databases`,
+      Published = paste(`Publication Date`, `Publication Year`),
+      PMID = `Pubmed Id`,
+      Source = "WOS",
+      Source_type = "parsed",
+      Creation_date = timestamp
+    ) %>%
+    clean_record_textfields()
 }
 
 #' Parse IEEE raw data
@@ -225,31 +234,34 @@ parse_wos <- function(entries, timestamp = now()) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#' dataRaw <- import_data(file.path("Records", "Session 1", 'Query',
-#'   'IEEE.csv'))
+#' dataRaw <- import_data(file.path(
+#'   "Records", "Session 1", "Query",
+#'   "IEEE.csv"
+#' ))
 #'
 #' parse_ieee(dataRaw)
 #' }
 parse_ieee <- function(entries, timestamp = now()) {
-	entries %>% transmute(
-		Order = 1:n(),
-		ID = paste0('IEEE:', str_remove(`PDF Link`, fixed('https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber='))),
-		Title = `Document Title`,
-		Abstract, DOI, URL = `PDF Link`,
-		Authors, Journal = `Publication Title`,
-		Author_keywords = `Author Keywords`,
-		Keywords = cbind(`IEEE Terms`, `INSPEC Controlled Terms`, `INSPEC Non-Controlled Terms`) %>%
-			apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ';') else NA),
-		Mesh = Mesh_Terms,
-		Article_type = str_remove(`Document Identifier`, 'IEEE '),
-		N_citations = `Article Citation Count`,
-		Published = `Online Date`,
-		Source = 'IEEE',
-		Source_type = 'parsed',
-		Creation_date = now()
-	) %>% clean_record_textfields()
+  entries %>%
+    transmute(
+      Order = 1:n(),
+      ID = paste0("IEEE:", str_remove(`PDF Link`, fixed("https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber="))),
+      Title = `Document Title`,
+      Abstract, DOI, URL = `PDF Link`,
+      Authors, Journal = `Publication Title`,
+      Author_keywords = `Author Keywords`,
+      Keywords = cbind(`IEEE Terms`, `INSPEC Controlled Terms`, `INSPEC Non-Controlled Terms`) %>%
+        apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA),
+      Mesh = Mesh_Terms,
+      Article_type = str_remove(`Document Identifier`, "IEEE "),
+      N_citations = `Article Citation Count`,
+      Published = `Online Date`,
+      Source = "IEEE",
+      Source_type = "parsed",
+      Creation_date = now()
+    ) %>%
+    clean_record_textfields()
 }
 
 #' Parse EMBASE raw data
@@ -266,35 +278,38 @@ parse_ieee <- function(entries, timestamp = now()) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#' dataRaw <- import_data(file.path("Records", "Session 1", 'Query',
-#'   'EMBASE.csv'))
+#' dataRaw <- import_data(file.path(
+#'   "Records", "Session 1", "Query",
+#'   "EMBASE.csv"
+#' ))
 #'
 #' parse_embase(dataRaw)
 #' }
 parse_embase <- function(entries, timestamp = now()) {
-	entries %>% transmute(
-		Order = 1:n(),
-		ID = paste0('EM:', PUI),
-		Title,
-		Abstract, DOI, URL = paste0('https://www.embase.com/a/#/search/results?id=', PUI),
-		Authors = `Author Names` %>%
-			str_replace_all(c('\\s*,\\s*' = ';', ' (?=\\w\\.)' = ', ', '\\.' = ' ')),
-		Journal = `Source title`,
-		Author_keywords = `Author Keywords` %>% str_replace_all('\\s*,\\s*', ';'),
-		Keywords = select(cur_data(), contains('Emtree')) %>%
-			apply(1, function(x) na.omit(x) %>% paste(collapse = ', ')) %>%
-			str_replace_all(c(
-				'\\s*,\\s*' = ';',
-				'\\(.+\\)' = ''
-			)),
-		Article_type = `Publication Type`,
-		Published = `Date of Publication`,
-		Source = 'Embase',
-		Source_type = 'parsed',
-		Creation_date = timestamp
-	) %>% clean_record_textfields()
+  entries %>%
+    transmute(
+      Order = 1:n(),
+      ID = paste0("EM:", PUI),
+      Title,
+      Abstract, DOI, URL = paste0("https://www.embase.com/a/#/search/results?id=", PUI),
+      Authors = `Author Names` %>%
+        str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
+      Journal = `Source title`,
+      Author_keywords = `Author Keywords` %>% str_replace_all("\\s*,\\s*", ";"),
+      Keywords = select(cur_data(), contains("Emtree")) %>%
+        apply(1, function(x) na.omit(x) %>% paste(collapse = ", ")) %>%
+        str_replace_all(c(
+          "\\s*,\\s*" = ";",
+          "\\(.+\\)" = ""
+        )),
+      Article_type = `Publication Type`,
+      Published = `Date of Publication`,
+      Source = "Embase",
+      Source_type = "parsed",
+      Creation_date = timestamp
+    ) %>%
+    clean_record_textfields()
 }
 
 #' Parse SCOPUS raw data
@@ -311,31 +326,32 @@ parse_embase <- function(entries, timestamp = now()) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#' dataRaw <- import_data(file.path("Records", "Session 1", 'Query', 'EMBASE.csv'))
+#' dataRaw <- import_data(file.path("Records", "Session 1", "Query", "EMBASE.csv"))
 #'
 #' parse_embase(dataRaw)
 #' }
 parse_scopus <- function(entries, timestamp = now()) {
-	entries %>% transmute(
-		Order = 1:n(),
-		ID = paste0('SCP:', EID),
-		Title,
-		Abstract = str_remove(Abstract, fixed('[No abstract available]')),
-		DOI, URL = Link,
-		Authors = Authors %>%
-			str_replace_all(c('\\s*,\\s*' = ';', ' (?=\\w\\.)' = ', ', '\\.' = ' ')),
-		Journal = `Source title`,
-		Author_keywords = `Author Keywords`,
-		Keywords = `Index Keywords`,
-		Article_type = `Document Type`,
-		N_citations = `Cited by`,
-		Published = Year,
-		Source = 'Scopus',
-		Source_type = 'parsed',
-		Creation_date = timestamp
-	) %>% clean_record_textfields()
+  entries %>%
+    transmute(
+      Order = 1:n(),
+      ID = paste0("SCP:", EID),
+      Title,
+      Abstract = str_remove(Abstract, fixed("[No abstract available]")),
+      DOI, URL = Link,
+      Authors = Authors %>%
+        str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
+      Journal = `Source title`,
+      Author_keywords = `Author Keywords`,
+      Keywords = `Index Keywords`,
+      Article_type = `Document Type`,
+      N_citations = `Cited by`,
+      Published = Year,
+      Source = "Scopus",
+      Source_type = "parsed",
+      Creation_date = timestamp
+    ) %>%
+    clean_record_textfields()
 }
 
 #' Import and parse citation data files
@@ -350,51 +366,50 @@ parse_scopus <- function(entries, timestamp = now()) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#' data_files <- list.files(file.path("Records", "Session 1", 'Query'))
+#' data_files <- list.files(file.path("Records", "Session 1", "Query"))
 #'
 #' read_bib_files(data_files)
 #' }
 read_bib_files <- function(files) {
+  ts <- now()
 
-	ts <- now()
+  pblapply(files, function(file) {
+    if (str_detect(file, "(parsed|API)\\.csv")) { # no parsing necessary
+      message("Reading ", basename(file), "...")
 
-	pblapply(files, function(file) {
+      return(import_data(file))
+    }
 
-		if (str_detect(file, '(parsed|API)\\.csv')) {  # no parsing necessary
-			message('Reading ', basename(file), '...')
+    message("Parsing ", basename(file), "...")
 
-			return(import_data(file))
-		}
+    type <- NULL
 
-		message('Parsing ', basename(file), '...')
+    if (str_detect(file, "\\.(nbib|txt)$")) {
+      entries <- read_file(file)
 
-		type <- NULL
+      if (str_detect(entries, "PMID-")) type <- "pubmed"
+    } else if (str_detect(file, "\\.(xlsx?|csv)$")) {
+      entries <- import_data(file)
 
-		if (str_detect(file, '\\.(nbib|txt)$')) {
-			entries <- read_file(file)
+      if ("UT (Unique WOS ID)" %in% colnames(entries)) {
+        type <- "wos"
+      } else if ("IEEE Terms" %in% colnames(entries)) {
+        type <- "ieee"
+      } else if ("Scopus" %in% entries$Source) {
+        type <- "scopus"
+      } else if ("Embase Accession ID" %in% colnames(entries)) type <- "embase"
+    }
 
-			if (str_detect(entries, 'PMID-')) type <- 'pubmed'
+    if (is.null(type)) {
+      warning("Format not recognized for ", file)
+      return(NULL)
+    }
 
-		} else if (str_detect(file, '\\.(xlsx?|csv)$')) {
-			entries <- import_data(file)
-
-			if ('UT (Unique WOS ID)' %in% colnames(entries)) type <- 'wos'
-			else if ('IEEE Terms' %in% colnames(entries)) type <- 'ieee'
-			else if ('Scopus' %in% entries$Source) type <- 'scopus'
-			else if ('Embase Accession ID' %in% colnames(entries)) type <- 'embase'
-		}
-
-		if (is.null(type)) {
-			warning('Format not recognized for ', file)
-			return(NULL)
-		}
-
-		# parse the raw files using the correct interpreter
-		get(paste0('parse_', type))(entries, ts) %>%
-			data.frame()
-	}) %>% setNames(basename(files))
+    # parse the raw files using the correct interpreter
+    get(paste0("parse_", type))(entries, ts) %>%
+      data.frame()
+  }) %>% setNames(basename(files))
 }
 
 #' Join citation data frames and resolve record duplication
@@ -412,48 +427,49 @@ read_bib_files <- function(files) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
-#' data_files <- list.files(file.path("Records", "Session 1", 'Query'))
+#' data_files <- list.files(file.path("Records", "Session 1", "Query"))
 #'
 #' record_list <- read_bib_files(data_files)
 #'
 #' join_records(record_list)
 #' }
 join_records <- function(record_list) {
-
-	lapply(record_list, function(source) {
-		source %>%
-			transmute(
-				Order,
-				DOI, ID, Title, Abstract, Authors,
-				Year = Published %>% str_extract('\\d{4}') %>% as.numeric(),
-				URL = if (exists('URL')) URL else NA,
-				Journal = if (exists('Journal')) Journal else NA,
-				Journal_short = if (exists('Journal_short')) Journal_short else NA,
-				Keywords = if (exists('Keywords')) Keywords else NA,
-				Author_keywords = if (exists('Author_keywords')) Author_keywords else NA,
-				Mesh = if (exists('Mesh')) Mesh else NA,
-				Article_type,
-				N_citations = if (exists('N_citations')) N_citations else NA,
-				Source, Source_type,
-				FileID = if (exists('FileID')) FileID else NA,
-			)
-	}) %>% bind_rows() %>%
-		mutate(
-			Keywords = cbind(Keywords, Author_keywords) %>%
-				apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ';') else NA) %>% str_to_lower,
-			Author_keywords = NULL
-		) %>%
-		fix_duplicated_records() %>%
-		mutate(
-			Keywords = str_split(Keywords, '\\s*;\\s*') %>% sapply(function(x) {
-				str_remove(x, '^[\\*\\-"\\\']+ *') %>% str_remove(' *[\\*\\-"\\\']+ *$') %>%
-					unique() %>% paste(collapse = '; ')
-			})
-		) %>%
-		distinct() %>%
-		arrange(Order)
+  lapply(record_list, function(source) {
+    source %>%
+      transmute(
+        Order,
+        DOI, ID, Title, Abstract, Authors,
+        Year = Published %>% str_extract("\\d{4}") %>% as.numeric(),
+        URL = if (exists("URL")) URL else NA,
+        Journal = if (exists("Journal")) Journal else NA,
+        Journal_short = if (exists("Journal_short")) Journal_short else NA,
+        Keywords = if (exists("Keywords")) Keywords else NA,
+        Author_keywords = if (exists("Author_keywords")) Author_keywords else NA,
+        Mesh = if (exists("Mesh")) Mesh else NA,
+        Article_type,
+        N_citations = if (exists("N_citations")) N_citations else NA,
+        Source, Source_type,
+        FileID = if (exists("FileID")) FileID else NA,
+      )
+  }) %>%
+    bind_rows() %>%
+    mutate(
+      Keywords = cbind(Keywords, Author_keywords) %>%
+        apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA) %>% str_to_lower(),
+      Author_keywords = NULL
+    ) %>%
+    fix_duplicated_records() %>%
+    mutate(
+      Keywords = str_split(Keywords, "\\s*;\\s*") %>% sapply(function(x) {
+        str_remove(x, '^[\\*\\-"\\\']+ *') %>%
+          str_remove(' *[\\*\\-"\\\']+ *$') %>%
+          unique() %>%
+          paste(collapse = "; ")
+      })
+    ) %>%
+    distinct() %>%
+    arrange(Order)
 }
 
 #' Resolve duplicated records in a record data frame
@@ -470,50 +486,60 @@ join_records <- function(record_list) {
 #' @export
 #'
 fix_duplicated_records <- function(records) {
+  records <- records %>%
+    group_by(ID) %>%
+    mutate(Title = na.omit(Title)[1]) %>%
+    ungroup() %>%
+    mutate(
+      UID = str_to_lower(Title) %>% str_remove_all("[^\\w\\d]+")
+    ) %>%
+    group_by(UID) %>%
+    mutate(DOI = na.omit(DOI)[1]) %>%
+    ungroup() %>%
+    mutate(
+      UID = coalesce(DOI, UID)
+    )
 
-	records <- records %>%
-		group_by(ID) %>%
-		mutate(Title = na.omit(Title)[1]) %>%
-		ungroup() %>%
-		mutate(
-			UID = str_to_lower(Title) %>% str_remove_all('[^\\w\\d]+')
-		) %>%
-		group_by(UID) %>%
-		mutate(DOI = na.omit(DOI)[1]) %>%
-		ungroup() %>%
-		mutate(
-			UID = coalesce(DOI, UID)
-		)
+  dup_recs <- records$UID[duplicated(records$UID)]
 
-	dup_recs <- records$UID[duplicated(records$UID)]
+  unique_sources <- records %>% filter(!(UID %in% dup_recs))
+  dup_sources <- records %>% filter(UID %in% dup_recs)
 
-	unique_sources <- records %>% filter(!(UID %in% dup_recs))
-	dup_sources <- records %>% filter(UID %in% dup_recs)
+  dup_sources <- dup_sources %>%
+    group_by(UID) %>%
+    summarise(
+      Order = min(Order),
+      # Keep only one instance of the data for these field
+      across(
+        any_of(c(
+          "Title", "Abstract", "Authors", "Journal", "Journal_short",
+          "Year", "Pred_delta", "Pred_Med", "Pred_Low", "Pred_Up"
+        )),
+        ~ na.omit(.x)[1]
+      ),
+      # Join the data from all record copies for these fields
+      across(
+        any_of(c(
+          "ID", "DOI", "URL", "Mesh", "Article_type", "Source",
+          "Source_type", "FileID", "Rev_manual", "Rev_prediction",
+          "Rev_previous", "Predicted_label"
+        )),
+        ~ na.omit(.x) %>%
+          unique() %>%
+          paste(collapse = "; ")
+      ),
+      Keywords = Keywords %>% str_split("; ") %>% unlist() %>% na.omit() %>% unique() %>%
+        purrr::keep(~ str_length(.x) > 0) %>%
+        paste(collapse = "; "),
+      ## TODO: clean up is necessary for Source and Source_type
+      N_citations = suppressWarnings(na.omit(N_citations) %>% max(na.rm = TRUE) %>%
+        purrr::modify_if(~ !is.finite(.x), ~NA))
+    )
 
-	dup_sources <- dup_sources %>%
-		group_by(UID) %>%
-		summarise(
-			Order = min(Order),
-			# Keep only one instance of the data for these field
-			across(any_of(c('Title', 'Abstract', 'Authors', 'Journal', 'Journal_short',
-											'Year', "Pred_delta", "Pred_Med", "Pred_Low", "Pred_Up")),
-						 ~ na.omit(.x)[1]),
-			# Join the data from all record copies for these fields
-			across(any_of(c('ID', 'DOI', 'URL', 'Mesh', 'Article_type', 'Source',
-											'Source_type', 'FileID', "Rev_manual", "Rev_prediction",
-											"Rev_previous", "Predicted_label")),
-						 ~ na.omit(.x) %>% unique() %>% paste(collapse = '; ')),
-			Keywords = Keywords %>% str_split('; ') %>% unlist() %>% na.omit() %>% unique() %>%
-				purrr::keep(~ str_length(.x) > 0) %>%
-				paste(collapse = '; '),
-			## TODO: clean up is necessary for Source and Source_type
-			N_citations = suppressWarnings(na.omit(N_citations) %>% max(na.rm = TRUE) %>%
-																		 	purrr::modify_if(~ !is.finite(.x), ~ NA))
-		)
-
-	bind_rows(unique_sources, dup_sources) %>% select(-UID) %>%
-		clean_record_textfields() %>%
-		filter(!duplicated(ID))
+  bind_rows(unique_sources, dup_sources) %>%
+    select(-UID) %>%
+    clean_record_textfields() %>%
+    filter(!duplicated(ID))
 }
 
 
@@ -543,7 +569,6 @@ fix_duplicated_records <- function(records) {
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' # This function extracts the appropriate file paths from a session journal.
 #' # By default it passes all stored files, otherwise it can be filtered by
@@ -556,10 +581,10 @@ fix_duplicated_records <- function(records) {
 #' input <- record_files
 #'
 #' # or specific record file folders
-#' input <- file.path('Records', 'Session1', 'Query1')
+#' input <- file.path("Records", "Session1", "Query1")
 #'
 #' # or parent folders, since it searches for files recursively
-#' input <- 'Records'
+#' input <- "Records"
 #'
 #' # or the already parsed files
 #' input <- read_bib_files(record_files)
@@ -568,67 +593,66 @@ fix_duplicated_records <- function(records) {
 #' Annotation_data <- create_annotation_file(input, reorder_query = query)
 #' }
 create_annotation_file <- function(records, reorder_query = NULL,
-																	 prev_records = NULL,
-																	 prev_classification = NULL) {
+                                   prev_records = NULL,
+                                   prev_classification = NULL) {
+  if (class(records) %nin% c("character", "list", "data.frame")) {
+    stop('"records" should be either of vector of file/folder paths, a list of data.frame or a single data.frame')
+  }
 
-	if (class(records) %nin% c('character', 'list', 'data.frame')) {
-		stop('"records" should be either of vector of file/folder paths, a list of data.frame or a single data.frame')
-	}
+  if (is.character(records)) {
+    records <- c(
+      list.files(records, full.names = TRUE, recursive = TRUE) %>%
+        str_subset("~\\$", negate = TRUE) %>%
+        str_subset("(parsed|API)\\.csv"),
+      records[!dir.exists(records)]
+    ) %>% unique()
 
-	if (is.character(records)) {
-		records <- c(
-			list.files(records, full.names = TRUE, recursive = TRUE) %>%
-				str_subset('~\\$', negate = TRUE) %>%
-				str_subset('(parsed|API)\\.csv'),
-			records[!dir.exists(records)]
-		) %>% unique()
+    message("- parsing records...")
+    records <- read_bib_files(records)
+  }
 
-		message('- parsing records...')
-		records <- read_bib_files(records)
-	}
+  if (length(records) == 1) records <- records[[1]]
 
-	if (length(records) == 1) records <- records[[1]]
+  if (!is.data.frame(records) & is.list(records)) {
+    message("- joining records...")
+    records <- join_records(records)
+    message(": ", nrow(records), " unique records")
+  }
 
-	if (!is.data.frame(records) & is.list(records)) {
-		message('- joining records...')
-		records <- join_records(records)
-		message(": ", nrow(records), ' unique records')
-	}
+  records <- records %>%
+    mutate(
+      Rev_manual = NA,
+      .before = DOI
+    )
 
-	records <- records %>%
-		mutate(
-			Rev_manual = NA,
-			.before = DOI
-		)
+  if (!is.null(prev_records)) {
+    message("- appending to a previous annotation file...")
 
-	if (!is.null(prev_records)) {
-		message('- appending to a previous annotation file...')
+    imported_records <- import_data(prev_records)
 
-		imported_records <- import_data(prev_records)
+    records <- records %>% filter(!(ID %in% imported_records$ID))
 
-		records <- records %>% filter(!(ID %in% imported_records$ID))
+    message("(", nrow(records), " new records)")
 
-		message("(", nrow(records), ' new records)')
+    records <- full_join(
+      import_data(prev_records), records
+    ) %>%
+      fix_duplicated_records()
+  }
 
-		records <- full_join(
-			import_data(prev_records), records
-		) %>%
-			fix_duplicated_records()
-	}
+  if (!is.null(prev_classification)) {
+    message("- importing previous classifications...")
 
-	if (!is.null(prev_classification)) {
-		message('- importing previous classifications...')
+    records <- import_classification(records, prev_records = prev_classification)
+  }
 
-		records <- import_classification(records, prev_records = prev_classification)
-	}
+  if (!is.null(reorder_query)) {
+    message("- reordering records...")
 
-	if (!is.null(reorder_query)) {
-		message('- reordering records...')
+    records <- order_by_query_match(records, query = reorder_query)
+  }
 
-		records <- order_by_query_match(records, query = reorder_query)
-	}
-
-	invisible(records)
+  invisible(records)
 }
 
 
@@ -647,23 +671,24 @@ create_annotation_file <- function(records, reorder_query = NULL,
 #' @export
 #'
 order_by_query_match <- function(records, query) {
-	terms <- str_remove_all(query, "NOT ?(\\w+|\\(.*?\\))") %>%
-		str_remove_all('[^\\w\\s\\*]+|(?<= )(AND|OR)(?= )') %>%
-		str_split('\\s+') %>%
-		unlist() %>% unique() %>%
-		str_replace_all('\\*', '\\\\w*') %>%
-		Filter(function(x) str_length(x) > 2, .)
+  terms <- str_remove_all(query, "NOT ?(\\w+|\\(.*?\\))") %>%
+    str_remove_all("[^\\w\\s\\*]+|(?<= )(AND|OR)(?= )") %>%
+    str_split("\\s+") %>%
+    unlist() %>%
+    unique() %>%
+    str_replace_all("\\*", "\\\\w*") %>%
+    Filter(function(x) str_length(x) > 2, .)
 
-	records %>%
-		mutate(
-			text = paste(Title, Abstract),
-			doc.length = str_count(text, '\\b') + 1,
-			term.count = str_count(text, paste(terms, collapse = '|')),
-			score = term.count/doc.length
-		) %>%
-		arrange(desc(score)) %>%
-		mutate(Order = 1:n()) %>%
-		select(-text, -doc.length, -term.count, -score)
+  records %>%
+    mutate(
+      text = paste(Title, Abstract),
+      doc.length = str_count(text, "\\b") + 1,
+      term.count = str_count(text, paste(terms, collapse = "|")),
+      score = term.count / doc.length
+    ) %>%
+    arrange(desc(score)) %>%
+    mutate(Order = 1:n()) %>%
+    select(-text, -doc.length, -term.count, -score)
 }
 
 #' Import classifications from a previously labelled annotation data frame
@@ -682,74 +707,84 @@ order_by_query_match <- function(records, query) {
 #'
 #'
 import_classification <- function(records, prev_records, IDs = records$ID) {
+  prev_records <- import_data(prev_records)
 
-	prev_records <- import_data(prev_records)
+  records$uID <- with(
+    records,
+    ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
+      str_remove_all("[^\\w\\d\\s]+"))
+  )
 
-	records$uID = with(records,
-										 ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
-										 			 	str_remove_all('[^\\w\\d\\s]+')))
+  prev_records$uID <- with(
+    prev_records,
+    ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
+      str_remove_all("[^\\w\\d\\s]+"))
+  )
 
-	prev_records$uID = with(prev_records,
-													ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
-																 	str_remove_all('[^\\w\\d\\s]+')))
+  target_uID <- records$uID[records$ID %in% IDs]
+  prev_records <- filter(prev_records, uID %in% target_uID)
 
-	target_uID <- records$uID[records$ID %in% IDs]
-	prev_records <- filter(prev_records, uID %in% target_uID)
+  prev_records <- prev_records %>%
+    transmute(
+      uID,
+      Rev_previous = coalesce_labels(cur_data(), c(
+        "Rev_previous",
+        "Rev_prediction_new",
+        "Rev_prediction", "Rev_manual"
+      ))
+      # 'Rev_abstract', 'Rev_title')) # for legacy, to be removed.
+    ) %>%
+    distinct()
 
-	prev_records <- prev_records %>% transmute(
-		uID,
-		Rev_previous = coalesce_labels(cur_data(), c('Rev_previous',
-																								 'Rev_prediction_new',
-																								 'Rev_prediction', 'Rev_manual'))
-		# 'Rev_abstract', 'Rev_title')) # for legacy, to be removed.
-	) %>% distinct()
-
-	left_join(records, prev_records, by = 'uID') %>% {
-		if ('Rev_previous.y' %in% colnames(.)) {
-			mutate(.,
-						 Rev_previous = coalesce(Rev_previous.y, Rev_previous.x),
-						 .after = any_of(c('Rev_prediction_new', 'Rev_prediction', 'Rev_manual'))
-			) %>% select(-Rev_previous.y, -Rev_previous.x)
-		} else .
-	} %>%
-		select(Order, contains('Rev_'), Rev_previous, everything()) %>%
-		select(-uID)
+  left_join(records, prev_records, by = "uID") %>%
+    {
+      if ("Rev_previous.y" %in% colnames(.)) {
+        mutate(.,
+          Rev_previous = coalesce(Rev_previous.y, Rev_previous.x),
+          .after = any_of(c("Rev_prediction_new", "Rev_prediction", "Rev_manual"))
+        ) %>% select(-Rev_previous.y, -Rev_previous.x)
+      } else {
+        .
+      }
+    } %>%
+    select(Order, contains("Rev_"), Rev_previous, everything()) %>%
+    select(-uID)
 }
 
-#'Create a Session starting from an annotation data set.
+#' Create a Session starting from an annotation data set.
 #'
-#'A session is identified by the subsequent iteration of automatic labelling and
-#'manual review. It is associated with a folder where the original annotation
-#'file (with the initial manual classification) is stored, plus its updates
-#'after each classification iteration and supplemental files containing the
-#'Document Term Matrix (DTM), a summary of each classification iteration and the
-#'posterior samples of the Bayesian predictions.
+#' A session is identified by the subsequent iteration of automatic labelling and
+#' manual review. It is associated with a folder where the original annotation
+#' file (with the initial manual classification) is stored, plus its updates
+#' after each classification iteration and supplemental files containing the
+#' Document Term Matrix (DTM), a summary of each classification iteration and the
+#' posterior samples of the Bayesian predictions.
 #'
-#'@param Records An annotation data frame.
-#'@param session_name A character string to label the session. Usually is
+#' @param Records An annotation data frame.
+#' @param session_name A character string to label the session. Usually is
 #'  Session followed by a number, without white spaces.
-#'@param sessions_folder The path to the folder where all sessions are stored.
-#'@param DTM An already existing DTM matrix (see
+#' @param sessions_folder The path to the folder where all sessions are stored.
+#' @param DTM An already existing DTM matrix (see
 #'  \code{\link{create_training_set}()} and \code{\link{text_to_DTM}()}).
-#'@param dup_session_action What to do if a session with the same name already
+#' @param dup_session_action What to do if a session with the same name already
 #'  exists. the options are: skip (if the session exists do nothing but raise a
 #'  warning), stop (raise an error), silent (like skip but without warnings),
 #'  add (create a new session marking that is a replicate of an existing one),
 #'  replace (overwrite the existing session).
-#'@param use_time_stamp Add a times tamp to the original annotation file name.
+#' @param use_time_stamp Add a times tamp to the original annotation file name.
 #'
-#'@return The path to the created session folder.
+#' @return The path to the created session folder.
 #'
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' journal <- perform_search_session(
-#'	query = query, year_query = year_filter,
-#'	session_name = 'Session1', query_name = 'Query1',
-#'	records_folder = 'Records',
-#'	journal = 'Session_journal.csv')
+#'   query = query, year_query = year_filter,
+#'   session_name = "Session1", query_name = "Query1",
+#'   records_folder = "Records",
+#'   journal = "Session_journal.csv"
+#' )
 #'
 #' record_files <- extract_source_file_paths(journal)
 #'
@@ -758,88 +793,88 @@ import_classification <- function(records, prev_records, IDs = records$ID) {
 #' create_session(Annotation_data)
 #' }
 create_session <- function(Records, session_name,
-													 sessions_folder = getOption("baysren.sessions_folder"),
-													 DTM = NULL,
-													 dup_session_action = c('skip', 'stop', 'silent', 'add', 'replace'),
-													 use_time_stamp = TRUE) {
+                           sessions_folder = getOption("baysren.sessions_folder"),
+                           DTM = NULL,
+                           dup_session_action = c("skip", "stop", "silent", "add", "replace"),
+                           use_time_stamp = TRUE) {
+  message("Creating session: ", session_name)
 
-	message("Creating session: ", session_name)
+  dup_session_action <- match.arg(dup_session_action)
 
-	dup_session_action <- match.arg(dup_session_action)
+  initialise_session <- function(Records, session_path, DTM = NULL,
+                                 use_time_stamp = TRUE) {
+    if (use_time_stamp) ts <- glue("_{safe_now()}") else ""
 
-	initialise_session <- function(Records, session_path, DTM = NULL,
-																 use_time_stamp = TRUE) {
+    # Create the session folder
+    if (!dir.exists(session_path)) {
+      message('- create session folder "', session_path, '".')
+      dir.create(session_path, recursive = TRUE, showWarnings = FALSE)
+    }
 
-		if (use_time_stamp) ts <- glue('_{safe_now()}') else ''
+    # At the moment csv files will be converted to excel, eventually both file
+    # type will be supported
+    Records <- import_data(Records)
 
-		# Create the session folder
-		if (!dir.exists(session_path)) {
-			message('- create session folder "', session_path, '".')
-			dir.create(session_path, recursive = TRUE, showWarnings = FALSE)
-		}
+    message("- copy or write the Record data")
 
-		# At the moment csv files will be converted to excel, eventually both file
-		# type will be supported
-		Records <- import_data(Records)
+    file_path <- file.path(session_path, glue("Records{ts}.xlsx"))
+    if (is.character(Records) | is.factor(Records)) {
+      if (!file.exists(Records)) stop(Records, " does not exists.")
 
-		message("- copy or write the Record data")
+      file.copy(Records, file_path, overwrite = TRUE, recursive = FALSE)
+    } else {
+      openxlsx::write.xlsx(Records, file = file_path, asTable = TRUE)
+    }
 
-		file_path <- file.path(session_path, glue('Records{ts}.xlsx'))
-		if (is.character(Records) | is.factor(Records)) {
-			if (!file.exists(Records)) stop(Records, ' does not exists.')
+    message("- Copy or write the DTM data")
+    file_path <- file.path(session_path, "DTM.rds")
+    if (!is.null(DTM)) {
+      if (is.character(DTM) | is.factor(DTM)) {
+        if (!file.exists(DTM)) stop(DTM, " does not exists.")
 
-			file.copy(Records, file_path, overwrite = TRUE, recursive = FALSE)
-		} else {
-			openxlsx::write.xlsx(Records, file = file_path, asTable = TRUE)
-		}
+        file.copy(DTM, file_path, overwrite = TRUE, recursive = FALSE)
+      } else {
+        readr::write_rds(DTM, file = file_path, asTable = TRUE)
+      }
+    }
+  }
 
-		message("- Copy or write the DTM data")
-		file_path <- file.path(session_path, 'DTM.rds')
-		if (!is.null(DTM)) {
-			if (is.character(DTM) | is.factor(DTM)) {
-				if (!file.exists(DTM)) stop(DTM, ' does not exists.')
+  session_path <- file.path(sessions_folder, session_name)
 
-				file.copy(DTM, file_path, overwrite = TRUE, recursive = FALSE)
-			} else {
-				readr::write_rds(DTM, file = file_path, asTable = TRUE)
-			}
-		}
-	}
+  if (dir.exists(session_path)) {
+    switch(dup_session_action,
+      silent = {
+        return(session_path)
+      },
+      skip = {
+        warning('Session "', session_name, '" exists. Skipping...')
+        return(session_path)
+      },
+      add = {
+        warning('Session "', session_name, '" exists. Adding a replicate...')
+        cur_rep <- max(str_extract(session_name, "(?<=_r)\\d+") %>% as.numeric(), 1, na.rm = TRUE)
 
-	session_path <- file.path(sessions_folder, session_name)
+        session_name <- str_remove(session_name, "_r\\d+$") %>% paste0("_r", cur_rep + 1)
 
-	if (dir.exists(session_path)) {
-		switch(dup_session_action,
-					 silent = {
-					 	return(session_path)
-					 },
-					 skip = {
-					 	warning('Session "', session_name, '" exists. Skipping...')
-					 	return(session_path)
-					 },
-					 add = {
-					 	warning('Session "', session_name, '" exists. Adding a replicate...')
-					 	cur_rep <- max(str_extract(session_name, '(?<=_r)\\d+') %>% as.numeric(), 1, na.rm = TRUE)
+        session_path <- create_session(
+          Records = Records, session_name = session_name,
+          sessions_folder = sessions_folder, DTM = DTM,
+          dup_session_action = dup_session_action
+        )
+      },
+      replace = {
+        warning('Session "', session_name, '" exists. Replacing...')
+        failure <- unlink(session_path, recursive = TRUE)
 
-					 	session_name <- str_remove(session_name, '_r\\d+$') %>% paste0('_r', cur_rep + 1)
+        if (failure == 1) stop("Session removal failed!")
+      },
+      stop = stop('Session "', session_name, '" is already existing. Stopping...')
+    )
+  }
 
-					 	session_path <- create_session(Records = Records, session_name = session_name,
-					 																 sessions_folder = sessions_folder, DTM = DTM,
-					 																 dup_session_action = dup_session_action)
-					 },
-					 replace = {
-					 	warning('Session "', session_name, '" exists. Replacing...')
-					 	failure <- unlink(session_path, recursive = TRUE)
+  initialise_session(Records, session_path, DTM, use_time_stamp)
 
-					 	if (failure == 1) stop('Session removal failed!')
-					 },
-					 stop = stop('Session "', session_name, '" is already existing. Stopping...')
-		)
-	}
-
-	initialise_session(Records, session_path, DTM, use_time_stamp)
-
-	return(session_path)
+  return(session_path)
 }
 
 #' Retrieve the path of the resources linked to a session.
@@ -858,31 +893,36 @@ create_session <- function(Records, session_name,
 #' @export
 #'
 get_session_files <- function(session_name,
-															sessions_folder = getOption("baysren.sessions_folder"),
-															which = c('Records', 'Annotations',
-																				'DTM', 'Samples', 'Results')) {
+                              sessions_folder = getOption("baysren.sessions_folder"),
+                              which = c(
+                                "Records", "Annotations",
+                                "DTM", "Samples", "Results"
+                              )) {
+  session_path <- file.path(sessions_folder, session_name)
 
-	session_path <- file.path(sessions_folder, session_name)
+  lapply(which, function(type) {
+    files <- list.files(session_path, recursive = TRUE) %>% str_subset(type)
 
-	lapply(which, function(type) {
-		files <- list.files(session_path, recursive = TRUE) %>% str_subset(type)
+    files <- files[str_detect(basename(files), "^\\w")]
 
-		files <- files[str_detect(basename(files), '^\\w')]
+    if (type == "Records") {
+      files <- files[!str_detect(files, "Annotations")]
+    }
 
-		if (type == 'Records') {
-			files <- files[!str_detect(files, 'Annotations')]
-		}
+    if (length(files) == 0) {
+      return(NULL)
+    }
 
-		if (length(files) == 0) return(NULL)
+    files <- tibble(
+      files,
+      iter = basename(files) %>%
+        str_extract("^\\d+") %>%
+        as.numeric() %>%
+        pmax(0, na.rm = TRUE) # the source record file would have no iteration in the name, so will be considered as zero
+    ) %>%
+      arrange(iter) %>%
+      pull(files)
 
-		files <- tibble(
-			files,
-			iter = basename(files) %>%
-				str_extract('^\\d+') %>%
-				as.numeric() %>%
-				pmax(0, na.rm = TRUE) # the source record file would have no iteration in the name, so will be considered as zero
-		) %>% arrange(iter) %>% pull(files)
-
-		file.path(session_path, files)
-	}) %>% setNames(which)
+    file.path(session_path, files)
+  }) %>% setNames(which)
 }
