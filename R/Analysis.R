@@ -15,6 +15,7 @@
 #'
 #' @export
 #'
+#'
 #' @examples
 #' \dontrun{
 #'
@@ -29,49 +30,49 @@
 #' tidyr::pivot_longer(everything(), names_to = "Indicator", values_to = "Value") # To get a long format data frame
 #' }
 compute_changes <- function(Annotations) {
-  Annotations <- import_data(Annotations)
+	Annotations <- BaySREn:::import_data(Annotations)
 
-  Annotations %>%
-    transmute(
-      Target = coalesce_labels(cur_data(), c(
-        "Rev_prediction_new",
-        "Rev_prediction", "Rev_manual"
-      )),
-      Change = paste(
-        coalesce_labels(cur_data(), c("Rev_prediction", "Rev_manual")),
-        Target,
-        sep = " -> "
-      ) %>% str_replace_all("NA", "unlab.")
-    ) %>%
-    {
-      df <- .
-      lapply(names(df), function(col) {
-        df %>%
-          transmute(Col = get(col) %>% factor()) %>%
-          filter(!is.na(Col)) %>%
-          count(Col) %>%
-          tidyr::pivot_wider(
-            names_from = Col, values_from = n,
-            names_prefix = paste0(col, ": ")
-          )
-      }) %>%
-        bind_cols() %>%
-        mutate(
-          Total_labeled = sum(!is.na(df$Target)),
-          New_labels = if ("Rev_prediction_new" %in% names(Annotations)) {
-            sum(!is.na(Annotations$Rev_prediction_new))
-          } else {
-            NA
-          },
-          across(c(Total_labeled, New_labels), ~ if (!is.na(.x)) {
-            x <- .x # Some changes in glue or dplyr made glue not recognizing .x anymore
-            glue("{x} ({percent(x/nrow(Annotations))})") %>% as.character()
-          } else {
-            NA
-          }),
-          .after = matches("Target")
-        )
-    }
+	Annotations %>%
+		transmute(
+			Target = BaySREn:::coalesce_labels(cur_data(), c(
+				"Rev_prediction_new",
+				"Rev_prediction", "Rev_manual"
+			)),
+			Change = paste(
+				BaySREn:::coalesce_labels(cur_data(), c("Rev_prediction", "Rev_manual")),
+				Target,
+				sep = " -> "
+			) %>% stringr::str_replace_all("NA", "unlab.")
+		) %>%
+		{
+			df <- .
+			lapply(names(df), function(col) {
+				df %>%
+					transmute(Col = get(col) %>% factor()) %>%
+					filter(!is.na(Col)) %>%
+					count(Col) %>%
+					tidyr::pivot_wider(
+						names_from = Col, values_from = n,
+						names_prefix = paste0(col, ": ")
+					)
+			}) %>%
+				bind_cols() %>%
+				mutate(
+					Total_labeled = sum(!is.na(df$Target)),
+					New_labels = if ("Rev_prediction_new" %in% names(Annotations)) {
+						sum(!is.na(Annotations$Rev_prediction_new))
+					} else {
+						NA
+					},
+					across(c(Total_labeled, New_labels), ~ if (!is.na(.x)) {
+						x <- .x # Some changes in glue or dplyr made glue not recognizing .x anymore
+						glue("{x} ({percent(x/nrow(Annotations))})") %>% as.character()
+					} else {
+						NA
+					}),
+					.after = matches("Target")
+				)
+		}
 }
 
 #' Train a simple Bayesian logistic model on classification results
@@ -97,19 +98,19 @@ compute_changes <- function(Annotations) {
 #' @export
 #'
 estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
-  train_data$Target <- factor(coalesce_labels(train_data))
+	train_data$Target <- factor(BaySREn:::coalesce_labels(train_data))
 
-  # TODO: switch to rstanarm to skip compilation
-  brm(bf(Target ~ Pred_Low),
-    family = bernoulli,
-    data = train_data,
-    cores = 8, chains = 8, refresh = 0, iter = 8000, control = list(adapt_delta = .95),
-    backend = "cmdstan", seed = seed,
-    prior = c(
-      prior(student_t(3, 0, 2.5), class = "Intercept"),
-      prior(student_t(3, 0, 1.5), class = "b")
-    )
-  )
+	# TODO: switch to rstanarm to skip compilation
+	brms::brm(brms::brmsformula(Target ~ Pred_Low),
+						family = bernoulli,
+						data = train_data,
+						cores = 8, chains = 8, refresh = 0, iter = 8000, control = list(adapt_delta = .95),
+						backend = "cmdstan", seed = seed,
+						prior = c(
+							brms::prior(student_t(3, 0, 2.5), class = "Intercept"),
+							brms::prior(student_t(3, 0, 1.5), class = "b")
+						)
+	)
 }
 
 #' Evaluate and report classification performance of given an Annotation file
@@ -189,117 +190,116 @@ estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
 #' }
 #'
 estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRUE,
-                                 quants = getOption("baysren.probs"),
-                                 nsamples = min(2500, sum(model$fit@sim$n_save)),
-                                 seed = 23797297,
-                                 save_preds = FALSE, save_model = FALSE) {
-  records <- import_data(records)
+																 quants = getOption("baysren.probs"),
+																 nsamples = min(2500, sum(model$fit@sim$n_save)),
+																 seed = 23797297,
+																 save_preds = FALSE, save_model = FALSE) {
+	records <- BaySREn:::import_data(records)
 
-  if (is.null(model)) {
-    message("- build model...")
+	if (is.null(model)) {
+		message("- build model...")
 
-    model <- estimate_positivity_rate_model(records, seed)
-  }
+		model <- BaySREn:::estimate_positivity_rate_model(records, seed)
+	}
 
-  quants <- sort(quants)
+	quants <- sort(quants)
 
-  records <- arrange(records, Order)
+	records <- arrange(records, Order)
 
-  tot_records <- nrow(records)
+	tot_records <- nrow(records)
 
-  if (is.null(preds)) {
-    message("- computing predictions...")
-    set.seed(seed)
-    preds <- posterior_predict(model, newdata = records, nsamples = nsamples)
-  }
+	if (is.null(preds)) {
+		message("- computing predictions...")
+		set.seed(seed)
+		preds <- brms::posterior_predict(model, newdata = records, nsamples = nsamples)
+	}
 
-  message("- integrate with observed data...")
-  vec <- as.numeric(records$Target == "y")
-  # pb <- progressBar()
+	message("- integrate with observed data...")
+	vec <- as.numeric(records$Target == "y")
+	# pb <- progressBar()
 
-  for (i in which(!is.na(records$Target))) {
-    preds[, i] <- vec[i]
-    # setTxtProgressBar(pb, i / length(vec))
-  }
-  # close(pb)
+	for (i in which(!is.na(records$Target))) {
+		preds[, i] <- vec[i]
+		# setTxtProgressBar(pb, i / length(vec))
+	}
+	# close(pb)
 
-  n_sims <- nrow(preds)
-  obs_pos <- sum(records$Target %in% "y")
-  tot_reviewed <- sum(!is.na(records$Target))
-  tot_pos <- pmax(preds %>% rowSums(), obs_pos)
-  tot_neg <- tot_records - tot_pos
+	n_sims <- nrow(preds)
+	obs_pos <- sum(records$Target %in% "y")
+	tot_reviewed <- sum(!is.na(records$Target))
+	tot_pos <- pmax(preds %>% rowSums(), obs_pos)
+	tot_neg <- tot_records - tot_pos
 
-  n_needed <- extraDistr::rnhyper(n_sims, tot_neg, tot_pos, obs_pos)
+	n_needed <- extraDistr::rnhyper(n_sims, tot_neg, tot_pos, obs_pos)
 
-  res <- list(
-    obs_positives = obs_pos,
-    pred_positives = quantile(tot_pos, quants),
-    mod_r2 = bayes_R2(model, probs = quants)[3:5],
-    n_reviewed = tot_reviewed,
-    total_records = tot_records,
-    used_prop = quantile(tot_reviewed / n_needed, quants),
-    efficiency = quantile(1 - tot_reviewed / n_needed, quants),
-    sensitivity = quantile(obs_pos / tot_pos, quants)
-  ) %>%
-    sapply(function(el) { # if quantile, sort them
-      if (length(el) == 3) {
-        sort(el) %>% setNames(percent(quants))
-      } else {
-        el
-      }
-    })
+	res <- list(
+		obs_positives = obs_pos,
+		pred_positives = quantile(tot_pos, quants),
+		mod_r2 = brms::bayes_R2(model, probs = quants)[3:5],
+		n_reviewed = tot_reviewed,
+		total_records = tot_records,
+		used_prop = quantile(tot_reviewed / n_needed, quants),
+		efficiency = quantile(1 - tot_reviewed / n_needed, quants),
+		sensitivity = quantile(obs_pos / tot_pos, quants)
+	) %>%
+		sapply(function(el) { # if quantile, sort them
+			if (length(el) == 3) {
+				sort(el) %>% setNames(BaySREn:::percent(quants))
+			} else {
+				el
+			}
+		})
 
-  if (save_preds) {
-    res$preds <- preds
-  }
+	if (save_preds) {
+		res$preds <- preds
+	}
 
-  if (save_model) {
-    res$model <- model
-  }
+	if (save_model) {
+		res$model <- model
+	}
 
-  if (plot) {
-    ## TODO: move this into its own function in Reporting.R
+	if (plot) {
+		## TODO: move this into its own function in Reporting.R
 
-    cl <- suppressWarnings(makeCluster(getOption("mc.cores")))
-    on.exit(stopCluster(cl))
-    message("- computing cumulative trends...")
+		cl <- suppressWarnings(parallel::makeCluster(getOption("mc.cores")))
+		on.exit(parallel::stopCluster(cl))
+		message("- computing cumulative trends...")
 
-    preds <- preds %>% parApply(1, cumsum, cl = cl)
+		preds <- preds %>% parallel::parApply(1, cumsum, cl = cl)
 
-    message("- extracting cumulative quantiles...")
+		message("- extracting cumulative quantiles...")
 
-    preds <- parApply(preds, 1, quantile, quants, cl = cl) %>%
-      t() %>%
-      as.data.frame() %>%
-      setNames(c("L", "M", "U"))
+		preds <- parallel::parApply(preds, 1, quantile, quants, cl = cl) %>%
+			t() %>%
+			as.data.frame() %>%
+			setNames(c("L", "M", "U"))
 
-    res$plot <- preds %>%
-      mutate(
-        Target = cumsum(records$Target %in% "y"),
-        across(c(Target, L, M, U), ~ tapply(.x, .x, function(x) c(x[1], rep(NA, length(x) - 1))) %>% unlist()),
-        max = coalesce(Target, L, M, U),
-        Order = 1:n()
-      ) %>%
-      filter(!is.na(max)) %>%
-      mutate(
-        across(c(L, M, U), ~ sapply(1:length(.x), function(i) {
-          if (is.na(.x[i])) max(.x[1:i], na.rm = T) else .x[i]
-        }))
-      ) %>%
-      ggplot(aes(Order)) +
-      geom_ribbon(aes(ymin = L, ymax = U, color = glue("{diff(range(quants)) * 100}% Predictive Interval")), alpha = .1) +
-      geom_line(aes(y = M, color = "Predictive Median")) +
-      geom_point(aes(y = Target), color = "darkred") +
-      theme_minimal() +
-      # scale_x_continuous(trans = 'log', labels = round, breaks = function(x) seq(0, log(tot_records), length.out = 10) %>% exp()) +
-      scale_color_manual(values = c("steelblue", "blue")) +
-      guides(alpha = "none") +
-      labs(x = "Records", y = "Cum. positive matches", color = "")
+		res$plot <- preds %>%
+			mutate(
+				Target = cumsum(records$Target %in% "y"),
+				across(c(Target, L, M, U), ~ tapply(.x, .x, function(x) c(x[1], rep(NA, length(x) - 1))) %>% unlist()),
+				max = coalesce(Target, L, M, U),
+				Order = 1:n()
+			) %>%
+			filter(!is.na(max)) %>%
+			mutate(
+				across(c(L, M, U), ~ sapply(1:length(.x), function(i) {
+					if (is.na(.x[i])) max(.x[1:i], na.rm = T) else .x[i]
+				}))
+			) %>%
+			ggplot(aes(Order)) +
+			geom_ribbon(aes(ymin = L, ymax = U, color = glue("{diff(range(quants)) * 100}% Predictive Interval")), alpha = .1) +
+			geom_line(aes(y = M, color = "Predictive Median")) +
+			geom_point(aes(y = Target), color = "darkred") +
+			theme_minimal() +
+			scale_color_manual(values = c("steelblue", "blue")) +
+			guides(alpha = "none") +
+			labs(x = "Records", y = "Cum. positive matches", color = "")
 
-    # print(res$plot)
-  }
+		# print(res$plot)
+	}
 
-  res
+	res
 }
 
 #' Extract the importance of features in the Document Term Matrix
@@ -338,40 +338,40 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 #' extract_var_imp("Session1")
 #' }
 extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, recompute_DTM = FALSE,
-                            sessions_folder = getOption("baysren.sessions_folder")) {
-  message("Retrieving data")
-  session_files <- get_session_files(session_name, sessions_folder)
+														sessions_folder = getOption("baysren.sessions_folder")) {
+	message("Retrieving data")
+	session_files <- BaySREn:::get_session_files(session_name, sessions_folder)
 
-  Records <- last(session_files$Annotations) %>%
-    import_data() %>%
-    mutate(Target = coalesce_labels(.) %>% tidyr::replace_na("n")) %>%
-    select(ID, Target)
+	Records <- last(session_files$Annotations) %>%
+		BaySREn:::import_data() %>%
+		mutate(Target = BaySREn:::coalesce_labels(.) %>% tidyr::replace_na("n")) %>%
+		select(ID, Target)
 
-  Variables <- last(session_files$Annotations) %>%
-    import_data(sheet = "Variable_importance") %>%
-    filter(!str_detect(Term, "^\\w+\\.count"), Score > score_filter) %>%
-    arrange(desc(Value)) %>%
-    head(num_vars)
+	Variables <- last(session_files$Annotations) %>%
+		BaySREn:::import_data(sheet = "Variable_importance") %>%
+		filter(!stringr::str_detect(Term, "^\\w+\\.count"), Score > score_filter) %>%
+		arrange(desc(Value)) %>%
+		head(num_vars)
 
-  if (recompute_DTM) {
-    DTM <- create_training_set(Records)
-  } else {
-    DTM <- read_rds(session_files$DTM)
-  }
+	if (recompute_DTM) {
+		DTM <- BaySREn:::create_training_set(Records)
+	} else {
+		DTM <- BaySREn:::import_data(session_files$DTM)
+	}
 
-  DTM$Target <- as.numeric(Records[match(DTM$ID, Records$ID), ]$Target == "y")
+	DTM$Target <- as.numeric(Records[match(DTM$ID, Records$ID), ]$Target == "y")
 
-  message("Computing variable importance")
-  pbmclapply(1:nrow(Variables), function(i) {
-    Term_data <- Variables[i, ]
-    term <- Term_data$Term
+	message("Computing variable importance")
+	pbmcapply::pbmclapply(1:nrow(Variables), function(i) {
+		Term_data <- Variables[i, ]
+		term <- Term_data$Term
 
-    data.frame(
-      Term_data,
-      glm(Target ~ get(term), poisson(), DTM) %>% broom::tidy() %>%
-        tail(-1) %>% select(-term, -std.error, -p.value)
-    )
-  }) %>% bind_rows()
+		data.frame(
+			Term_data,
+			stats::glm(Target ~ get(term), stats::poisson(), DTM) %>% broom::tidy() %>%
+				tail(-1) %>% select(-term, -std.error, -p.value)
+		)
+	}) %>% bind_rows()
 }
 
 #' Analyse the results of a parameter grid search
@@ -440,169 +440,169 @@ extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, rec
 #' }
 #'
 analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
-                                tot_records = NULL, plot = TRUE,
-                                score = c("Sens_adj_eff", "Pos_rate", "Pos_rate_adj_sens")) {
-  score <- match.arg(score)
+																tot_records = NULL, plot = TRUE,
+																score = c("Sens_adj_eff", "Pos_rate", "Pos_rate_adj_sens")) {
+	score <- match.arg(score)
 
-  if (is.null(tot_pos) | is.null(tot_records)) {
-    Labels <- list.files(session_folder, pattern = "Records_", recursive = T, full.names = T)[1] %>% # TODO: use get_session_files()
-      import_data() %>%
-      mutate(
-        Target = coalesce_labels(., label_cols = c(
-          "Rev_prediction_new",
-          "Rev_prediction", "Rev_manual",
-          "Rev_previous"
-        ))
-      ) %>%
-      with(table(Target)) %>%
-      as.list()
+	if (is.null(tot_pos) | is.null(tot_records)) {
+		Labels <- list.files(session_folder, pattern = "Records_", recursive = T, full.names = T)[1] %>% # TODO: use get_session_files()
+			BaySREn:::import_data() %>%
+			mutate(
+				Target = BaySREn:::coalesce_labels(., label_cols = c(
+					"Rev_prediction_new",
+					"Rev_prediction", "Rev_manual",
+					"Rev_previous"
+				))
+			) %>%
+			with(table(Target)) %>%
+			as.list()
 
 
-    if (is.null(tot_pos)) tot_pos <- Labels$y
-    if (is.null(tot_records)) tot_records <- sum(unlist(Labels))
-  }
+		if (is.null(tot_pos)) tot_pos <- Labels$y
+		if (is.null(tot_records)) tot_records <- sum(unlist(Labels))
+	}
 
-  out <- list.files(session_folder, pattern = "Results_", recursive = T, full.names = T) %>% # TODO: use get_session_files()
-    pbmclapply(function(file) {
-      readr::read_csv(file, col_types = cols()) %>%
-        tidyr::pivot_wider(names_from = Indicator, values_from = Value) %>%
-        transmute(
-          Iter,
-          Session = file,
-          Rep = `Replication n.`,
-          Tot_labeled = Total_labeled,
-          Pos_labels = `Target: y`
-        )
-    }) %>%
-    bind_rows() %>%
-    mutate(
-      Session = str_remove(Session, "Results.*") %>% basename(),
-      Tot_labeled = str_remove(Tot_labeled, " \\(.*"),
-      Session %>% str_remove(".*GridSession\\.") %>%
-        str_split("\\.", simplify = T) %>%
-        as.data.frame() %>%
-        lapply(function(piece) {
-          label <- str_remove(piece, "^(\\d+|[yn])")[1]
-          value <- str_remove(piece, fixed(label))
+	out <- list.files(session_folder, pattern = "Results_", recursive = T, full.names = T) %>% # TODO: use get_session_files()
+		pbmcapply::pbmclapply(function(file) {
+			BaySREn:::import_data(file) %>%
+				tidyr::pivot_wider(names_from = Indicator, values_from = Value) %>%
+				transmute(
+					Iter,
+					Session = file,
+					Rep = `Replication n.`,
+					Tot_labeled = Total_labeled,
+					Pos_labels = `Target: y`
+				)
+		}) %>%
+		bind_rows() %>%
+		mutate(
+			Session = stringr::str_remove(Session, "Results.*") %>% basename(),
+			Tot_labeled = stringr::str_remove(Tot_labeled, " \\(.*"),
+			Session %>% stringr::str_remove(".*GridSession\\.") %>%
+				stringr::str_split("\\.", simplify = T) %>%
+				as.data.frame() %>%
+				lapply(function(piece) {
+					label <- stringr::str_remove(piece, "^(\\d+|[yn])")[1]
+					value <- stringr::str_remove(piece, stringr::fixed(label))
 
-          setNames(data.frame(value), label)
-        }) %>% bind_cols(),
-      across(one_of(c(
-        "Tot_labeled", "Pos_labels", "Mods", "Quant", "Init",
-        "Mult"
-      )), as.numeric),
-      Pos_rate = Pos_labels / Tot_labeled,
-      Sensitivity = Pos_labels / tot_pos,
-      Efficiency = 1 - Tot_labeled / tot_records,
-      Pos_rate_adj_sens = Pos_rate * Sensitivity,
-      Sens_adj_eff = Sensitivity * Efficiency,
-      Score = get(score)
-    ) %>%
-    group_by(Session) %>%
-    slice_tail(n = 1) %>%
-    ungroup()
+					setNames(data.frame(value), label)
+				}) %>% bind_cols(),
+			across(one_of(c(
+				"Tot_labeled", "Pos_labels", "Mods", "Quant", "Init",
+				"Mult"
+			)), as.numeric),
+			Pos_rate = Pos_labels / Tot_labeled,
+			Sensitivity = Pos_labels / tot_pos,
+			Efficiency = 1 - Tot_labeled / tot_records,
+			Pos_rate_adj_sens = Pos_rate * Sensitivity,
+			Sens_adj_eff = Sensitivity * Efficiency,
+			Score = get(score)
+		) %>%
+		group_by(Session) %>%
+		slice_tail(n = 1) %>%
+		ungroup()
 
-  params <- c("Mods", "Quant", "Resamp", "Init", "Mult")
+	params <- c("Mods", "Quant", "Resamp", "Init", "Mult")
 
-  tree <- out %>%
-    select(Score, one_of(c("Mods", "Quant", "Resamp", "Init", "Mult"))) %>%
-    mutate_at(vars(-Score), as.factor) %>%
-    {
-      df <- .
-      rpart(Score ~ ., df)
-    }
+	tree <- out %>%
+		select(Score, one_of(c("Mods", "Quant", "Resamp", "Init", "Mult"))) %>%
+		mutate_at(vars(-Score), as.factor) %>%
+		{
+			df <- .
+			rpart::rpart(Score ~ ., df)
+		}
 
-  rules <- tidytrees::tidy_tree(tree)[tree$where - 1, ] %>%
-    mutate(
-      rule = sprintf(
-        "%s. %s (%.2g)",
-        as.numeric(factor(rule, unique(rule[order(estimate, decreasing = T)]))),
-        rule, estimate
-      ),
-      rule = factor(rule, unique(rule[order(estimate, decreasing = T)]))
-    )
+	rules <- tidytrees::tidy_tree(tree)[tree$where - 1, ] %>%
+		mutate(
+			rule = sprintf(
+				"%s. %s (%.2g)",
+				as.numeric(factor(rule, unique(rule[order(estimate, decreasing = T)]))),
+				rule, estimate
+			),
+			rule = factor(rule, unique(rule[order(estimate, decreasing = T)]))
+		)
 
-  out <- mutate(out, Rule = rules$rule)
+	out <- mutate(out, Rule = rules$rule)
 
-  p <- NULL
+	p <- NULL
 
-  if (plot) {
-    if (R.version$major >= 4) {
-      f <- palette()[1:7] %>% colorRampPalette()
-      colors <- f(n_distinct(out$Rule)) %>% rev()
-    } else {
-      colors <- viridis::cividis(n_distinct(out$Rule))
-    }
+	if (plot) {
+		if (R.version$major >= 4) {
+			f <- grDevices::palette()[1:7] %>% grDevices::colorRampPalette()
+			colors <- f(n_distinct(out$Rule)) %>% rev()
+		} else {
+			colors <- viridis::cividis(n_distinct(out$Rule))
+		}
 
-    p <- lapply(params, function(par) {
-      params <- setdiff(params, par)
+		p <- lapply(params, function(par) {
+			params <- setdiff(params, par)
 
-      out %>%
-        mutate(group = select(cur_data(), one_of(params)) %>%
-          apply(1, paste, collapse = " ")) %>%
-        ggplot(aes(factor(get(par)), Score)) +
-        geom_boxplot(show.legend = F, outlier.shape = NA) +
-        geom_line(aes(group = group, color = Rule), alpha = .5, show.legend = F) +
-        geom_boxplot(aes(fill = Rule), show.legend = F, outlier.shape = NA) +
-        # geom_line(aes(group = group, color = Rule), alpha = .5, show.legend = F) +
-        geom_point(aes(color = Rule), show.legend = F) +
-        theme_minimal() +
-        scale_y_continuous(labels = function(x) round(x, 2)) +
-        scale_color_manual(values = colors) +
-        scale_fill_manual(values = colors) +
-        ylab(score) +
-        xlab(par)
-    })
+			out %>%
+				mutate(group = select(cur_data(), one_of(params)) %>%
+												apply(1, paste, collapse = " ")) %>%
+				ggplot(aes(factor(get(par)), Score)) +
+				geom_boxplot(show.legend = F, outlier.shape = NA) +
+				geom_line(aes(group = group, color = Rule), alpha = .5, show.legend = F) +
+				geom_boxplot(aes(fill = Rule), show.legend = F, outlier.shape = NA) +
+				# geom_line(aes(group = group, color = Rule), alpha = .5, show.legend = F) +
+				geom_point(aes(color = Rule), show.legend = F) +
+				theme_minimal() +
+				scale_y_continuous(labels = function(x) round(x, 2)) +
+				scale_color_manual(values = colors) +
+				scale_fill_manual(values = colors) +
+				ylab(score) +
+				xlab(par)
+		})
 
-    p_one <- out %>%
-      ggplot(aes(factor(get(params[1])), Score)) +
-      geom_line(aes(group = Rule, color = Rule), size = 2) +
-      theme_minimal() +
-      scale_color_manual(values = colors) +
-      scale_fill_manual(values = colors) +
-      labs(color = glue("Perf. cluster"))
+		p_one <- out %>%
+			ggplot(aes(factor(get(params[1])), Score)) +
+			geom_line(aes(group = Rule, color = Rule), size = 2) +
+			theme_minimal() +
+			scale_color_manual(values = colors) +
+			scale_fill_manual(values = colors) +
+			labs(color = glue("Perf. cluster"))
 
-    tmp <- ggplot_gtable(ggplot_build(p_one))
-    leg <- which(tmp$layout$name == "guide-box")
+		tmp <- ggplot_gtable(ggplot_build(p_one))
+		leg <- which(tmp$layout$name == "guide-box")
 
-    legend <- tmp$grobs[[leg]]
+		legend <- tmp$grobs[[leg]]
 
-    p <- patchwork::wrap_plots(p) + legend
+		p <- patchwork::wrap_plots(p) + legend
 
-    # print(p)
-  }
+		# print(p)
+	}
 
-  list(
-    iterations = out,
-    best_parms = out %>% filter(str_detect(Rule, "^1\\.")) %>%
-      arrange(desc(Sensitivity), desc(Efficiency)) %>% head(1) %>%
-      select(
-        Iter, Rep, Pos_labels, Sensitivity, Tot_labeled, Efficiency,
-        Score, any_of(params)
-      ) %>%
-      mutate(
-        Score = glue("{signif(Score, 3)} ({score})"),
-        Pos_labels = glue("{Pos_labels} / {tot_pos}"),
-        Sensitivity = percent(Sensitivity),
-        Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
-        Efficiency = percent(Efficiency),
-        across(.fns = as.character)
-      ) %>%
-      tidyr::pivot_longer(everything(), names_to = "Parameter", "Value"),
-    best_by_rule = out %>% group_by(Cluster = Rule) %>%
-      arrange(desc(Sensitivity), desc(Efficiency)) %>% slice_head(n = 1) %>%
-      select(
-        Cluster, Iter, Pos_labels, Tot_labeled, Sensitivity, Efficiency,
-        Score, any_of(params)
-      ) %>%
-      mutate(
-        Pos_labels = glue("{Pos_labels} / {tot_pos}"),
-        Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
-        Sensitivity = percent(Sensitivity),
-        Efficiency = percent(Efficiency),
-        Score = glue("{signif(Score, 3)} ({score})"),
-        across(.fns = as.character)
-      ),
-    plot = p
-  )
+	list(
+		iterations = out,
+		best_parms = out %>% filter(stringr::str_detect(Rule, "^1\\.")) %>%
+			arrange(desc(Sensitivity), desc(Efficiency)) %>% head(1) %>%
+			select(
+				Iter, Rep, Pos_labels, Sensitivity, Tot_labeled, Efficiency,
+				Score, any_of(params)
+			) %>%
+			mutate(
+				Score = glue("{signif(Score, 3)} ({score})"),
+				Pos_labels = glue("{Pos_labels} / {tot_pos}"),
+				Sensitivity = BaySREn:::percent(Sensitivity),
+				Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
+				Efficiency = BaySREn:::percent(Efficiency),
+				across(.fns = as.character)
+			) %>%
+			tidyr::pivot_longer(everything(), names_to = "Parameter", "Value"),
+		best_by_rule = out %>% group_by(Cluster = Rule) %>%
+			arrange(desc(Sensitivity), desc(Efficiency)) %>% slice_head(n = 1) %>%
+			select(
+				Cluster, Iter, Pos_labels, Tot_labeled, Sensitivity, Efficiency,
+				Score, any_of(params)
+			) %>%
+			mutate(
+				Pos_labels = glue("{Pos_labels} / {tot_pos}"),
+				Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
+				Sensitivity = BaySREn:::percent(Sensitivity),
+				Efficiency = BaySREn:::percent(Efficiency),
+				Score = glue("{signif(Score, 3)} ({score})"),
+				across(.fns = as.character)
+			),
+		plot = p
+	)
 }
