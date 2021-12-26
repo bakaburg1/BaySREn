@@ -41,4 +41,21 @@ iterative querying.
 }
 \examples{
 
+\dontrun{
+# Initial query to be built on domain knowledge. It accepts OR, AND, NOT
+# boolean operators and round brackets to group terms.
+query <- '((model OR models OR modeling OR network OR networks) AND
+(dissemination OR transmission OR spread OR diffusion) AND (nosocomial OR
+hospital OR "long-term-care" OR "long term care" OR "longterm care" OR
+"long-term care" OR "healthcare associated") AND (infection OR resistance OR
+resistant))'
+
+# Year filter. The framework converts it to the API-specific format seamlessly.
+# common logical comparators can be used, i.e. <, <=, >, >=, while dashes
+# denotes inclusive date intervals. A single year restricts results to one year
+# period.
+year_filter <- '2010-2020'
+
+records <- search_pubmed(query, year_filter)
+}
 }

@@ -7,7 +7,7 @@
 format_var_imp(var_imp, as_data_frame = TRUE)
 }
 \arguments{
-\item{var_imp}{A data frame produced by \code{\link{extract_var_imp()}}.}
+\item{var_imp}{A data frame produced by \code{\link{extract_var_imp}()}.}
 
 \item{as_data_frame}{Whether to format the output as data frame or as text.}
 }
@@ -17,8 +17,8 @@ A formatted data frame or a string of text, depending on the
 }
 \description{
 Publication ready formatting of the output of
-\code{\link{extract_var_imp()}}. Separate the term from the part of the
-record it was found in; uses "&" and "|" to identify non-consecutive ngrams
+\code{\link[=extract_var_imp]{extract_var_imp()}}. Separate the term from the part of the
+record it was found in; uses "&" and "|" to identify non-consecutive n-grams
 and redundant terms; reduce numeric values to significant digits.
 }
 \examples{

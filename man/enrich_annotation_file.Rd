@@ -84,7 +84,7 @@ number is usually enough to provide enough information for the model.}
 \code{link{create_session}}. The default \code{fill} tells the function to
 create a Session folder with the data in \code{file} if the session does
 not exists, otherwise do nothing and keep adding Annotation files to the
-session at each iteration. As in \code{link{create_session}}, \oode{add}
+session at each iteration. As in \code{link{create_session}}, \code{add}
 creation a new session, \code{replace} replace the current session content,
 \code{stop} raises an error.}
 
@@ -187,4 +187,20 @@ The function saves a number of output files on disk.
 }
 \examples{
 
+
+\dontrun{
+
+## A simple call using a session name will automatically pick up the right
+# annotation file (the initial one or an already classified one if existing)
+# and start a CR iteration.
+
+enrich_annotation_file('Session1')
+
+# Alternatively, an Annotation file can be passed manually (discouraged)
+
+records_file <- get_session_files('Session1')$Records
+
+enrich_annotation_file('Session1', file = records_file)
+
+}
 }

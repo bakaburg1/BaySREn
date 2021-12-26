@@ -75,4 +75,26 @@ requires many days, even on powerful computers.
 }
 \examples{
 
+\dontrun{
+
+# First, the user needs to manually label a significant number of records; we
+# suggest one thousand or more. The new record file can be stored anywhere,
+# but putting it into the grid search folder is a better practice.
+
+records <- file.path('Grid_Search', 'Classification_data.xlsx')
+
+Grid_search <- perform_grid_evaluation(
+  records, sessions_folder = 'Grid_Search',
+  prev_classification = records,
+  ## Model parameters (can be changed by users)
+  resample = c(FALSE, TRUE),
+  n_init = c(50, 100, 250, 500),
+  n_models = c(1, 5, 10, 20, 40, 60),
+  pos_mult = c(1, 10, 20),
+  pred_quants = list(
+    c(.1, .5, .9),
+    c(.05, .5, .95),
+    c(.01, .5, .99))
+  )
+}
 }

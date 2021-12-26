@@ -38,4 +38,8 @@ review of the automatic classification.
 }
 \examples{
 
+\dontrun{
+
+summarise_annotations('Session1')
+}
 }

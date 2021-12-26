@@ -56,9 +56,9 @@ An object of class \code{bartMachine}.
 The prediction engine of the framework. It produces a model which
 assigns a probability distribution for each record of the probability of
 being relevant (i.e., positive label). It is not used alone but inside
-\code\link{enrich_annotation_file}.
+\code{\link[=enrich_annotation_file]{enrich_annotation_file()}}.
 }
 \details{
 This implementation is built over
-\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine}}.
+\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine()}}.
 }

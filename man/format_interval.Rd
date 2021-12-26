@@ -16,8 +16,8 @@ boundaries.}
 A string in the "point statistic \link{interval boundaries}" format.
 }
 \description{
-Useful to format a 3-values statistic in the "point statistic \link[=interval
-boundaries]{interval boundaries}" format.
+Useful to format a 3-values statistic in the "point statistic [interval
+boundaries]" format.
 }
 \examples{
 
