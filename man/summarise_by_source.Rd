@@ -20,9 +20,9 @@ summarise_by_source(
 }
 \value{
 For each source:\item{Records}{The number of records related to the
-source.}\item{\\% over total}{the percentage over the total
+source.}\item{\% over total}{the percentage over the total
 records.}\item{Source specific records}{the number of record derived only
-from that source.}\item{\\% over source total}{the value in \code{Source
+from that source.}\item{\% over source total}{the value in \code{Source
   specific records} as percentage over the source total.} If
 \code{as_data_frame} is \code{TRUE}, the results are returned as a data
 frame with a row for each source, otherwise as a nested list.

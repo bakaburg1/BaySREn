@@ -21,6 +21,6 @@ boundaries]" format.
 }
 \examples{
 
-format_interval(qbeta(c(.05, .5, .95), 10, 14), percent = TRUE)
+BaySREn:::format_interval(qbeta(c(.05, .5, .95), 10, 14), percent = TRUE)
 
 }

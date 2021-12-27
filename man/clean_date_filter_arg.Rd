@@ -67,6 +67,8 @@ year_query <- clean_date_filter_arg(year_query,
 )
 
 ## Example for Pubmed
+year_query <- "2010-2020"
+
 year_query <- clean_date_filter_arg(year_query,
   cases = list(
     gt = "{year_piece + 1}[PDAT]:{year(today())}[PDAT]",
