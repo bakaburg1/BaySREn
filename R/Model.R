@@ -8,7 +8,7 @@
 #' considered from left to right.
 #'
 #' This function is a wrapper over
-#' \code{\link[dplyr:coalesce]{dplyr::coalesce}()} which allow to have a
+#' \code{\link[dplyr:coalesce]{coalesce}()} which allow to have a
 #' standard coalescing scheme for an annotation file.
 #'
 #' @param data An Annotation data frame.
@@ -86,7 +86,7 @@ create_training_set <- function(Records, min_freq = 0.05) {
   Abstract_DTM <- with(
     Records,
     Abstract %>%
-      str_remove_all(regex("\\b(background|introduction|method\\w*|result\\w*|conclusion\\w*|discussion)", ignore_case = TRUE)) %>%
+      stringr::str_remove_all(regex("\\b(background|introduction|method\\w*|result\\w*|conclusion\\w*|discussion)", ignore_case = TRUE)) %>%
       text_to_DTM(
         min.freq = min_freq, label = "ABSTR__", ids = ID,
         freq.subset.ids = ID[Target %in% c("y", "n")]
@@ -197,9 +197,9 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
       filter(across(all_of(Y), ~ !is.na(.x))) %>%
       mutate(across(all_of(Y), ~ if (!is.numeric(.x)) {
         if (is.factor(.x)) {
-          relevel(.x, ref = levels(.x)[2])
+          stats::relevel(.x, ref = levels(.x)[2])
         } else {
-          factor(.x) %>% relevel(ref = as.character(sort(unique(.x))[2]))
+          factor(.x) %>% stats::relevel(ref = as.character(sort(unique(.x))[2]))
         }
       } else {
         .x
@@ -211,7 +211,7 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
     Y <- train_data[[Y]]
 
     message("Building BART model...")
-    model <- bartMachine(
+    model <- bartMachine::bartMachine(
       X = X, y = Y,
       verbose = verbose,
       num_trees = num_trees,
@@ -223,11 +223,11 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
     )
 
     if (save) {
-      write_rds(model, model_file, compress = "gz")
+      readr::write_rds(model, model_file, compress = "gz")
     }
   } else {
     message("Loading BART model...")
-    model <- read_rds(model_file)
+    model <- readr::read_rds(model_file)
   }
 
   model
@@ -429,7 +429,7 @@ enrich_annotation_file <- function(session_name,
     message("Processing file: ", file)
   }
 
-  process_id <- paste0(".pID__", str_replace_all(file, fixed(.Platform$file.sep), "__"))
+  process_id <- paste0(".pID__", stringr::str_replace_all(file, stringr::fixed(.Platform$file.sep), "__"))
 
   if (file.exists(process_id)) {
     message("File already being processed. Skipping.")
@@ -461,7 +461,7 @@ enrich_annotation_file <- function(session_name,
           capture.output(str(obj)) %>%
             head() %>%
             paste(collapse = "\n") %>%
-            str_trim()
+            stringr::str_trim()
         }
       )
     }) %>%
@@ -501,7 +501,7 @@ enrich_annotation_file <- function(session_name,
   if (basename(dirname(file)) == "Annotations") {
 
     # replication is extracted from the file title or set to one
-    prev_run <- str_extract(file, "(?<=_rep)\\d+") %>% as.numeric()
+    prev_run <- stringr::str_extract(file, "(?<=_rep)\\d+") %>% as.numeric()
 
     repl <- max(1, prev_run, na.rm = TRUE)
 
@@ -609,7 +609,7 @@ enrich_annotation_file <- function(session_name,
   if (is.character(DTM) && file.exists(DTM)) {
     message("Loading DTM")
 
-    DTM <- read_rds(DTM)
+    DTM <- readr::read_rds(DTM)
   } else {
     message("Creating DTM")
 
@@ -667,8 +667,8 @@ enrich_annotation_file <- function(session_name,
   } else {
     Var_imp <- list()
 
-    pb <- startpb(0, n_models)
-    on.exit(closepb(pb))
+    pb <- pbapply::startpb(0, n_models)
+    on.exit(pbapply::closepb(pb))
 
     for (i in 1:n_models) {
       print(i)
@@ -692,13 +692,13 @@ enrich_annotation_file <- function(session_name,
 
       message("predicting...")
 
-      preds <- pblapply(0:floor(nrow(DTM) / pred_batch_size), function(i) {
+      preds <- pbapply::pblapply(0:floor(nrow(DTM) / pred_batch_size), function(i) {
         gc()
         start <- i * pred_batch_size + 1
         stop <- min((i + 1) * pred_batch_size, nrow(DTM))
         idx <- start:stop
 
-        bart_machine_get_posterior(
+        bartMachine::bart_machine_get_posterior(
           bart.mod,
           new_data = DTM[idx, ] %>% select(all_of(colnames(bart.mod$X)))
         )$y_hat_posterior_samples
@@ -716,7 +716,7 @@ enrich_annotation_file <- function(session_name,
 
       gc()
 
-      setpb(pb, i)
+      pbapply::setpb(pb, i)
     }
 
     # Average posterior samples along the ensemble of models
@@ -744,7 +744,7 @@ enrich_annotation_file <- function(session_name,
     data.frame(
       apply(Samples[, -1], 1, quantile, pred_quants) %>% t() %>%
         as.data.frame() %>%
-        setNames(c("Pred_Med", "Pred_Low", "Pred_Up"))
+        stats::setNames(c("Pred_Med", "Pred_Low", "Pred_Up"))
     ) %>%
     mutate(
       Pred_delta = Pred_Up - Pred_Low, # add posterior interval range
@@ -822,7 +822,7 @@ enrich_annotation_file <- function(session_name,
 
   Results <- tibble(
     Iter = (list.files(file.path(session_path, "Annotations"), pattern = ".xlsx") %>%
-      str_subset("~\\$", negate = TRUE) %>% length()) + 1,
+      stringr::str_subset("~\\$", negate = TRUE) %>% length()) + 1,
     "Parent file" = file,
     "Replication n." = repl,
     "N. features" = select(DTM, -ID, -Target) %>% ncol(),
@@ -878,7 +878,7 @@ enrich_annotation_file <- function(session_name,
   )
   dir.create(dirname(output_file_res), showWarnings = FALSE, recursive = TRUE)
 
-  write_csv(Results, file = output_file_res)
+  readr::write_csv(Results, file = output_file_res)
 
   tictoc::toc()
 
@@ -959,12 +959,12 @@ consolidate_results <- function(session_name, sessions_folder = getOption("baysr
 
   message("Loading annotations...")
   annotations <- annotations_files %>%
-    pbmclapply(function(file) {
+    pbmcapply::pbmclapply(function(file) {
       import_data(file)
     })
 
   message("Consolidating results...")
-  pbmclapply(1:length(results_files), function(i) {
+  pbmcapply::pbmclapply(1:length(results_files), function(i) {
     final_results <- annotations[[i]] %>%
       compute_changes() %>%
       mutate_all(as.character) %>%
@@ -980,7 +980,7 @@ consolidate_results <- function(session_name, sessions_folder = getOption("baysr
         final_results$Indicator, "New labels", "Records to review",
         "Final labeling"
       )) %>%
-      filter(!str_detect(Indicator, "\\*")) %>%
+      filter(!stringr::str_detect(Indicator, "\\*")) %>%
       bind_rows(final_results) %>%
       bind_rows(
         data.frame(
@@ -988,7 +988,7 @@ consolidate_results <- function(session_name, sessions_folder = getOption("baysr
           Value = summarise_vector(annotations[[i]]$Rev_prediction_new)
         )
       ) %>%
-      write_csv(results_files[[i]])
+      readr::write_csv(results_files[[i]])
   }) %>% invisible()
 }
 
@@ -1104,7 +1104,7 @@ perform_grid_evaluation <- function(records, sessions_folder = "Grid_Search",
         glue("{pos_mult}Mult"),
         glue("{(sapply(pred_quants, max)-sapply(pred_quants, min))*100}Quant"),
         sep = "."
-      ) %>% str_replace_all("\\.+", ".")
+      ) %>% stringr::str_replace_all("\\.+", ".")
     )
 
   Records <- import_data(records)
@@ -1115,7 +1115,7 @@ perform_grid_evaluation <- function(records, sessions_folder = "Grid_Search",
     import_classification(Classification_data) %>%
     filter(!is.na(Rev_previous))
 
-  pblapply(1:nrow(Grid), function(i) {
+  pbapply::pblapply(1:nrow(Grid), function(i) {
     str(Grid[i, ], give.attr = FALSE)
 
     if (file.exists("Model_backup.rds")) file.remove("Model_backup.rds")
