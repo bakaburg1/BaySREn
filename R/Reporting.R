@@ -690,12 +690,12 @@ plot_predictive_densities <- function(session_name,
 
       group_split(df, Iteration, Label) %>%
         lapply(function(g) {
-          dens <- density(arm::logit(g$Samples))
+          dens <- density(qlogis(g$Samples))
 
           data.frame(
             Iteration = g$Iteration[1],
             Label = g$Label[1],
-            Prob = arm::invlogit(dens$x),
+            Prob = plogis(dens$x),
             Dens = dens$y
           )
         }) %>%
