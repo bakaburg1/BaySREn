@@ -30,7 +30,7 @@ now <- function() {
 
 #' A file path friendly lubridate::now()
 safe_now <- function() {
-	stringr::str_replace_all(BaySREn:::now(), c(" " = "T", ":" = "."))
+	stringr::str_replace_all(now(), c(" " = "T", ":" = "."))
 }
 
 #' Tool to grab XHR messages from dynamic websites

@@ -105,7 +105,7 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
                                       queries = journal$Query_ID,
                                       sources = journal$Source,
                                       records_folder = "Records") {
-  BaySREn::import_data(journal) %>%
+  import_data(journal) %>%
     filter(Session_ID %in% sessions, Query_ID %in% queries, Source %in% sources) %>%
     with(file.path(records_folder, Session_ID, Query_ID, Output_file)) %>%
     unique()
@@ -134,7 +134,7 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
 #'
 #' parse_pubmed(dataRaw)
 #' }
-parse_pubmed <- function(entries, timestamp = BaySREn::now()) { # Probably
+parse_pubmed <- function(entries, timestamp = now()) { # Probably
   entries <- entries %>%
     stringr::str_remove_all("\\r") %>%
     stringr::str_replace_all("\\n\\s\\s+", " ") %>%
@@ -173,7 +173,7 @@ parse_pubmed <- function(entries, timestamp = BaySREn::now()) { # Probably
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    BaySREn::clean_record_textfields()
+    clean_record_textfields()
 }
 
 #' Parse Web of Science raw data
@@ -196,7 +196,7 @@ parse_pubmed <- function(entries, timestamp = BaySREn::now()) { # Probably
 #'
 #' parse_wos(dataRaw)
 #' }
-parse_wos <- function(entries, timestamp = BaySREn::now()) {
+parse_wos <- function(entries, timestamp = now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -217,7 +217,7 @@ parse_wos <- function(entries, timestamp = BaySREn::now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    BaySREn::clean_record_textfields()
+    clean_record_textfields()
 }
 
 #' Parse IEEE raw data
@@ -242,7 +242,7 @@ parse_wos <- function(entries, timestamp = BaySREn::now()) {
 #'
 #' parse_ieee(dataRaw)
 #' }
-parse_ieee <- function(entries, timestamp = BaySREn::now()) {
+parse_ieee <- function(entries, timestamp = now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -259,9 +259,9 @@ parse_ieee <- function(entries, timestamp = BaySREn::now()) {
       Published = `Online Date`,
       Source = "IEEE",
       Source_type = "parsed",
-      Creation_date = BaySREn::now()
+      Creation_date = now()
     ) %>%
-    BaySREn::clean_record_textfields()
+    clean_record_textfields()
 }
 
 #' Parse EMBASE raw data
@@ -286,7 +286,7 @@ parse_ieee <- function(entries, timestamp = BaySREn::now()) {
 #'
 #' parse_embase(dataRaw)
 #' }
-parse_embase <- function(entries, timestamp = BaySREn::now()) {
+parse_embase <- function(entries, timestamp = now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -309,7 +309,7 @@ parse_embase <- function(entries, timestamp = BaySREn::now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    BaySREn::clean_record_textfields()
+    clean_record_textfields()
 }
 
 #' Parse SCOPUS raw data
@@ -331,7 +331,7 @@ parse_embase <- function(entries, timestamp = BaySREn::now()) {
 #'
 #' parse_embase(dataRaw)
 #' }
-parse_scopus <- function(entries, timestamp = BaySREn::now()) {
+parse_scopus <- function(entries, timestamp = now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -351,7 +351,7 @@ parse_scopus <- function(entries, timestamp = BaySREn::now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    BaySREn::clean_record_textfields()
+    clean_record_textfields()
 }
 
 #' Import and parse citation data files
@@ -372,13 +372,13 @@ parse_scopus <- function(entries, timestamp = BaySREn::now()) {
 #' read_bib_files(data_files)
 #' }
 read_bib_files <- function(files) {
-  ts <- BaySREn::now()
+  ts <- now()
 
   pbapply::pblapply(files, function(file) {
     if (stringr::str_detect(file, "(parsed|API)\\.csv")) { # no parsing necessary
       message("Reading ", basename(file), "...")
 
-      return(BaySREn::import_data(file))
+      return(import_data(file))
     }
 
     message("Parsing ", basename(file), "...")
@@ -390,7 +390,7 @@ read_bib_files <- function(files) {
 
       if (stringr::str_detect(entries, "PMID-")) type <- "pubmed"
     } else if (stringr::str_detect(file, "\\.(xlsx?|csv)$")) {
-      entries <- BaySREn::import_data(file)
+      entries <- import_data(file)
 
       if ("UT (Unique WOS ID)" %in% colnames(entries)) {
         type <- "wos"
@@ -459,7 +459,7 @@ join_records <- function(record_list) {
         apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA) %>% stringr::str_to_lower(),
       Author_keywords = NULL
     ) %>%
-    BaySREn::fix_duplicated_records() %>%
+    fix_duplicated_records() %>%
     mutate(
       Keywords = stringr::str_split(Keywords, "\\s*;\\s*") %>% sapply(function(x) {
         stringr::str_remove(x, '^[\\*\\-"\\\']+ *') %>%
@@ -538,7 +538,7 @@ fix_duplicated_records <- function(records) {
 
   bind_rows(unique_sources, dup_sources) %>%
     select(-UID) %>%
-    BaySREn::clean_record_textfields() %>%
+    clean_record_textfields() %>%
     filter(!duplicated(ID))
 }
 
@@ -608,14 +608,14 @@ create_annotation_file <- function(records, reorder_query = NULL,
     ) %>% unique()
 
     message("- parsing records...")
-    records <- BaySREn::read_bib_files(records)
+    records <- read_bib_files(records)
   }
 
   if (length(records) == 1) records <- records[[1]]
 
   if (!is.data.frame(records) & is.list(records)) {
     message("- joining records...")
-    records <- BaySREn::join_records(records)
+    records <- join_records(records)
     message(": ", nrow(records), " unique records")
   }
 
@@ -628,28 +628,28 @@ create_annotation_file <- function(records, reorder_query = NULL,
   if (!is.null(prev_records)) {
     message("- appending to a previous annotation file...")
 
-    imported_records <- BaySREn::import_data(prev_records)
+    imported_records <- import_data(prev_records)
 
     records <- records %>% filter(!(ID %in% imported_records$ID))
 
     message("(", nrow(records), " new records)")
 
     records <- full_join(
-      BaySREn::import_data(prev_records), records
+      import_data(prev_records), records
     ) %>%
-      BaySREn::fix_duplicated_records()
+      fix_duplicated_records()
   }
 
   if (!is.null(prev_classification)) {
     message("- importing previous classifications...")
 
-    records <- BaySREn::import_classification(records, prev_records = prev_classification)
+    records <- import_classification(records, prev_records = prev_classification)
   }
 
   if (!is.null(reorder_query)) {
     message("- reordering records...")
 
-    records <- BaySREn::order_by_query_match(records, query = reorder_query)
+    records <- order_by_query_match(records, query = reorder_query)
   }
 
   invisible(records)
@@ -707,7 +707,7 @@ order_by_query_match <- function(records, query) {
 #'
 #'
 import_classification <- function(records, prev_records, IDs = records$ID) {
-  prev_records <- BaySREn::import_data(prev_records)
+  prev_records <- import_data(prev_records)
 
   records$uID <- with(
     records,
@@ -727,7 +727,7 @@ import_classification <- function(records, prev_records, IDs = records$ID) {
   prev_records <- prev_records %>%
     transmute(
       uID,
-      Rev_previous = BaySREn::coalesce_labels(cur_data(), c(
+      Rev_previous = coalesce_labels(cur_data(), c(
         "Rev_previous",
         "Rev_prediction_new",
         "Rev_prediction", "Rev_manual"
@@ -813,7 +813,7 @@ create_session <- function(Records, session_name,
 
     # At the moment csv files will be converted to excel, eventually both file
     # type will be supported
-    Records <- BaySREn::import_data(Records)
+    Records <- import_data(Records)
 
     message("- copy or write the Record data")
 
@@ -856,7 +856,7 @@ create_session <- function(Records, session_name,
 
         session_name <- stringr::str_remove(session_name, "_r\\d+$") %>% paste0("_r", cur_rep + 1)
 
-        session_path <- BaySREn::create_session(
+        session_path <- create_session(
           Records = Records, session_name = session_name,
           sessions_folder = sessions_folder, DTM = DTM,
           dup_session_action = dup_session_action
