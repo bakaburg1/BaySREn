@@ -333,6 +333,8 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 #'
 #' @export
 #'
+#' @importFrom stats glm poisson
+#'
 #' @examples
 #' \dontrun{
 #' extract_var_imp("Session1")

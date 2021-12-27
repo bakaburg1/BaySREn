@@ -298,7 +298,8 @@ add_negative_terms <- function(rules, target_vec, target_data) {
   pbmcapply::pbmclapply(rules, function(rule) {
     filt <- with(target_data, which(eval(str2expression(rule))))
 
-    target_data <- target_data[filt, ] %>% select(where(~ n_distinct(.x) > 1))
+    target_data <- target_data[filt, ] %>%
+    	select(where(~ n_distinct(.x) > 1))
 
     target_vec <- target_vec[filt]
     tot_pos <- sum(target_vec == "y")
@@ -559,7 +560,7 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
 #'
 #' new_query <- rules_to_query(simplified_rules)
 #'
-#' writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
+#' writeLines(rules_to_query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 #' }
 rules_to_query <- function(rules) {
   stringr::str_remove_all(rules, "\\bV__") %>%

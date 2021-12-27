@@ -623,6 +623,8 @@ print_table <- function(data, caption = "", allow_math = FALSE, ...) {
 #'
 #' @return A \code{ggplot2} object.
 #'
+#' @importFrom stats density
+#'
 #' @export
 #'
 plot_predictive_densities <- function(session_name,

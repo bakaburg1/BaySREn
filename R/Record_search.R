@@ -39,7 +39,6 @@
 #' query <- "Test query"
 #' year_query <- "2010-2020"
 #'
-#' library(lubridate)
 #'
 #' ## Example for Web Of Science
 #' year_query <- clean_date_filter_arg(year_query,
@@ -52,6 +51,8 @@
 #' )
 #'
 #' ## Example for Pubmed
+#' year_query <- "2010-2020"
+#'
 #' year_query <- clean_date_filter_arg(year_query,
 #'   cases = list(
 #'     gt = "{year_piece + 1}[PDAT]:{year(today())}[PDAT]",
@@ -113,7 +114,7 @@ clean_date_filter_arg <- function(year_query, cases,
     }
   }
 
-  year_query
+  as.character(year_query)
 }
 
 #' Automatic search on Web Of Science database
