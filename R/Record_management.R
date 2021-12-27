@@ -29,12 +29,12 @@
 #' }
 import_data <- function(input, ...) {
   if (is.character(input) | is.factor(input)) {
-    if (str_detect(input, "\\.xlsx?$")) {
-      return(read_excel(input, guess_max = 10^6, ...))
-    } else if (str_detect(input, "\\.csv$")) {
-      return(read_csv(input, guess_max = 10^6, col_types = cols(), ...))
-    } else if (str_detect(input, "\\.rds$")) {
-      return(read_rds(input))
+    if (stringr::str_detect(input, "\\.xlsx?$")) {
+      return(readxl::read_excel(input, guess_max = 10^6, ...))
+    } else if (stringr::str_detect(input, "\\.csv$")) {
+      return(readr::read_csv(input, guess_max = 10^6, col_types = readr::cols(), ...))
+    } else if (stringr::str_detect(input, "\\.rds$")) {
+      return(readr::read_rds(input))
     }
   } else if (is.data.frame(input)) {
     return(input)
@@ -57,8 +57,8 @@ clean_record_textfields <- function(df) {
     df,
     across(
       where(is.character),
-      ~ str_replace_all(.x, c(" *; *" = ";", '["\']+' = " ")) %>%
-        str_squish() %>%
+      ~ stringr::str_replace_all(.x, c(" *; *" = ";", '["\']+' = " ")) %>%
+        stringr::str_squish() %>%
         {
           replace(., . %in% c("", "NA"), NA)
         }
@@ -105,7 +105,7 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
                                       queries = journal$Query_ID,
                                       sources = journal$Source,
                                       records_folder = "Records") {
-  import_data(journal) %>%
+  BaySREn::import_data(journal) %>%
     filter(Session_ID %in% sessions, Query_ID %in% queries, Source %in% sources) %>%
     with(file.path(records_folder, Session_ID, Query_ID, Output_file)) %>%
     unique()
@@ -134,32 +134,32 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
 #'
 #' parse_pubmed(dataRaw)
 #' }
-parse_pubmed <- function(entries, timestamp = now()) { # Probably
+parse_pubmed <- function(entries, timestamp = BaySREn::now()) { # Probably
   entries <- entries %>%
-    str_remove_all("\\r") %>%
-    str_replace_all("\\n\\s\\s+", " ") %>%
-    str_trim() %>%
-    str_split("\\n+(?=PMID-)") %>%
+    stringr::str_remove_all("\\r") %>%
+    stringr::str_replace_all("\\n\\s\\s+", " ") %>%
+    stringr::str_trim() %>%
+    stringr::str_split("\\n+(?=PMID-)") %>%
     unlist()
 
   tags <- c("TI", "BTI", "AB", "JT", "TA", "DP")
   info <- lapply(tags, function(tag) {
-    str_extract(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% str_remove("[A-Z]+ *- ")
+    stringr::str_extract(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% stringr::str_remove("[A-Z]+ *- ")
   }) %>%
     setNames(tags) %>%
     bind_cols()
 
   tags <- c("FAU", "PT", "MH", "OT")
   info <- cbind(info, lapply(tags, function(tag) {
-    str_extract_all(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% sapply(function(x) str_remove(x, "[A-Z]+ *- ") %>% paste0(collapse = "; "))
+    stringr::str_extract_all(entries, sprintf("(?<=\\n)%s *- .+", tag)) %>% sapply(function(x) stringr::str_remove(x, "[A-Z]+ *- ") %>% paste0(collapse = "; "))
   }) %>% setNames(tags) %>% bind_cols())
 
   tags <- c("LID", "AID")
   info <- cbind(info, lapply(tags, function(tag) {
-    str_extract(entries, sprintf("(?<=\\n)%s *- .+(?= \\[doi\\])", tag)) %>% str_remove("[A-Z]+ *- ")
+    stringr::str_extract(entries, sprintf("(?<=\\n)%s *- .+(?= \\[doi\\])", tag)) %>% stringr::str_remove("[A-Z]+ *- ")
   }) %>% setNames(tags) %>% bind_cols())
 
-  info$PMID <- str_extract(entries, "(?<=PMID- )\\d+")
+  info$PMID <- stringr::str_extract(entries, "(?<=PMID- )\\d+")
 
   info %>%
     transmute(
@@ -173,7 +173,7 @@ parse_pubmed <- function(entries, timestamp = now()) { # Probably
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    BaySREn::clean_record_textfields()
 }
 
 #' Parse Web of Science raw data
@@ -196,7 +196,7 @@ parse_pubmed <- function(entries, timestamp = now()) { # Probably
 #'
 #' parse_wos(dataRaw)
 #' }
-parse_wos <- function(entries, timestamp = now()) {
+parse_wos <- function(entries, timestamp = BaySREn::now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -217,7 +217,7 @@ parse_wos <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    BaySREn::clean_record_textfields()
 }
 
 #' Parse IEEE raw data
@@ -242,11 +242,11 @@ parse_wos <- function(entries, timestamp = now()) {
 #'
 #' parse_ieee(dataRaw)
 #' }
-parse_ieee <- function(entries, timestamp = now()) {
+parse_ieee <- function(entries, timestamp = BaySREn::now()) {
   entries %>%
     transmute(
       Order = 1:n(),
-      ID = paste0("IEEE:", str_remove(`PDF Link`, fixed("https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber="))),
+      ID = paste0("IEEE:", stringr::str_remove(`PDF Link`, stringr::fixed("https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber="))),
       Title = `Document Title`,
       Abstract, DOI, URL = `PDF Link`,
       Authors, Journal = `Publication Title`,
@@ -254,14 +254,14 @@ parse_ieee <- function(entries, timestamp = now()) {
       Keywords = cbind(`IEEE Terms`, `INSPEC Controlled Terms`, `INSPEC Non-Controlled Terms`) %>%
         apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA),
       Mesh = Mesh_Terms,
-      Article_type = str_remove(`Document Identifier`, "IEEE "),
+      Article_type = stringr::str_remove(`Document Identifier`, "IEEE "),
       N_citations = `Article Citation Count`,
       Published = `Online Date`,
       Source = "IEEE",
       Source_type = "parsed",
-      Creation_date = now()
+      Creation_date = BaySREn::now()
     ) %>%
-    clean_record_textfields()
+    BaySREn::clean_record_textfields()
 }
 
 #' Parse EMBASE raw data
@@ -286,7 +286,7 @@ parse_ieee <- function(entries, timestamp = now()) {
 #'
 #' parse_embase(dataRaw)
 #' }
-parse_embase <- function(entries, timestamp = now()) {
+parse_embase <- function(entries, timestamp = BaySREn::now()) {
   entries %>%
     transmute(
       Order = 1:n(),
@@ -294,12 +294,12 @@ parse_embase <- function(entries, timestamp = now()) {
       Title,
       Abstract, DOI, URL = paste0("https://www.embase.com/a/#/search/results?id=", PUI),
       Authors = `Author Names` %>%
-        str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
+        stringr::str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
       Journal = `Source title`,
-      Author_keywords = `Author Keywords` %>% str_replace_all("\\s*,\\s*", ";"),
+      Author_keywords = `Author Keywords` %>% stringr::str_replace_all("\\s*,\\s*", ";"),
       Keywords = select(cur_data(), contains("Emtree")) %>%
         apply(1, function(x) na.omit(x) %>% paste(collapse = ", ")) %>%
-        str_replace_all(c(
+        stringr::str_replace_all(c(
           "\\s*,\\s*" = ";",
           "\\(.+\\)" = ""
         )),
@@ -309,7 +309,7 @@ parse_embase <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    BaySREn::clean_record_textfields()
 }
 
 #' Parse SCOPUS raw data
@@ -331,16 +331,16 @@ parse_embase <- function(entries, timestamp = now()) {
 #'
 #' parse_embase(dataRaw)
 #' }
-parse_scopus <- function(entries, timestamp = now()) {
+parse_scopus <- function(entries, timestamp = BaySREn::now()) {
   entries %>%
     transmute(
       Order = 1:n(),
       ID = paste0("SCP:", EID),
       Title,
-      Abstract = str_remove(Abstract, fixed("[No abstract available]")),
+      Abstract = stringr::str_remove(Abstract, stringr::fixed("[No abstract available]")),
       DOI, URL = Link,
       Authors = Authors %>%
-        str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
+        stringr::str_replace_all(c("\\s*,\\s*" = ";", " (?=\\w\\.)" = ", ", "\\." = " ")),
       Journal = `Source title`,
       Author_keywords = `Author Keywords`,
       Keywords = `Index Keywords`,
@@ -351,7 +351,7 @@ parse_scopus <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    BaySREn::clean_record_textfields()
 }
 
 #' Import and parse citation data files
@@ -372,25 +372,25 @@ parse_scopus <- function(entries, timestamp = now()) {
 #' read_bib_files(data_files)
 #' }
 read_bib_files <- function(files) {
-  ts <- now()
+  ts <- BaySREn::now()
 
-  pblapply(files, function(file) {
-    if (str_detect(file, "(parsed|API)\\.csv")) { # no parsing necessary
+  pbapply::pblapply(files, function(file) {
+    if (stringr::str_detect(file, "(parsed|API)\\.csv")) { # no parsing necessary
       message("Reading ", basename(file), "...")
 
-      return(import_data(file))
+      return(BaySREn::import_data(file))
     }
 
     message("Parsing ", basename(file), "...")
 
     type <- NULL
 
-    if (str_detect(file, "\\.(nbib|txt)$")) {
-      entries <- read_file(file)
+    if (stringr::str_detect(file, "\\.(nbib|txt)$")) {
+      entries <- readr::read_file(file)
 
-      if (str_detect(entries, "PMID-")) type <- "pubmed"
-    } else if (str_detect(file, "\\.(xlsx?|csv)$")) {
-      entries <- import_data(file)
+      if (stringr::str_detect(entries, "PMID-")) type <- "pubmed"
+    } else if (stringr::str_detect(file, "\\.(xlsx?|csv)$")) {
+      entries <- BaySREn::import_data(file)
 
       if ("UT (Unique WOS ID)" %in% colnames(entries)) {
         type <- "wos"
@@ -440,7 +440,7 @@ join_records <- function(record_list) {
       transmute(
         Order,
         DOI, ID, Title, Abstract, Authors,
-        Year = Published %>% str_extract("\\d{4}") %>% as.numeric(),
+        Year = Published %>% stringr::str_extract("\\d{4}") %>% as.numeric(),
         URL = if (exists("URL")) URL else NA,
         Journal = if (exists("Journal")) Journal else NA,
         Journal_short = if (exists("Journal_short")) Journal_short else NA,
@@ -456,14 +456,14 @@ join_records <- function(record_list) {
     bind_rows() %>%
     mutate(
       Keywords = cbind(Keywords, Author_keywords) %>%
-        apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA) %>% str_to_lower(),
+        apply(1, function(x) if (any(!is.na(x))) paste(na.omit(x), collapse = ";") else NA) %>% stringr::str_to_lower(),
       Author_keywords = NULL
     ) %>%
-    fix_duplicated_records() %>%
+    BaySREn::fix_duplicated_records() %>%
     mutate(
-      Keywords = str_split(Keywords, "\\s*;\\s*") %>% sapply(function(x) {
-        str_remove(x, '^[\\*\\-"\\\']+ *') %>%
-          str_remove(' *[\\*\\-"\\\']+ *$') %>%
+      Keywords = stringr::str_split(Keywords, "\\s*;\\s*") %>% sapply(function(x) {
+        stringr::str_remove(x, '^[\\*\\-"\\\']+ *') %>%
+          stringr::str_remove(' *[\\*\\-"\\\']+ *$') %>%
           unique() %>%
           paste(collapse = "; ")
       })
@@ -491,7 +491,7 @@ fix_duplicated_records <- function(records) {
     mutate(Title = na.omit(Title)[1]) %>%
     ungroup() %>%
     mutate(
-      UID = str_to_lower(Title) %>% str_remove_all("[^\\w\\d]+")
+      UID = stringr::str_to_lower(Title) %>% stringr::str_remove_all("[^\\w\\d]+")
     ) %>%
     group_by(UID) %>%
     mutate(DOI = na.omit(DOI)[1]) %>%
@@ -528,8 +528,8 @@ fix_duplicated_records <- function(records) {
           unique() %>%
           paste(collapse = "; ")
       ),
-      Keywords = Keywords %>% str_split("; ") %>% unlist() %>% na.omit() %>% unique() %>%
-        purrr::keep(~ str_length(.x) > 0) %>%
+      Keywords = Keywords %>% stringr::str_split("; ") %>% unlist() %>% na.omit() %>% unique() %>%
+        purrr::keep(~ stringr::str_length(.x) > 0) %>%
         paste(collapse = "; "),
       ## TODO: clean up is necessary for Source and Source_type
       N_citations = suppressWarnings(na.omit(N_citations) %>% max(na.rm = TRUE) %>%
@@ -538,7 +538,7 @@ fix_duplicated_records <- function(records) {
 
   bind_rows(unique_sources, dup_sources) %>%
     select(-UID) %>%
-    clean_record_textfields() %>%
+    BaySREn::clean_record_textfields() %>%
     filter(!duplicated(ID))
 }
 
@@ -602,20 +602,20 @@ create_annotation_file <- function(records, reorder_query = NULL,
   if (is.character(records)) {
     records <- c(
       list.files(records, full.names = TRUE, recursive = TRUE) %>%
-        str_subset("~\\$", negate = TRUE) %>%
-        str_subset("(parsed|API)\\.csv"),
+        stringr::str_subset("~\\$", negate = TRUE) %>%
+        stringr::str_subset("(parsed|API)\\.csv"),
       records[!dir.exists(records)]
     ) %>% unique()
 
     message("- parsing records...")
-    records <- read_bib_files(records)
+    records <- BaySREn::read_bib_files(records)
   }
 
   if (length(records) == 1) records <- records[[1]]
 
   if (!is.data.frame(records) & is.list(records)) {
     message("- joining records...")
-    records <- join_records(records)
+    records <- BaySREn::join_records(records)
     message(": ", nrow(records), " unique records")
   }
 
@@ -628,28 +628,28 @@ create_annotation_file <- function(records, reorder_query = NULL,
   if (!is.null(prev_records)) {
     message("- appending to a previous annotation file...")
 
-    imported_records <- import_data(prev_records)
+    imported_records <- BaySREn::import_data(prev_records)
 
     records <- records %>% filter(!(ID %in% imported_records$ID))
 
     message("(", nrow(records), " new records)")
 
     records <- full_join(
-      import_data(prev_records), records
+      BaySREn::import_data(prev_records), records
     ) %>%
-      fix_duplicated_records()
+      BaySREn::fix_duplicated_records()
   }
 
   if (!is.null(prev_classification)) {
     message("- importing previous classifications...")
 
-    records <- import_classification(records, prev_records = prev_classification)
+    records <- BaySREn::import_classification(records, prev_records = prev_classification)
   }
 
   if (!is.null(reorder_query)) {
     message("- reordering records...")
 
-    records <- order_by_query_match(records, query = reorder_query)
+    records <- BaySREn::order_by_query_match(records, query = reorder_query)
   }
 
   invisible(records)
@@ -671,19 +671,19 @@ create_annotation_file <- function(records, reorder_query = NULL,
 #' @export
 #'
 order_by_query_match <- function(records, query) {
-  terms <- str_remove_all(query, "NOT ?(\\w+|\\(.*?\\))") %>%
-    str_remove_all("[^\\w\\s\\*]+|(?<= )(AND|OR)(?= )") %>%
-    str_split("\\s+") %>%
+  terms <- stringr::str_remove_all(query, "NOT ?(\\w+|\\(.*?\\))") %>%
+    stringr::str_remove_all("[^\\w\\s\\*]+|(?<= )(AND|OR)(?= )") %>%
+    stringr::str_split("\\s+") %>%
     unlist() %>%
     unique() %>%
-    str_replace_all("\\*", "\\\\w*") %>%
-    Filter(function(x) str_length(x) > 2, .)
+    stringr::str_replace_all("\\*", "\\\\w*") %>%
+    Filter(function(x) stringr::str_length(x) > 2, .)
 
   records %>%
     mutate(
       text = paste(Title, Abstract),
-      doc.length = str_count(text, "\\b") + 1,
-      term.count = str_count(text, paste(terms, collapse = "|")),
+      doc.length = stringr::str_count(text, "\\b") + 1,
+      term.count = stringr::str_count(text, paste(terms, collapse = "|")),
       score = term.count / doc.length
     ) %>%
     arrange(desc(score)) %>%
@@ -707,18 +707,18 @@ order_by_query_match <- function(records, query) {
 #'
 #'
 import_classification <- function(records, prev_records, IDs = records$ID) {
-  prev_records <- import_data(prev_records)
+  prev_records <- BaySREn::import_data(prev_records)
 
   records$uID <- with(
     records,
-    ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
-      str_remove_all("[^\\w\\d\\s]+"))
+    ifelse(!is.na(DOI), DOI, stringr::str_to_lower(Title) %>%
+      stringr::str_remove_all("[^\\w\\d\\s]+"))
   )
 
   prev_records$uID <- with(
     prev_records,
-    ifelse(!is.na(DOI), DOI, str_to_lower(Title) %>%
-      str_remove_all("[^\\w\\d\\s]+"))
+    ifelse(!is.na(DOI), DOI, stringr::str_to_lower(Title) %>%
+      stringr::str_remove_all("[^\\w\\d\\s]+"))
   )
 
   target_uID <- records$uID[records$ID %in% IDs]
@@ -727,7 +727,7 @@ import_classification <- function(records, prev_records, IDs = records$ID) {
   prev_records <- prev_records %>%
     transmute(
       uID,
-      Rev_previous = coalesce_labels(cur_data(), c(
+      Rev_previous = BaySREn::coalesce_labels(cur_data(), c(
         "Rev_previous",
         "Rev_prediction_new",
         "Rev_prediction", "Rev_manual"
@@ -813,7 +813,7 @@ create_session <- function(Records, session_name,
 
     # At the moment csv files will be converted to excel, eventually both file
     # type will be supported
-    Records <- import_data(Records)
+    Records <- BaySREn::import_data(Records)
 
     message("- copy or write the Record data")
 
@@ -852,11 +852,11 @@ create_session <- function(Records, session_name,
       },
       add = {
         warning('Session "', session_name, '" exists. Adding a replicate...')
-        cur_rep <- max(str_extract(session_name, "(?<=_r)\\d+") %>% as.numeric(), 1, na.rm = TRUE)
+        cur_rep <- max(stringr::str_extract(session_name, "(?<=_r)\\d+") %>% as.numeric(), 1, na.rm = TRUE)
 
-        session_name <- str_remove(session_name, "_r\\d+$") %>% paste0("_r", cur_rep + 1)
+        session_name <- stringr::str_remove(session_name, "_r\\d+$") %>% paste0("_r", cur_rep + 1)
 
-        session_path <- create_session(
+        session_path <- BaySREn::create_session(
           Records = Records, session_name = session_name,
           sessions_folder = sessions_folder, DTM = DTM,
           dup_session_action = dup_session_action
@@ -901,12 +901,12 @@ get_session_files <- function(session_name,
   session_path <- file.path(sessions_folder, session_name)
 
   lapply(which, function(type) {
-    files <- list.files(session_path, recursive = TRUE) %>% str_subset(type)
+    files <- list.files(session_path, recursive = TRUE) %>% stringr::str_subset(type)
 
-    files <- files[str_detect(basename(files), "^\\w")]
+    files <- files[stringr::str_detect(basename(files), "^\\w")]
 
     if (type == "Records") {
-      files <- files[!str_detect(files, "Annotations")]
+      files <- files[!stringr::str_detect(files, "Annotations")]
     }
 
     if (length(files) == 0) {
@@ -916,7 +916,7 @@ get_session_files <- function(session_name,
     files <- tibble(
       files,
       iter = basename(files) %>%
-        str_extract("^\\d+") %>%
+        stringr::str_extract("^\\d+") %>%
         as.numeric() %>%
         pmax(0, na.rm = TRUE) # the source record file would have no iteration in the name, so will be considered as zero
     ) %>%

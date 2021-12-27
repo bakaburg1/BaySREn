@@ -80,16 +80,16 @@ clean_date_filter_arg <- function(year_query, cases,
       }
     }
 
-    if (str_detect(year_query, "^\\d{4}-\\d{4}$")) { # range
+    if (stringr::str_detect(year_query, "^\\d{4}-\\d{4}$")) { # range
 
-      year_piece <- str_split(year_query, "-") %>% unlist()
+      year_piece <- stringr::str_split(year_query, "-") %>% unlist()
 
       if (year_piece[2] < year_piece[1]) warning("Years' order seems wrong, please check it.")
 
       year_query <- glue(cases$range)
-    } else if (str_detect(year_query, "^(<|<=|>=|>)\\d{4}$")) { # boundary
+    } else if (stringr::str_detect(year_query, "^(<|<=|>=|>)\\d{4}$")) { # boundary
 
-      pieces <- str_split(year_query, "\\b") %>% unlist()
+      pieces <- stringr::str_split(year_query, "\\b") %>% unlist()
       comparator <- pieces[1]
       year_piece <- as.numeric(pieces[2])
 
@@ -99,7 +99,7 @@ clean_date_filter_arg <- function(year_query, cases,
         "<=" = glue(cases$le),
         "<" = glue(cases$lt)
       )
-    } else if (str_detect(year_query, "^\\d{4}$")) {
+    } else if (stringr::str_detect(year_query, "^\\d{4}$")) {
       year_piece <- year_query
       year_query <- glue(cases$eq)
     } else {
@@ -176,7 +176,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
                                "SCI", "SSCI", "AHCI", "ISTP",
                                "ISSHP", "BSCI", "BHCI", "IC", "CCR", "ESCI"
                              ),
-                             sid = auth(Sys.getenv("WOS_USERNAME"), Sys.getenv("WOS_PASSWORD")), ...) {
+                             sid = wosr::auth(Sys.getenv("WOS_USERNAME"), Sys.getenv("WOS_PASSWORD")), ...) {
       parse_wos <- function(all_resps) {
         pbmcapply::pbmclapply(all_resps, wosr:::one_parse)
       }
@@ -208,18 +208,18 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 
 
   if (parse_query) {
-    query <- str_squish(query)
+    query <- stringr::str_squish(query)
 
-    if (str_detect(query, "^\\w+ ?= ?")) {
-      pieces <- str_split(query, "( ?AND ?)?\\w{2} ?= ?") %>%
+    if (stringr::str_detect(query, "^\\w+ ?= ?")) {
+      pieces <- stringr::str_split(query, "( ?AND ?)?\\w{2} ?= ?") %>%
         unlist() %>%
-        str_squish() %>%
-        str_subset("^$", negate = TRUE)
+        stringr::str_squish() %>%
+        stringr::str_subset("^$", negate = TRUE)
 
-      fields <- str_extract_all(query, "\\w{2} ?= ?") %>%
+      fields <- stringr::str_extract_all(query, "\\w{2} ?= ?") %>%
         unlist() %>%
-        str_squish() %>%
-        str_remove(" ?= ?")
+        stringr::str_squish() %>%
+        stringr::str_remove(" ?= ?")
 
       query <- setNames(pieces, fields)
     } else {
@@ -259,7 +259,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
     transmute(
       Order = 1:n(), ID = ut, Title = title, Abstract = abstract,
       DOI = doi, Journal = journal, N_citations = tot_cites,
-      Published = format(ymd(date), "%b %Y"), Source = "WOS",
+      Published = format(lubridate::ymd(date), "%b %Y"), Source = "WOS",
       Source_type = "API", Creation_date = safe_now()
     )
 
@@ -334,7 +334,7 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 
   if (is.null(api_key)) warning("NCBI API key is not set.")
 
-  query <- str_squish(query)
+  query <- stringr::str_squish(query)
 
   year_query <- clean_date_filter_arg(year_query,
     cases = list(
@@ -354,7 +354,7 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
     additional_fields <- paste(glue("({additional_fields})[{names(additional_fields)}]"), collapse = " AND ")
   }
 
-  query <- paste(query, year_query, additional_fields, collapse = " AND ") %>% str_squish()
+  query <- paste(query, year_query, additional_fields, collapse = " AND ") %>% stringr::str_squish()
 
   res <- rentrez::entrez_search(
     db = "pubmed", term = query, retmax = 0,
@@ -368,7 +368,7 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
   steps <- floor((total_count - 1) / min(total_count, 200))
 
   # ~ 20x faster than pubmedR::pmApiRequest plus xml parsing
-  records <- pbmclapply(0:steps, function(step) {
+  records <- pbmcapply::pbmclapply(0:steps, function(step) {
     # print(paste(step * 200))
     have.results <- F
     trials <- 0
@@ -519,7 +519,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     if (response$totalPages > 1) {
       if (response$totalPages > 100) warning("Only results up to page 100 are available")
 
-      other_pages <- pblapply(2:min(response$totalPages, 100), function(page) {
+      other_pages <- pbapply::pblapply(2:min(response$totalPages, 100), function(page) {
         endpoint$query$pageNumber <- page
 
         if (page * endpoint$query$pageNumber > record_limit) {
@@ -547,7 +547,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
         DOI = doi, URL = paste0("https://ieeexplore.ieee.org/document/", articleNumber),
         Authors = authors %>% sapply(function(df) paste(df$normalizedName, collapse = "; ")),
         Journal = publicationTitle,
-        Article_type = str_remove(`contentType`, "(IEEE|OUP) "), # there may be more...
+        Article_type = stringr::str_remove(`contentType`, "(IEEE|OUP) "), # there may be more...
         N_citations = citationCount,
         Published = publicationDate
       )
@@ -573,7 +573,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
         le = "x_{year_piece}",
         lt = "x_{year_piece - 1}"
       )) %>%
-        str_split("_") %>%
+        stringr::str_split("_") %>%
         unlist() %>%
         setNames(c("start_year", "end_year")) %>%
         Filter(f = function(el) el != "x")
@@ -609,7 +609,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
       steps <- floor((total_count - 1) / min(total_count, max_records))
 
-      other_pages <- pblapply(1:steps, function(step) {
+      other_pages <- pbapply::pblapply(1:steps, function(step) {
         print(paste(step * max_records + 1))
 
         query$start_record <- step * max_records + 1
@@ -634,7 +634,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     records <- records %>%
       transmute(
         Order = 1:n(),
-        ID = paste0("IEEE:", str_extract(abstract_url, "\\d+/$")),
+        ID = paste0("IEEE:", stringr::str_extract(abstract_url, "\\d+/$")),
         Title = title,
         Abstract = abstract,
         DOI = doi,
@@ -648,21 +648,21 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
   message("- fetching individual article data")
 
-  article_data <- pbmclapply(records$URL, function(URL) {
-    if (!str_detect(URL, fixed("https://ieeexplore.ieee.org/document/"))) {
+  article_data <- pbmcapply::pbmclapply(records$URL, function(URL) {
+    if (!stringr::str_detect(URL, stringr::fixed("https://ieeexplore.ieee.org/document/"))) {
       return(NULL)
     }
 
-    data <- read_file(URL) %>%
-      str_extract("(?<=xplGlobal\\.document\\.metadata=).+") %>%
-      str_remove(";$") %>%
+    data <- readr::read_file(URL) %>%
+      stringr::str_extract("(?<=xplGlobal\\.document\\.metadata=).+") %>%
+      stringr::str_remove(";$") %>%
       jsonlite::fromJSON()
 
     if (!is.null(data$keywords)) {
       Keys <- data$keywords %>%
         group_by(type = case_when(
-          str_detect(type, "MeSH") ~ "Mesh",
-          str_detect(type, "Author") ~ "Author",
+          stringr::str_detect(type, "MeSH") ~ "Mesh",
+          stringr::str_detect(type, "Author") ~ "Author",
           T ~ "IEEE"
         )) %>%
         summarise(kwd = paste(unlist(kwd), collapse = "; "))
@@ -688,7 +688,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
           across(c(firstName, lastName), ~ replace(.x, is.na(.x), ""))
         ) %>%
         with(paste(
-          str_replace_all(firstName, c(
+          stringr::str_replace_all(firstName, c(
             "[^\\w]+" = " ",
             "\\b(\\w)\\w*" = "\\1."
           )),
@@ -800,7 +800,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
       if (!overwrite) {
         warning(basename(out_file), " already present and argument overwrite is FALSE.", call. = FALSE)
 
-        read_csv(out_file, col_types = cols())
+        readr::read_csv(out_file, col_types = readr::cols())
       } else {
         warning(basename(out_file), " will be overwritten.", call. = FALSE)
         NULL
@@ -829,7 +829,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
 
         records <- load_if_exists(output_file, overwrite) # load records if output already existing
 
-        search_fun <- paste0("search_", str_to_lower(source))
+        search_fun <- paste0("search_", stringr::str_to_lower(source))
 
         if (is.null(records) & exists(search_fun)) { # if output not existing search via API and API search is available
 
@@ -840,8 +840,8 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
 
         # find input files (i.e. files not containing API or parsed in the name)
         input_files <- list.files(folder_path, full.names = FALSE) %>%
-          str_subset("API|parsed", negate = TRUE) %>%
-          str_subset(regex(source, ignore_case = TRUE))
+          stringr::str_subset("API|parsed", negate = TRUE) %>%
+          stringr::str_subset(regex(source, ignore_case = TRUE))
 
         if (length(input_files) > 0) { # continue if any input file exists
 
@@ -864,7 +864,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
       if (!is.null(records)) {
         records$FileID <- file.path(session_name, query_name, basename(output_file))
 
-        write_csv(records, output_file)
+        readr::write_csv(records, output_file)
 
         data.frame(
           Session_ID = session_name,
@@ -887,18 +887,16 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
   }
 
   if (!is.null(journal)) {
-    if (str_detect(journal, "\\.csv$")) {
+    if (stringr::str_detect(journal, "\\.csv$")) {
       write_fun <- write_csv
-      read_fun <- function(x) read_csv(x, col_types = cols())
-    } else if (str_detect(journal, "\\.xlsx?$")) {
+    } else if (stringr::str_detect(journal, "\\.xlsx?$")) {
       write_fun <- function(x, file) openxlsx::write.xlsx(x, file, asTable = TRUE)
-      read_fun <- read_excel
     } else {
-      stop("Session journal file type must be csv or excel.")
+      stop("Session journal file type must be in CSV or Excel format.")
     }
 
     if (file.exists(journal)) {
-      previous_data <- read_fun(journal) # TODO: evaluate if import_data works as well
+      previous_data <- import_data(journal)
 
       record_data <- previous_data %>%
         bind_rows(record_data) %>%

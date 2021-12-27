@@ -15,7 +15,7 @@ lemmatize <- function(text_vec, dict = lexicon::hash_lemmas) {
 
   terms <- paste(text_vec, separator, collapse = " ")
   terms <- gsub(sprintf(" *%s$", separator), "", terms, perl = TRUE) %>%
-    str_split("\\b") %>%
+    stringr::str_split("\\b") %>%
     unlist()
   terms <- terms[!(terms %in% c("", " "))]
 
@@ -26,7 +26,7 @@ lemmatize <- function(text_vec, dict = lexicon::hash_lemmas) {
     dict[terms.lower], terms
   ) %>%
     paste(collapse = " ") %>%
-    str_split(sprintf(" *%s *", separator)) %>%
+    stringr::str_split(sprintf(" *%s *", separator)) %>%
     unlist()
 
   output <- gsub("\\s+", " ", output, perl = TRUE)
@@ -48,12 +48,12 @@ lemmatize <- function(text_vec, dict = lexicon::hash_lemmas) {
 tokenize_text <- function(corpus) {
   message("- tokenizing text...")
 
-  stopwords <- stopwords("english")
+  stopwords <- tm::stopwords("english")
 
   tictoc::tic()
   corpus <- tolower(corpus)
   corpus <- gsub("-", "_", corpus, fixed = TRUE)
-  corpus <- removeWords(corpus, stopwords("english"))
+  corpus <- tm::removeWords(corpus, tm::stopwords("english"))
   corpus <- gsub("\'(s|re|t|d)?\\b", "", corpus, perl = TRUE)
   corpus <- gsub("_", " ", corpus, fixed = TRUE)
   corpus <- gsub("[^\\w\\d\\s]+", " ", corpus, perl = TRUE)
@@ -78,33 +78,33 @@ tokenize_authors <- function(corpus) {
 
   ids <- 1:length(corpus)
 
-  with.comma <- str_detect(corpus, ",")
+  with.comma <- stringr::str_detect(corpus, ",")
 
-  corpus <- corpus %>% str_squish()
+  corpus <- corpus %>% stringr::str_squish()
 
-  output <- mclapply(1:length(corpus), function(i) {
+  output <- parallel::mclapply(1:length(corpus), function(i) {
     if (is.na(with.comma[i])) {
       NA
     } # No authors listed
     else if (with.comma[i] == TRUE) { # Pubmed or WOS style author list
       corpus[i] %>%
-        str_remove_all("[^\\w ,;]") %>%
-        str_replace_all("(?<=,)[ \\-\\w]+?(?:(?=;)|$)", function(x) {
-          paste0(str_extract_all(x, "\\b\\w")[[1]], collapse = "")
+        stringr::str_remove_all("[^\\w ,;]") %>%
+        stringr::str_replace_all("(?<=,)[ \\-\\w]+?(?:(?=;)|$)", function(x) {
+          paste0(stringr::str_extract_all(x, "\\b\\w")[[1]], collapse = "")
         }) %>%
-        str_replace_all(",", "_") %>%
-        str_remove_all(" +")
+        stringr::str_replace_all(",", "_") %>%
+        stringr::str_remove_all(" +")
     } else { # IEEE style author list
       corpus[i] %>%
-        str_remove_all("[^\\w\\.;]") %>% # remove non letters and other characters
-        str_replace_all("[^;]+(?:(?=;)|$)", function(x) { # extract names between ;
-          str_replace(x, "([\\w \\.]+)\\.([\\w ]+)", "\\2_\\1") # use the rightmost dot to separate first and last names
+        stringr::str_remove_all("[^\\w\\.;]") %>% # remove non letters and other characters
+        stringr::str_replace_all("[^;]+(?:(?=;)|$)", function(x) { # extract names between ;
+          stringr::str_replace(x, "([\\w \\.]+)\\.([\\w ]+)", "\\2_\\1") # use the rightmost dot to separate first and last names
         }) %>%
-        str_remove_all("\\.")
+        stringr::str_remove_all("\\.")
     }
   }) %>%
     unlist() %>%
-    str_replace_all("; *", " ")
+    stringr::str_replace_all("; *", " ")
 
   tictoc::toc()
 
@@ -121,8 +121,8 @@ tokenize_authors <- function(corpus) {
 #'
 tokenize_keywords <- function(keywords) {
   keywords %>%
-    str_to_lower() %>%
-    str_replace_all(c(
+    stringr::str_to_lower() %>%
+    stringr::str_replace_all(c(
       "\\s*;\\s*" = ";",
       "[^;\\w]+" = "_",
       ";" = " "
@@ -143,13 +143,13 @@ tokenize_MESH <- function(mesh) {
   tictoc::tic()
 
   output <- mesh %>%
-    str_replace_all(c(" *; *" = ";", "[\\(\\)]" = "", "[ ,\\-]+" = "_", "&" = "and")) %>%
-    str_replace_all("(?:(?<=;)|^)[^;]+/[^;]+(?:(?=;)|$)", function(x) {
-      x <- str_split(x, "/")[[1]]
+    stringr::str_replace_all(c(" *; *" = ";", "[\\(\\)]" = "", "[ ,\\-]+" = "_", "&" = "and")) %>%
+    stringr::str_replace_all("(?:(?<=;)|^)[^;]+/[^;]+(?:(?=;)|$)", function(x) {
+      x <- stringr::str_split(x, "/")[[1]]
       paste(c(x[1], paste(x[1], x[-1], sep = ".sh.")), collapse = ";")
     }) %>%
-    str_replace_all(";", " ") %>%
-    str_squish()
+    stringr::str_replace_all(";", " ") %>%
+    stringr::str_squish()
 
   tictoc::toc()
 
@@ -225,12 +225,12 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
     corpus <- tokenize.fun(corpus)
   }
 
-  splitted.corpus <- corpus %>% str_split(" +")
+  splitted.corpus <- corpus %>% stringr::str_split(" +")
 
   if (length(splitted.corpus) != length(ids)) stop("Number of documents and ids are different")
 
   excluded.pos <- lexicon::hash_grady_pos %>%
-    mutate(pos = str_remove_all(pos, " \\(.*")) %>%
+    mutate(pos = stringr::str_remove_all(pos, " \\(.*")) %>%
     filter(!(pos %in% included.pos) & !(word %in% word[pos %in% included.pos])) # Keep terms that are ONLY associated to non relevant parts of speech
 
   message("- to long format...")
@@ -244,8 +244,8 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
     na.omit() %>%
     distinct() %>%
     mutate(
-      val = replace(val, str_detect(term, "\\*"), 2),
-      term = str_remove(term, "\\*")
+      val = replace(val, stringr::str_detect(term, "\\*"), 2),
+      term = stringr::str_remove(term, "\\*")
     ) %>%
     filter(!(term %in% excluded.pos$word))
   tictoc::toc()
@@ -291,7 +291,7 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
   }
 
   # The synonyms creation procedure can create very long names
-  DTM <- DTM %>% setNames(str_sub(colnames(DTM), 1, 10000))
+  DTM <- DTM %>% setNames(stringr::str_sub(colnames(DTM), 1, 10000))
 
   message("- managing missings...")
 
@@ -329,12 +329,12 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
 DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
   mat <- as.matrix(DTM[, -1])
 
-  mat.sparse <- as(mat, "dgCMatrix") # Using sparse matrices
+  mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
 
   TTM <- (t(mat.sparse) %*% mat.sparse) / sqrt(tcrossprod(colSums(mat^2, na.rm = TRUE))) # Cosine similarity
 
-  ngram.cliques <- graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
-    max_cliques(min = 2) %>% lapply(names) # Extracting cliques
+  ngram.cliques <- igraph::graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
+    igraph::max_cliques(min = 2) %>% lapply(names) # Extracting cliques
 
   if (length(ngram.cliques) > 0) {
     new_cols <- lapply(ngram.cliques, function(clique) { # For each clique
@@ -343,7 +343,7 @@ DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
           as.numeric(DTM[, clique] %>% rowSums() == length(clique)) # TRUE if all words are present in the doc
         )
 
-        colnames(new_col) <- paste0(str_extract(clique[1], "\\w+__"), str_remove(clique, "\\w+__") %>% paste(collapse = "._."))
+        colnames(new_col) <- paste0(stringr::str_extract(clique[1], "\\w+__"), stringr::str_remove(clique, "\\w+__") %>% paste(collapse = "._."))
 
         new_col
       }
@@ -369,12 +369,12 @@ DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
 DTM.aggr_synonyms <- function(DTM, min.sim = .9) {
   mat <- as.matrix(DTM[, -1])
 
-  mat.sparse <- as(mat, "dgCMatrix") # Using sparse matrices
+  mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
 
   TTM <- (t(mat.sparse) %*% mat.sparse) / sqrt(tcrossprod(colSums(mat^2, na.rm = TRUE))) # Cosine similarity
 
-  syn.components <- graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
-    components() # Extracting connected subgraphs
+  syn.components <- igraph::graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
+    igraph::components() # Extracting connected subgraphs
 
   syn.components <- lapply(which(syn.components$csize > 1), function(i) {
     names(syn.components$membership)[syn.components$membership == i]
@@ -386,7 +386,7 @@ DTM.aggr_synonyms <- function(DTM, min.sim = .9) {
         as.numeric(DTM[, component] %>% rowSums() > 0) # TRUE if at least one word is in the doc
       )
 
-      colnames(new_col) <- paste0(str_extract(component[1], "\\w+__"), str_remove(component, "\\w+__") %>% paste(collapse = "."))
+      colnames(new_col) <- paste0(stringr::str_extract(component[1], "\\w+__"), stringr::str_remove(component, "\\w+__") %>% paste(collapse = "."))
 
       new_col
     }) %>% bind_cols()

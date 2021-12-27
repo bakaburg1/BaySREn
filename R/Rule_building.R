@@ -53,10 +53,10 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
 
     create_training_set(Records)
   } else {
-    read_rds(files$DTM)
+    readr::read_rds(files$DTM)
   }
 
-  Draws <- read_rds(files$Samples)
+  Draws <- readr::read_rds(files$Samples)
 
   Variable_importance <- import_data(files$Annotations, sheet = "Variable_importance")
 
@@ -75,13 +75,13 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
   specific.terms <- Variable_importance %>%
     filter(Score > vimp.threshold) %>%
     pull(Term) %>%
-    str_subset("^MESH", negate = TRUE) %>%
-    str_remove(".+__") %>%
-    str_sub(1, 2500) %>% # str_sub() is necessary since many functions cannot use such long names
+    stringr::str_subset("^MESH", negate = TRUE) %>%
+    stringr::str_remove(".+__") %>%
+    stringr::str_sub(1, 2500) %>% # str_sub() is necessary since many functions cannot use such long names
     unique()
 
 
-  SpecificDTM <- pbmclapply(specific.terms, function(term) {
+  SpecificDTM <- pbmcapply::pbmclapply(specific.terms, function(term) {
     values <- select(DTM, matches(paste0("__", term, "$"))) %>% rowSums(na.rm = TRUE)
 
     factor((values > 0) + 0)
@@ -105,13 +105,13 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
     c(ncol(Draws)) %>%
     unique()
 
-  trees <- pbmclapply(candidate_draws, function(i) {
+  trees <- pbmcapply::pbmclapply(candidate_draws, function(i) {
     df <- data.frame(
       Pred = Draws[, i],
       SpecificDTM
     )
 
-    rpart(Pred ~ ., data = df, control = rpart.control(...)) %>%
+    rpart::rpart(Pred ~ ., data = df, control = rpart::rpart.control(...)) %>%
       tidytrees::tidy_tree(eval_ready = TRUE, simplify_rules = TRUE)
   }) %>% bind_rows()
 
@@ -122,7 +122,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
   )
 
   if (!is.null(save_path)) {
-    write_rds(file.path(sessions_folder, session_name, file_name))
+    readr::write_rds(file.path(sessions_folder, session_name, file_name))
   }
 
   out
@@ -143,7 +143,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
 #'   of positive and negative matches.
 #'
 add_cumulative <- function(data, order_by = "score", rule_var = "rule") {
-  arrange(data, desc(get(order_by)), str_count(get(rule_var), " & ")) %>%
+  arrange(data, desc(get(order_by)), stringr::str_count(get(rule_var), " & ")) %>%
     mutate(
       cum_pos = purrr::map_int(1:n(), ~ n_distinct(unlist(pos_i[1:.]))),
       cum_neg = purrr::map_int(1:n(), ~ n_distinct(unlist(neg_i[1:.]))),
@@ -202,7 +202,7 @@ add_cumulative <- function(data, order_by = "score", rule_var = "rule") {
 #' }
 generate_rule_selection_set <- function(rules, target_vec, target_data, add_negative_terms = TRUE,
                                         save_path = NULL) {
-  rules <- rules[str_detect(rules, '"1"')] %>% # Only rules with a least one positive component
+  rules <- rules[stringr::str_detect(rules, '"1"')] %>% # Only rules with a least one positive component
     tidytrees::simplify_rules() %>% # Remove redundant rule components
     unique()
 
@@ -231,7 +231,7 @@ generate_rule_selection_set <- function(rules, target_vec, target_data, add_nega
   message("- computing scores")
 
   rules <- rules %>%
-    pblapply(function(rule) {
+    pbapply::pblapply(function(rule) {
       filt <- with(target_data, eval(str2expression(rule)))
 
       # if (!is.na(neg_term)) {
@@ -295,7 +295,7 @@ generate_rule_selection_set <- function(rules, target_vec, target_data, add_nega
 
 add_negative_terms <- function(rules, target_vec, target_data) {
   message("- retrieving negative terms")
-  pbmclapply(rules, function(rule) {
+  pbmcapply::pbmclapply(rules, function(rule) {
     filt <- with(target_data, which(eval(str2expression(rule))))
 
     target_data <- target_data[filt, ] %>% select(where(~ n_distinct(.x) > 1))
@@ -305,13 +305,13 @@ add_negative_terms <- function(rules, target_vec, target_data) {
     tot_neg <- sum(target_vec == "n")
 
     terms <- colnames(target_data) %>%
-      str_subset("V__\\d+$", negate = TRUE) %>%
-      str_subset("V__\\w{1,3}$", negate = TRUE)
+      stringr::str_subset("V__\\d+$", negate = TRUE) %>%
+      stringr::str_subset("V__\\w{1,3}$", negate = TRUE)
 
     term_pos_dict <- lexicon::hash_grady_pos %>% with(setNames(pos, word))
     excluded_pos <- term_pos_dict[term_pos_dict %nin% c("Adjective", "Noun", "Plural", "Noun Phrase")]
 
-    terms <- terms[str_remove(terms, "V__") %nin% names(excluded_pos)]
+    terms <- terms[stringr::str_remove(terms, "V__") %nin% names(excluded_pos)]
 
     if (length(terms) == 0) {
       return(data.frame(
@@ -329,7 +329,7 @@ add_negative_terms <- function(rules, target_vec, target_data) {
 
       tibble(
         term = v,
-        term_type = term_pos_dict[str_remove(v, fixed("V__"))],
+        term_type = term_pos_dict[stringr::str_remove(v, stringr::fixed("V__"))],
         pos, neg,
         neg_i = list(which(neg_bool))
       )
@@ -454,12 +454,12 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
         pos <- neg <- score <- vector("integer", n())
 
         removed_terms <- rep(NA, n())
-        pb <- progressBar()
+        pb <- pbmcapply::progressBar()
 
         tick <- 0
 
         for (i in n():1) {
-          pieces <- str_split(rule[i], " & ") %>% unlist()
+          pieces <- stringr::str_split(rule[i], " & ") %>% unlist()
 
           neg_ind <- c()
 
@@ -498,7 +498,7 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
           neg_i[[i]] <- which(neg_bool)
 
           tick <- tick + 1
-          setTxtProgressBar(pb, tick / n())
+          utils::setTxtProgressBar(pb, tick / n())
         }
 
         tibble(
@@ -562,31 +562,31 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
 #' writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 #' }
 rules_to_query <- function(rules) {
-  str_remove_all(rules, "\\bV__") %>%
+  stringr::str_remove_all(rules, "\\bV__") %>%
     sapply(function(r) {
-      rules <- str_split(r, " & ") %>%
+      rules <- stringr::str_split(r, " & ") %>%
         unlist() %>%
         sapply(function(x) {
-          if (str_detect(x, "\\.?_\\.?")) {
-            x <- str_replace_all(x, "\\.?_\\.?", " ")
+          if (stringr::str_detect(x, "\\.?_\\.?")) {
+            x <- stringr::str_replace_all(x, "\\.?_\\.?", " ")
           }
 
-          x <- str_replace(x, "\\.", " OR ")
+          x <- stringr::str_replace(x, "\\.", " OR ")
 
-          if (str_detect(x, ' (?![%"])')) paste0("(", x, ")") else x
+          if (stringr::str_detect(x, ' (?![%"])')) paste0("(", x, ")") else x
         })
 
       rule_lenght <- length(rules)
 
-      neg.rules <- str_subset(rules, '%in% "0"')
+      neg.rules <- stringr::str_subset(rules, '%in% "0"')
 
-      rules <- str_subset(rules, '%in% "1"') %>% paste(collapse = " AND ")
+      rules <- stringr::str_subset(rules, '%in% "1"') %>% paste(collapse = " AND ")
 
       if (length(neg.rules) > 0) {
         rules <- paste(rules, "NOT", paste(neg.rules, collapse = " NOT "))
       }
 
-      rules <- str_remove_all(rules, ' %in% "[01]"') %>% str_squish()
+      rules <- stringr::str_remove_all(rules, ' %in% "[01]"') %>% stringr::str_squish()
 
       if (rule_lenght > 1) paste0("(", rules, ")") else rules
     }) %>%

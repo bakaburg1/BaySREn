@@ -63,16 +63,16 @@ summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
   data <- import_data(annotation_file)
 
   sources <- data$Source %>%
-    str_split(., "; *") %>%
+    stringr::str_split(., "; *") %>%
     unlist() %>%
     unique()
 
   total_records <- nrow(data)
 
   res <- lapply(sources, function(source) {
-    Records <- str_detect(data$Source, glue("{source}")) %>% sum()
+    Records <- stringr::str_detect(data$Source, glue("{source}")) %>% sum()
     Perc_over_total <- percent(Records / total_records)
-    Source_specific <- str_detect(data$Source, glue("^{source}$")) %>% sum()
+    Source_specific <- stringr::str_detect(data$Source, glue("^{source}$")) %>% sum()
     Source_specific_perc <- percent(Source_specific / Records)
 
     list(
@@ -139,12 +139,12 @@ summarise_sources_by_session <- function(sessions = list.files(sessions_folder),
     return(res)
   }
 
-  records <- pbmclapply(sessions, function(session) {
+  records <- pbmcapply::pbmclapply(sessions, function(session) {
     get_session_files(session, sessions_folder)$Records %>%
       import_data()
   }) %>% setNames(sessions)
 
-  res <- mclapply(1:length(records), function(i) {
+  res <- parallel::mclapply(1:length(records), function(i) {
     data <- records[[i]]
 
     if (i > 1) {
@@ -248,8 +248,8 @@ source_session_summary_to_list <- function(source_summary) { # TODO: include ins
 #' }
 get_source_distribution <- function(annotation_file, as_propr = TRUE, format_fun = percent) {
   res <- import_data(annotation_file)$Source %>%
-    pbmclapply(function(sources) {
-      str_split(sources, "; *") %>%
+    pbmcapply::pbmclapply(function(sources) {
+      stringr::str_split(sources, "; *") %>%
         unlist() %>%
         n_distinct()
     }) %>%
@@ -402,7 +402,7 @@ summarise_annotations_by_session <- function(sessions_folder = getOption("baysre
     stop('No session found in "', sessions_folder, '". Are you sure the name is not mispelled?')
   }
 
-  mclapply(1:length(sessions), function(i) {
+  parallel::mclapply(1:length(sessions), function(i) {
     session <- sessions[i]
 
     res <- summarise_annotations(session, sessions_folder,
@@ -543,16 +543,16 @@ format_performance <- function(..., session_names = NULL) {
 format_var_imp <- function(var_imp, as_data_frame = TRUE) {
   var_imp <- var_imp %>%
     transmute(
-      Component = str_extract(Term, "^\\w+(?=__)") %>%
+      Component = stringr::str_extract(Term, "^\\w+(?=__)") %>%
         factor(
           c("ABSTR", "TITLE", "AUTH", "KEYS", "MESH"),
           c("Abstract", "Title", "Author", "Keyword", "Mesh term")
         ),
-      Term = str_replace_all(Term, c("^\\w+__" = "", "\\._\\." = " & ", "\\." = " | ", "_" = " ")) %>% str_to_title(),
+      Term = stringr::str_replace_all(Term, c("^\\w+__" = "", "\\._\\." = " & ", "\\." = " | ", "_" = " ")) %>% stringr::str_to_title(),
       "Inclusion rate" = signif(Value * 10000, 3),
       IS = signif(Score, 3),
-      RR = signif(exp(estimate), 3) %>% str_remove("\\.?0+$"),
-      `Statistic` = signif(statistic, 3) %>% str_remove("\\.?0+$"),
+      RR = signif(exp(estimate), 3) %>% stringr::str_remove("\\.?0+$"),
+      `Statistic` = signif(statistic, 3) %>% stringr::str_remove("\\.?0+$"),
     )
 
   if (!as_data_frame) {
@@ -582,15 +582,15 @@ print_table <- function(data, caption = "", allow_math = FALSE, ...) {
   if (knitr::is_latex_output()) {
     if (isTRUE(allow_math)) {
       data <- data %>%
-        mutate(across(where(is.character), ~ str_replace_all(.x, "%", "\\\\%"))) %>%
-        dplyr::rename_with(~ str_replace_all(.x, "%", "\\\\%"))
+        mutate(across(where(is.character), ~ stringr::str_replace_all(.x, "%", "\\\\%"))) %>%
+        rename_with(~ stringr::str_replace_all(.x, "%", "\\\\%"))
     }
 
     data %>%
       knitr::kable(
         format = "latex", booktabs = TRUE,
-        caption = caption %>% str_squish() %>%
-          str_replace_all(c("%" = "\\\\%", "\\*\\*([^\\n]+)\\*\\*" = "\\\\textbf{\\1}")),
+        caption = caption %>% stringr::str_squish() %>%
+          stringr::str_replace_all(c("%" = "\\\\%", "\\*\\*([^\\n]+)\\*\\*" = "\\\\textbf{\\1}")),
         escape = !allow_math,
         ...
         # format.args = list(floating = FALSE)
@@ -630,7 +630,7 @@ plot_predictive_densities <- function(session_name,
   records_files <- get_session_files(session_name, sessions_folder)$Annotations
   samples_files <- get_session_files(session_name, sessions_folder)$Samples
 
-  pbmclapply(1:(length(records_files) + 1), function(i) {
+  pbmcapply::pbmclapply(1:(length(records_files) + 1), function(i) {
     index <- min(i, length(records_files))
 
     # The last file will be imported twice, the second time will show the final labelling
@@ -652,7 +652,7 @@ plot_predictive_densities <- function(session_name,
     neg_lim <- with(records, max(Pred_Up[Target %in% "n"]))
     pos_lim <- with(records, min(Pred_Low[Target %in% "y"]))
 
-    samples <- samples_files[[index]] %>% read_rds()
+    samples <- samples_files[[index]] %>% readr::read_rds()
 
     unique(records$Target) %>%
       na.omit() %>%
@@ -699,7 +699,7 @@ plot_predictive_densities <- function(session_name,
         }) %>%
         bind_rows() %>%
         ggplot(aes(y = Iteration)) +
-        geom_ridgeline(aes(x = Prob, height = Dens, fill = Label, color = Label), alpha = .5, scale = 1) +
+        ggridges::geom_ridgeline(aes(x = Prob, height = Dens, fill = Label, color = Label), alpha = .5, scale = 1) +
         geom_segment(data = unc_range_df, aes(yend = as.numeric(Iteration) + .1, x = Neg_lim, xend = Neg_lim, color = "Negative")) +
         geom_segment(data = unc_range_df, aes(yend = as.numeric(Iteration) + .1, x = Pos_lim, xend = Pos_lim, color = "Positive")) +
         geom_label(data = unc_range_df, aes(y = as.numeric(Iteration) - .1, x = Pos_lim, label = Pos_lim)) +
@@ -754,7 +754,7 @@ plot_classification_trend <- function(records, column = NULL,
     unique()
 
   # Count positive and negative matches in every break
-  df <- pblapply(steps, function(step) {
+  df <- pbapply::pblapply(steps, function(step) {
     records %>%
       head(step) %>%
       summarise(

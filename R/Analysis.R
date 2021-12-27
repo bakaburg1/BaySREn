@@ -30,16 +30,16 @@
 #' tidyr::pivot_longer(everything(), names_to = "Indicator", values_to = "Value") # To get a long format data frame
 #' }
 compute_changes <- function(Annotations) {
-	Annotations <- BaySREn:::import_data(Annotations)
+	Annotations <- import_data(Annotations)
 
 	Annotations %>%
 		transmute(
-			Target = BaySREn:::coalesce_labels(cur_data(), c(
+			Target = coalesce_labels(cur_data(), c(
 				"Rev_prediction_new",
 				"Rev_prediction", "Rev_manual"
 			)),
 			Change = paste(
-				BaySREn:::coalesce_labels(cur_data(), c("Rev_prediction", "Rev_manual")),
+				coalesce_labels(cur_data(), c("Rev_prediction", "Rev_manual")),
 				Target,
 				sep = " -> "
 			) %>% stringr::str_replace_all("NA", "unlab.")
@@ -98,7 +98,7 @@ compute_changes <- function(Annotations) {
 #' @export
 #'
 estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
-	train_data$Target <- factor(BaySREn:::coalesce_labels(train_data))
+	train_data$Target <- factor(coalesce_labels(train_data))
 
 	# TODO: switch to rstanarm to skip compilation
 	brms::brm(brms::brmsformula(Target ~ Pred_Low),
@@ -194,12 +194,12 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 																 nsamples = min(2500, sum(model$fit@sim$n_save)),
 																 seed = 23797297,
 																 save_preds = FALSE, save_model = FALSE) {
-	records <- BaySREn:::import_data(records)
+	records <- import_data(records)
 
 	if (is.null(model)) {
 		message("- build model...")
 
-		model <- BaySREn:::estimate_positivity_rate_model(records, seed)
+		model <- estimate_positivity_rate_model(records, seed)
 	}
 
 	quants <- sort(quants)
@@ -244,7 +244,7 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 	) %>%
 		sapply(function(el) { # if quantile, sort them
 			if (length(el) == 3) {
-				sort(el) %>% setNames(BaySREn:::percent(quants))
+				sort(el) %>% setNames(percent(quants))
 			} else {
 				el
 			}
@@ -340,23 +340,23 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, recompute_DTM = FALSE,
 														sessions_folder = getOption("baysren.sessions_folder")) {
 	message("Retrieving data")
-	session_files <- BaySREn:::get_session_files(session_name, sessions_folder)
+	session_files <- get_session_files(session_name, sessions_folder)
 
 	Records <- last(session_files$Annotations) %>%
-		BaySREn:::import_data() %>%
-		mutate(Target = BaySREn:::coalesce_labels(.) %>% tidyr::replace_na("n")) %>%
+		import_data() %>%
+		mutate(Target = coalesce_labels(.) %>% tidyr::replace_na("n")) %>%
 		select(ID, Target)
 
 	Variables <- last(session_files$Annotations) %>%
-		BaySREn:::import_data(sheet = "Variable_importance") %>%
+		import_data(sheet = "Variable_importance") %>%
 		filter(!stringr::str_detect(Term, "^\\w+\\.count"), Score > score_filter) %>%
 		arrange(desc(Value)) %>%
 		head(num_vars)
 
 	if (recompute_DTM) {
-		DTM <- BaySREn:::create_training_set(Records)
+		DTM <- create_training_set(Records)
 	} else {
-		DTM <- BaySREn:::import_data(session_files$DTM)
+		DTM <- import_data(session_files$DTM)
 	}
 
 	DTM$Target <- as.numeric(Records[match(DTM$ID, Records$ID), ]$Target == "y")
@@ -368,7 +368,7 @@ extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, rec
 
 		data.frame(
 			Term_data,
-			stats::glm(Target ~ get(term), stats::poisson(), DTM) %>% broom::tidy() %>%
+			glm(Target ~ get(term), poisson(), DTM) %>% broom::tidy() %>%
 				tail(-1) %>% select(-term, -std.error, -p.value)
 		)
 	}) %>% bind_rows()
@@ -446,9 +446,9 @@ analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 
 	if (is.null(tot_pos) | is.null(tot_records)) {
 		Labels <- list.files(session_folder, pattern = "Records_", recursive = T, full.names = T)[1] %>% # TODO: use get_session_files()
-			BaySREn:::import_data() %>%
+			import_data() %>%
 			mutate(
-				Target = BaySREn:::coalesce_labels(., label_cols = c(
+				Target = coalesce_labels(., label_cols = c(
 					"Rev_prediction_new",
 					"Rev_prediction", "Rev_manual",
 					"Rev_previous"
@@ -464,7 +464,7 @@ analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 
 	out <- list.files(session_folder, pattern = "Results_", recursive = T, full.names = T) %>% # TODO: use get_session_files()
 		pbmcapply::pbmclapply(function(file) {
-			BaySREn:::import_data(file) %>%
+			import_data(file) %>%
 				tidyr::pivot_wider(names_from = Indicator, values_from = Value) %>%
 				transmute(
 					Iter,
@@ -583,9 +583,9 @@ analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 			mutate(
 				Score = glue("{signif(Score, 3)} ({score})"),
 				Pos_labels = glue("{Pos_labels} / {tot_pos}"),
-				Sensitivity = BaySREn:::percent(Sensitivity),
+				Sensitivity = percent(Sensitivity),
 				Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
-				Efficiency = BaySREn:::percent(Efficiency),
+				Efficiency = percent(Efficiency),
 				across(.fns = as.character)
 			) %>%
 			tidyr::pivot_longer(everything(), names_to = "Parameter", "Value"),
@@ -598,8 +598,8 @@ analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 			mutate(
 				Pos_labels = glue("{Pos_labels} / {tot_pos}"),
 				Tot_labeled = glue("{Tot_labeled} / {tot_records}"),
-				Sensitivity = BaySREn:::percent(Sensitivity),
-				Efficiency = BaySREn:::percent(Efficiency),
+				Sensitivity = percent(Sensitivity),
+				Efficiency = percent(Efficiency),
 				Score = glue("{signif(Score, 3)} ({score})"),
 				across(.fns = as.character)
 			),
