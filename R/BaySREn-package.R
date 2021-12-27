@@ -19,10 +19,9 @@
 #' Finally, the framework provides a tool to generate search queries with online
 #' scientific databases based on an already labelled corpus of citation data.
 #'
-#' @import dplyr
-#' @import ggplot2
-#' @import glue
+#' @import dplyr ggplot2
+#' @importFrom glue glue
+#' @importFrom utils head tail str
 #' @importFrom stats setNames quantile
-#' @importFrom utils head tail
 #'
 NULL
