@@ -55,7 +55,6 @@ invalid.
 query <- "Test query"
 year_query <- "2010-2020"
 
-library(lubridate)
 
 ## Example for Web Of Science
 year_query <- clean_date_filter_arg(year_query,

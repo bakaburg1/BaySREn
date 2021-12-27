@@ -18,7 +18,7 @@ escape.}
 \code{\link[knitr:kable]{knitr::kable()}}}
 }
 \value{
-An \code{\link[rkmarkdown:render]{rkmarkdown::render()}} ready table.
+An \code{\link[rmarkdown:render]{rkmarkdown::render()}} ready table.
 }
 \description{
 A publication friendly version of \code{\link[knitr:kable]{knitr::kable()}}.

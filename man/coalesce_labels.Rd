@@ -28,6 +28,6 @@ considered from left to right.
 }
 \details{
 This function is a wrapper over
-\code{\link[dplyr:coalesce]{dplyr::coalesce}()} which allow to have a
+\code{\link[dplyr:coalesce]{coalesce}()} which allow to have a
 standard coalescing scheme for an annotation file.
 }
