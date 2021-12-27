@@ -40,9 +40,9 @@ summarise_vector <- function(vec) {
 #' @param add_session_totals Whether to add the total number of record.
 #'
 #' @return For each source:\item{Records}{The number of records related to the
-#'   source.}\item{\% over total}{the percentage over the total
+#'   source.}\item{% over total}{the percentage over the total
 #'   records.}\item{Source specific records}{the number of record derived only
-#'   from that source.}\item{\% over source total}{the value in \code{Source
+#'   from that source.}\item{% over source total}{the value in \code{Source
 #'   specific records} as percentage over the source total.} If
 #'   \code{as_data_frame} is \code{TRUE}, the results are returned as a data
 #'   frame with a row for each source, otherwise as a nested list.
@@ -452,7 +452,7 @@ summarise_annotations_by_session <- function(sessions_folder = getOption("baysre
 #'
 #' @examples
 #'
-#' format_interval(qbeta(c(.05, .5, .95), 10, 14), percent = TRUE)
+#' BaySREn:::format_interval(qbeta(c(.05, .5, .95), 10, 14), percent = TRUE)
 #'
 format_interval <- function(interval, percent = FALSE) { # TODO: change "percent" into a user definable function, like for get_source_distribution()
   interval <- sort(interval)
