@@ -23,17 +23,15 @@ License: MIT + file LICENSE
 URL: https://github.com/bakaburg1/baysren
 BugReports: https://github.com/bakaburg1/baysren/issues
 Imports:
-    dplyr (>= 1.0.2),
-    stringr (>= 1.4.0),
-    magrittr (>= 2.0.1),
-    tidyr (>= 1.1.4),
-    brms (>= 2.16.3),
-    extraDistr (>= 1.9.1),
-    arm (>= 1.12.2),
     bartMachine (>= 1.2.6),
+    brms (>= 2.16.3),
     broom (>= 0.7.10),
     crrri (>= 0.0.13),
+    dplyr (>= 1.0.2),
+    extraDistr (>= 1.9.1),
+    ggplot2 (>= 3.3.5),
     ggridges (>= 0.5.3),
+    glue (>= 1.6.0),
     grDevices (>= 4.1.2),
     httr (>= 1.4.2),
     igraph (>= 1.2.9),
@@ -42,6 +40,7 @@ Imports:
     knitr (>= 1.37),
     lexicon (>= 1.2.1),
     lubridate (>= 1.8.0),
+    magrittr (>= 2.0.1),
     methods (>= 4.1.2),
     openxlsx (>= 4.2.4),
     parallel (>= 4.1.2),
@@ -56,15 +55,14 @@ Imports:
     rentrez (>= 1.2.3),
     rpart (>= 4.1.15),
     stats (>= 4.1.2),
+    stringr (>= 1.4.0),
     tictoc (>= 1.0.1),
+    tidyr (>= 1.1.4),
     tidytrees (>= 0.2.3),
     tm (>= 0.7.8),
     utils (>= 4.1.2),
     viridis (>= 0.6.2),
-    wosr (>= 0.3.0),
-    ggplot2 (>= 3.3.5),
-    glue (>= 1.6.0),
-    tidyselect (>= 1.1.1)
+    wosr (>= 0.3.0)
 Suggests:
     testthat (>= 3.0.0)
 Encoding: UTF-8
