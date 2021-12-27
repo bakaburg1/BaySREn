@@ -20,10 +20,11 @@ Parse and normalize IEEE data downloaded manually (as csv or excel files)
 from \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 }
 \examples{
-
 \dontrun{
-dataRaw <- import_data(file.path("Records", "Session 1", 'Query',
-  'IEEE.csv'))
+dataRaw <- import_data(file.path(
+  "Records", "Session 1", "Query",
+  "IEEE.csv"
+))
 
 parse_ieee(dataRaw)
 }

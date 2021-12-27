@@ -23,17 +23,16 @@ differences in the labelling introduced by the last automatic classification
 / review.
 }
 \examples{
-
 \dontrun{
 
 # Taking the path to an annotation data file; also the actual data frame can
 # be passed
- Annotations <- get_session_files("Session1")$Annotations[2]
+Annotations <- get_session_files("Session1")$Annotations[2]
 
- out <- compute_changes(Annotations)
+out <- compute_changes(Annotations)
 
- # The output is easier to read if changed in a long format:
- str(out) # the easiest solution for fast inspection of results
- tidyr::pivot_longer(everything(), names_to = 'Indicator', values_to = 'Value') # To get a long format data frame
+# The output is easier to read if changed in a long format:
+str(out) # the easiest solution for fast inspection of results
+tidyr::pivot_longer(everything(), names_to = "Indicator", values_to = "Value") # To get a long format data frame
 }
 }

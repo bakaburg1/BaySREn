@@ -33,18 +33,18 @@ records from specific session, query, or source combinations. Only parsed or
 API downloaded record paths will be returned, not the raw data source files.
 }
 \examples{
-
 \dontrun{
 journal <- perform_search_session(
   query = query, year_query = year_filter,
-  session_name = 'Session1', query_name = 'Query1',
-  records_folder = 'Records',
-  journal = 'Session_journal.csv')
+  session_name = "Session1", query_name = "Query1",
+  records_folder = "Records",
+  journal = "Session_journal.csv"
+)
 
-  # using the journal as data frame
-  paths <- extract_source_file_paths(journal)
+# using the journal as data frame
+paths <- extract_source_file_paths(journal)
 
-  # using the journal path
-  paths <- extract_source_file_paths('Session_journal.csv')
+# using the journal path
+paths <- extract_source_file_paths("Session_journal.csv")
 }
 }

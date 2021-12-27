@@ -63,7 +63,7 @@ resistant))'
 # common logical comparators can be used, i.e. <, <=, >, >=, while dashes
 # denotes inclusive date intervals. A single year restricts results to one year
 # period.
-year_filter <- '2010-2020'
+year_filter <- "2010-2020"
 
 records <- search_wos(query, year_filter)
 

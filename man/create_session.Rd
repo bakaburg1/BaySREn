@@ -44,13 +44,13 @@ Document Term Matrix (DTM), a summary of each classification iteration and the
 posterior samples of the Bayesian predictions.
 }
 \examples{
-
 \dontrun{
 journal <- perform_search_session(
-query = query, year_query = year_filter,
-session_name = 'Session1', query_name = 'Query1',
-records_folder = 'Records',
-journal = 'Session_journal.csv')
+  query = query, year_query = year_filter,
+  session_name = "Session1", query_name = "Query1",
+  records_folder = "Records",
+  journal = "Session_journal.csv"
+)
 
 record_files <- extract_source_file_paths(journal)
 

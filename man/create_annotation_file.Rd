@@ -39,7 +39,6 @@ existing annotation data sets or previous classifications (without importing
 the data).
 }
 \examples{
-
 \dontrun{
 # This function extracts the appropriate file paths from a session journal.
 # By default it passes all stored files, otherwise it can be filtered by
@@ -52,10 +51,10 @@ record_files <- extract_source_file_paths(journal)
 input <- record_files
 
 # or specific record file folders
-input <- file.path('Records', 'Session1', 'Query1')
+input <- file.path("Records", "Session1", "Query1")
 
 # or parent folders, since it searches for files recursively
-input <- 'Records'
+input <- "Records"
 
 # or the already parsed files
 input <- read_bib_files(record_files)

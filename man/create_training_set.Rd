@@ -23,10 +23,9 @@ keeping terms above a given document frequency among the negative labelled
 records and which are present in at least two records
 }
 \examples{
-
 \dontrun{
 
-Records <- import_data(get_session_files('Session1')$Records)
+Records <- import_data(get_session_files("Session1")$Records)
 
 DMT <- create_training_set(Records)
 }

@@ -78,7 +78,6 @@ search sessions. If a journal file is already present, the new results will be
 added.
 }
 \examples{
-
 \dontrun{
 # Initial query to be built on domain knowledge. It accepts OR, AND, NOT
 # boolean operators and round brackets to group terms.
@@ -92,12 +91,13 @@ resistant))'
 # common logical comparators can be used, i.e. <, <=, >, >=, while dashes
 # denotes inclusive date intervals. A single year restricts results to one year
 # period.
-year_filter <- '2010-2020'
+year_filter <- "2010-2020"
 
 journal <- perform_search_session(
-	query = query, year_query = year_filter,
-	session_name = 'Session1', query_name = 'Query1',
-	records_folder = 'Records',
-journal = 'Session_journal.csv')
+  query = query, year_query = year_filter,
+  session_name = "Session1", query_name = "Query1",
+  records_folder = "Records",
+  journal = "Session_journal.csv"
+)
 }
 }

@@ -68,18 +68,17 @@ Optionally, a plot can be generated with the marginal impact of each
 parameter.
 }
 \examples{
-
 \dontrun{
-  out <- analyse_grid_search()
+out <- analyse_grid_search()
 
-  # check the best parameter set (use str() for easy to read output)
-  str(out$best_parms)
+# check the best parameter set (use str() for easy to read output)
+str(out$best_parms)
 
-  # check the best set for each performance cluster
-  View(out$best_by_rule)
+# check the best set for each performance cluster
+View(out$best_by_rule)
 
-  # plot parameter marginal impact is the plot argument is TRUE
-  out$plot
+# plot parameter marginal impact is the plot argument is TRUE
+out$plot
 }
 
 }

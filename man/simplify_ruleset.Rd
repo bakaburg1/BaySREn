@@ -32,14 +32,13 @@ The suggested approach is apply this function on the output of
 proposed rules.
 }
 \examples{
-
 \dontrun{
-candidate_queries <- readRDS(file.path('Sessions', 'Session1', 'rule_data.rds'))
+candidate_queries <- readRDS(file.path("Sessions", "Session1", "rule_data.rds"))
 
 Target <- candidate_queries$DTM$Target
 SpecificDTM <- candidate_queries$SpecificDTM
 
-simplified_rules <- file.path('Sessions', 'Session1', 'Selected_rules.xlsx') \%>\%
+simplified_rules <- file.path("Sessions", "Session1", "Selected_rules.xlsx") \%>\%
   import_data() \%>\%
   simplify_ruleset(target_vec = Target, target_data = SpecificDTM) \%>\%
   pull(rule)

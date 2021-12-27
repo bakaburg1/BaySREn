@@ -30,7 +30,6 @@ Applies \code{\link{summarise_annotations}()} to all session in the
 \code{sessions_folder} folder.
 }
 \examples{
-
 \dontrun{
 
 summarise_annotations_by_session()

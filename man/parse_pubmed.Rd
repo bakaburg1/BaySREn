@@ -20,10 +20,11 @@ Parse and normalize Pubmed ".nbib" files downloaded through
 \url{https://pubmed.ncbi.nlm.nih.gov/}.
 }
 \examples{
-
 \dontrun{
-dataRaw <- readr::read_file(file.path("Records", "Session 1", 'Query',
-  'Pubmed.nbib'))
+dataRaw <- readr::read_file(file.path(
+  "Records", "Session 1", "Query",
+  "Pubmed.nbib"
+))
 
 parse_pubmed(dataRaw)
 }

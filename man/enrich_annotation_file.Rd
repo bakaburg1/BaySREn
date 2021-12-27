@@ -186,21 +186,18 @@ grid is extremely computationally intensive.
 The function saves a number of output files on disk.
 }
 \examples{
-
-
 \dontrun{
 
 ## A simple call using a session name will automatically pick up the right
 # annotation file (the initial one or an already classified one if existing)
 # and start a CR iteration.
 
-enrich_annotation_file('Session1')
+enrich_annotation_file("Session1")
 
 # Alternatively, an Annotation file can be passed manually (discouraged)
 
-records_file <- get_session_files('Session1')$Records
+records_file <- get_session_files("Session1")$Records
 
-enrich_annotation_file('Session1', file = records_file)
-
+enrich_annotation_file("Session1", file = records_file)
 }
 }

@@ -18,7 +18,6 @@ Takes the output of \code{\link{summarise_sources_by_session}()} and formats it
 as a list.
 }
 \examples{
-
 \dontrun{
 # Describe source distribution by source and in total
 source_summary <- summarise_sources_by_session(add_global_totals = TRUE)

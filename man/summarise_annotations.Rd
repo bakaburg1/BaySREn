@@ -37,9 +37,8 @@ otherwise the results would not consider the changes made through the manual
 review of the automatic classification.
 }
 \examples{
-
 \dontrun{
 
-summarise_annotations('Session1')
+summarise_annotations("Session1")
 }
 }

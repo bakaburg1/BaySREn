@@ -24,13 +24,12 @@ Publication friendly formatting of the results of
 (i.e., one per session), the will be added as new columns.
 }
 \examples{
-
 \dontrun{
 Performance <- list(
- s1 = get_session_files('Session1')$Annotations \%>\% last() \%>\%
-  import_data() \%>\% estimate_performance(),
- s2 = get_session_files('Session2')$Annotations \%>\% last() \%>\%
-  import_data() \%>\% estimate_performance()
+  s1 = get_session_files("Session1")$Annotations \%>\% last() \%>\%
+    import_data() \%>\% estimate_performance(),
+  s2 = get_session_files("Session2")$Annotations \%>\% last() \%>\%
+    import_data() \%>\% estimate_performance()
 )
 
 format_performance(Performance$s1, Performance$s2)

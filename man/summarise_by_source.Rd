@@ -35,12 +35,10 @@ records in an Annotation data set. It also reports the fraction of records
 that are unique for each database.
 }
 \examples{
-
 \dontrun{
 
-records <- get_session_files('Session1')$Records
+records <- get_session_files("Session1")$Records
 
 summarise_by_source(records)
-
 }
 }

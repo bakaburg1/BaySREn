@@ -23,15 +23,14 @@ General wrapper that imports CSV/Excel/RDS files if a file path is given in
 through. An error is raised in the case of unrecognized objects/files.
 }
 \examples{
-
 \dontrun{
 # These all work:
 
-data <- import_data('data.csv')
+data <- import_data("data.csv")
 
-data <- import_data('data.xlsx', sheet = 2)
+data <- import_data("data.xlsx", sheet = 2)
 
-data <- import_data('data.rds')
+data <- import_data("data.rds")
 
 data <- import_data(data)
 }

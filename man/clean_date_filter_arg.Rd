@@ -58,21 +58,26 @@ year_query <- "2010-2020"
 library(lubridate)
 
 ## Example for Web Of Science
-year_query <- clean_date_filter_arg(year_query, cases = list(
-gt = '{year_piece + 1}-{year(today())}', ge = '{year_piece}-{year(today())}',
-eq = '{year_piece}-{year_piece}', le = '1985-{year_piece}',
-range = '{year_piece[1]}-{year_piece[2]}', lt = '1985-{year_piece - 1}'),
-arg_in_query_test = 'PY ?=', query = query)
+year_query <- clean_date_filter_arg(year_query,
+  cases = list(
+    gt = "{year_piece + 1}-{year(today())}", ge = "{year_piece}-{year(today())}",
+    eq = "{year_piece}-{year_piece}", le = "1985-{year_piece}",
+    range = "{year_piece[1]}-{year_piece[2]}", lt = "1985-{year_piece - 1}"
+  ),
+  arg_in_query_test = "PY ?=", query = query
+)
 
 ## Example for Pubmed
-year_query <- clean_date_filter_arg(year_query, cases = list(
-gt = '{year_piece + 1}[PDAT]:{year(today())}[PDAT]',
-ge = '{year_piece}[PDAT]:{year(today())}[PDAT]',
-eq = '{year_piece}[PDAT]:{year_piece}[PDAT]',
-le = '1000[PDAT]:{year_piece}[PDAT]',
-lt = '1000[PDAT]:{year_piece - 1}[PDAT]',
-range = '{year_piece[1]}[PDAT]:{year_piece[2]}[PDAT]'),
-arg_in_query_test = '[PDAT]', query = query)
-
+year_query <- clean_date_filter_arg(year_query,
+  cases = list(
+    gt = "{year_piece + 1}[PDAT]:{year(today())}[PDAT]",
+    ge = "{year_piece}[PDAT]:{year(today())}[PDAT]",
+    eq = "{year_piece}[PDAT]:{year_piece}[PDAT]",
+    le = "1000[PDAT]:{year_piece}[PDAT]",
+    lt = "1000[PDAT]:{year_piece - 1}[PDAT]",
+    range = "{year_piece[1]}[PDAT]:{year_piece[2]}[PDAT]"
+  ),
+  arg_in_query_test = "[PDAT]", query = query
+)
 
 }

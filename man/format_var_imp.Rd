@@ -22,9 +22,8 @@ record it was found in; uses "&" and "|" to identify non-consecutive n-grams
 and redundant terms; reduce numeric values to significant digits.
 }
 \examples{
-
 \dontrun{
-output <- extract_var_imp('Session1')
+output <- extract_var_imp("Session1")
 
 format_var_imp(output)
 }

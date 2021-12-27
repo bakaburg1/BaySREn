@@ -20,9 +20,8 @@ Parse and normalize SCOPUS data downloaded manually (as csv or excel files)
 from \url{https://www.scopus.com/search/form.uri?display=basic#basic}.
 }
 \examples{
-
 \dontrun{
-dataRaw <- import_data(file.path("Records", "Session 1", 'Query', 'EMBASE.csv'))
+dataRaw <- import_data(file.path("Records", "Session 1", "Query", "EMBASE.csv"))
 
 parse_embase(dataRaw)
 }

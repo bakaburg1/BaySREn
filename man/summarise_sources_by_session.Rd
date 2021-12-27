@@ -35,7 +35,6 @@ extra group with the overall results is reported if
 Applies \code{\link{summarise_by_source}()} to all selected sessions.
 }
 \examples{
-
 \dontrun{
 # Describe source distribution by source and in total
 summarise_sources_by_session(add_global_totals = TRUE)

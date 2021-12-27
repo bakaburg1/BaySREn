@@ -17,9 +17,8 @@ Parse and normalize citation data files. If the file was already parsed, will
 be just read.
 }
 \examples{
-
 \dontrun{
-data_files <- list.files(file.path("Records", "Session 1", 'Query'))
+data_files <- list.files(file.path("Records", "Session 1", "Query"))
 
 read_bib_files(data_files)
 }

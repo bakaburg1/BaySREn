@@ -24,10 +24,10 @@ A \code{ggplot2} object.
 Plot the cumulative trend of positive and negative labelled records.
 }
 \examples{
-
 \dontrun{
-data <- get_session_files('Session1')$Annotations \%>\% last() \%>\%
- import_data()
+data <- get_session_files("Session1")$Annotations \%>\%
+  last() \%>\%
+  import_data()
 
 plot_classification_trend(data)
 }

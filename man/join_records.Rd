@@ -20,9 +20,8 @@ Take a list of data frames containing parsed citation data created using
 using \code{\link{fix_duplicated_records}()}.
 }
 \examples{
-
 \dontrun{
-data_files <- list.files(file.path("Records", "Session 1", 'Query'))
+data_files <- list.files(file.path("Records", "Session 1", "Query"))
 
 record_list <- read_bib_files(data_files)
 

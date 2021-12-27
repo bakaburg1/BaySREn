@@ -20,9 +20,8 @@ Parse and normalize Web of Science data downloaded manually (as CSV or Excel
 files) from \url{https://www.webofknowledge.com}.
 }
 \examples{
-
 \dontrun{
-dataRaw <- import_data(file.path("Records", "Session 1", 'Query', 'WOS.csv'))
+dataRaw <- import_data(file.path("Records", "Session 1", "Query", "WOS.csv"))
 
 parse_wos(dataRaw)
 }

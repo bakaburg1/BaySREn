@@ -70,15 +70,16 @@ than \code{min.freq} are considered. The function also uses cosine similarity
 to identify relevant subclusters of related terms or redundant ones.
 }
 \examples{
-
 \dontrun{
 
-Records <- import_data(get_session_files('Session1')$Records)
+Records <- import_data(get_session_files("Session1")$Records)
 
 Title_DTM <- with(
   Records,
-  text_to_DTM(Title, min.freq = 20, label = 'TITLE__', ids = ID,
-    freq.subset.ids = ID[Target \%in\% c('y', 'n')])
+  text_to_DTM(Title,
+    min.freq = 20, label = "TITLE__", ids = ID,
+    freq.subset.ids = ID[Target \%in\% c("y", "n")]
   )
+)
 }
 }

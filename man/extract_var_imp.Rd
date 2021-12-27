@@ -47,8 +47,7 @@ model related and the linear Z scores are high) or in association with other
 terms (only the model Z score is high).
 }
 \examples{
-
 \dontrun{
-  extract_var_imp('Session1')
+extract_var_imp("Session1")
 }
 }

@@ -50,19 +50,19 @@ setting them \code{TRUE} or \code{FALSE}. Once the rules are reviewed, it's
 advisable to change the file name, e.g., "Selected_rules.xlsx".
 }
 \examples{
-
 \dontrun{
-candidate_queries <- readRDS(file.path('Sessions', 'Session1', 'rule_data.rds'))
+candidate_queries <- readRDS(file.path("Sessions", "Session1", "rule_data.rds"))
 
 Target <- candidate_queries$DTM$Target
 SpecificDTM <- candidate_queries$SpecificDTM
 
-selection_set_file <- file.path('Sessions', 'Session1', 'Selected_rules_reviewed.xlsx')
+selection_set_file <- file.path("Sessions", "Session1", "Selected_rules_reviewed.xlsx")
 
 selection_set <- generate_rule_selection_set(
-    candidate_queries$rule,
-    target_vec = Target,
-    target_data = SpecificDTM,
-    save_path = selection_set_file)
+  candidate_queries$rule,
+  target_vec = Target,
+  target_data = SpecificDTM,
+  save_path = selection_set_file
+)
 }
 }

@@ -23,10 +23,9 @@ absolute number/proportion as values.
 Describe the distribution of the number of sources shared by records.
 }
 \examples{
-
 \dontrun{
 # Get the annotation file
-Annotation_file <- get_session_files('Session1')$Annotations[1]
+Annotation_file <- get_session_files("Session1")$Annotations[1]
 
 # Transform it into a list
 get_source_distribution(Annotation_file)

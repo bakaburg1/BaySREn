@@ -22,32 +22,36 @@ format.
 }
 \examples{
 
-rules <- c('V__network._.patient \%in\% "1" & V__patient_transport \%in\% "1" &
+rules <- c(
+  'V__network._.patient \%in\% "1" & V__patient_transport \%in\% "1" &
   V__transmission \%in\% "1" & V__personnel \%in\% "0" & V__therapy \%in\% "0"',
   'V__Donker_T \%in\% "1" & V__bacterium_isolate \%in\% "0" & V__able \%in\% "0"',
   'V__network._.patient \%in\% "1" & V__resistant_staphylococcus_aureus \%in\% "1"
-  & V__carlo.monte.carlo._.monte \%in\% "0"')
+  & V__carlo.monte.carlo._.monte \%in\% "0"'
+)
 
 new_query <- rules_to_query(rules)
 
-writeLines(query, file.path('Sessions', 'Session1', 'Resulting_query.txt'))
+writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 
 \dontrun{
 # Starting from a rule review file:
 
-candidate_queries <- readRDS(file.path('Sessions', 'Session1', 'rule_data.rds'))
+candidate_queries <- readRDS(file.path("Sessions", "Session1", "rule_data.rds"))
 
 Target <- candidate_queries$DTM$Target
 SpecificDTM <- candidate_queries$SpecificDTM
 
-simplified_rules <- file.path('Sessions', 'Session1',
-  'Selected_rules_reviewed.xlsx') \%>\%
-import_data() \%>\%
-	simplify_ruleset(target_vec = Target, target_data = SpecificDTM) \%>\%
-	pull(rule)
+simplified_rules <- file.path(
+  "Sessions", "Session1",
+  "Selected_rules_reviewed.xlsx"
+) \%>\%
+  import_data() \%>\%
+  simplify_ruleset(target_vec = Target, target_data = SpecificDTM) \%>\%
+  pull(rule)
 
 new_query <- rules_to_query(simplified_rules)
 
-writeLines(query, file.path('Sessions', 'Session1', 'Resulting_query.txt'))
+writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 }
 }
