@@ -576,7 +576,7 @@ format_var_imp <- function(var_imp, as_data_frame = TRUE) {
 #' @param ... Other arguments passed to
 #'   \code{\link[knitr:kable]{knitr::kable()}}
 #'
-#' @return An \code{\link[rkmarkdown:render]{rkmarkdown::render()}} ready table.
+#' @return An \code{\link[rmarkdown:render]{rkmarkdown::render()}} ready table.
 #'
 print_table <- function(data, caption = "", allow_math = FALSE, ...) {
   if (knitr::is_latex_output()) {
