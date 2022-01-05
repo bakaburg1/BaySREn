@@ -21,7 +21,7 @@
 #'
 #' @import dplyr ggplot2
 #' @importFrom glue glue
-#' @importFrom utils head tail str
-#' @importFrom stats setNames quantile
+#' @importFrom utils head tail str capture.output
+#' @importFrom stats setNames quantile na.omit plogis qlogis sd
 #'
 NULL
