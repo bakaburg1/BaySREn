@@ -52,6 +52,6 @@ simplified_rules <- file.path(
 
 new_query <- rules_to_query(simplified_rules)
 
-writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
+writeLines(rules_to_query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 }
 }

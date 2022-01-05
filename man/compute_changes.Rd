@@ -33,6 +33,9 @@ out <- compute_changes(Annotations)
 
 # The output is easier to read if changed in a long format:
 str(out) # the easiest solution for fast inspection of results
-tidyr::pivot_longer(everything(), names_to = "Indicator", values_to = "Value") # To get a long format data frame
+
+# To get a long format data frame
+tidyr::pivot_longer(out, everything(),
+  names_to = "Indicator", values_to = "Value")
 }
 }

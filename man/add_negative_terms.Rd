@@ -7,7 +7,7 @@
 add_negative_terms(rules, target_vec, target_data)
 }
 \arguments{
-\item{rules}{A vector of rules as produced by \code{\link{extract_rules()}}.}
+\item{rules}{A vector of rules as produced by \code{\link[=extract_rules]{extract_rules()}}.}
 
 \item{target_vec}{A vector of labels.}
 
@@ -25,5 +25,5 @@ pos/neg' = glue('{tot_pos}/{tot_neg}'),
 Increases rule specificity by adding negative terms iteratively, selecting
 only terms that remove non-relevant records without impacting the number of
 positive matches. Usually not used by itself, but inside
-\code{\link{generate_rule_selection_set()}}.
+\code{\link[=generate_rule_selection_set]{generate_rule_selection_set()}}.
 }
