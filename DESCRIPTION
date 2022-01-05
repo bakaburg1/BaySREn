@@ -1,5 +1,5 @@
 Package: BaySREn
-Title: BaySREn. An R package to automatise citation collection and screening in Systematic Reviews. Based on Bayesian active machine learning.
+Title: BaySREn. An R package to automatise citation collection and screening in Systematic Reviews. Based on Bayesian active machine learning
 Version: 0.1
 Authors@R: c(
     person(given = "Angelo",
