@@ -48,6 +48,10 @@ coalesce_labels <- function(data, label_cols = c("Rev_prediction_new", "Rev_pred
 #' DMT <- create_training_set(Records)
 #' }
 create_training_set <- function(Records, min_freq = 0.05) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- ID <- Title <- Abstract <- Authors <- Keywords <- Mesh <- NULL
+
   if (min_freq <= 0 | min_freq > 1) stop('"min_freq" should be between 0 and 1.')
 
   Records <- import_data(Records) %>%
@@ -141,8 +145,8 @@ create_training_set <- function(Records, min_freq = 0.05) {
   ) %>%
     distinct() %>% # remove the duplicated positive matches
     select(
-    	where(~ !is.numeric(.x)), # Keep ID and Target
-    	where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
+    	tidyselect::where(~ !is.numeric(.x)), # Keep ID and Target
+    	tidyselect::where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
     )
 }
 
@@ -417,6 +421,9 @@ enrich_annotation_file <- function(session_name,
                                    prev_classification = NULL,
                                    save_samples = TRUE,
                                    rebuild = FALSE, ...) {
+
+	# Silence CMD CHECK about non standard eval
+	Rev_manual <- . <- Rev_prediction <- ID <- Pred_Up <- Pred_Low <- Predicted_label <- Order <- Rev_previous <- Term <- Val <- Value <- NULL
 
   # pick the last annotated record file or the source one if any
   if (is.null(file)) {
@@ -955,6 +962,9 @@ enrich_annotation_file <- function(session_name,
 #' @export
 #'
 consolidate_results <- function(session_name, sessions_folder = getOption("baysren.sessions_folder")) {
+	# Silence CMD CHECK about non standard eval
+	results_files <- Indicator <- results_files <- NULL
+
   annotations_files <- get_session_files(session_name, sessions_folder)$Annotations
 
   message("Loading annotations...")
@@ -1087,6 +1097,9 @@ perform_grid_evaluation <- function(records, sessions_folder = "Grid_Search",
                                       stop_after = 4,
                                       pos_target = NULL, labeling_limit = NULL
                                     )) {
+
+	# Silence CMD CHECK about non standard eval
+	Rev_previous <- Order <- NULL
 
   # file: 'Grid_Search/Classification_data.xlsx'
 

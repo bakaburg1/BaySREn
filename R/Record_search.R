@@ -168,6 +168,10 @@ clean_date_filter_arg <- function(year_query, cases,
 search_wos <- function(query, year_query = NULL, additional_fields = NULL,
                        api_key = getOption("baysren.wos_api_key"),
                        parallel = TRUE, parse_query = TRUE, ...) {
+
+	# Silence CMD CHECK about non standard eval
+	schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
+
   message("Searching WOS...")
 
   default_field <- "TS" # may change in the future
@@ -182,7 +186,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
         pbmcapply::pbmclapply(all_resps, wosr:::one_parse)
       }
 
-      qr_out <- wosr:::query_wos(query,
+      qr_out <- wosr::query_wos(query,
         editions = editions, sid = sid,
         ...
       )
@@ -453,6 +457,10 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
                         api_key = getOption("baysren.ieee_api_key"), allow_web_scraping = TRUE,
                         wait_for = 20, record_limit = NULL) {
+
+	# Silence CMD CHECK about non standard eval
+	articleNumber <- articleTitle <- doi <- authors <- publicationTitle <- contentType <- citationCount <- publicationDate <- abstract_url <- title <- abstract <- publication_title <- content_type <- citing_paper_count <- publication_date <- kwd <- firstName <- lastName <- Order <- ID <- Title <- Abstract <- DOI <- URL <- Authors <- Journal <- Article_type <- Author_keywords <- Keywords <- Mesh <- N_citations <- Published <- Source <- Source_type <- NULL
+
   message("Searching IEEE...")
 
   if (!is.null(additional_fields) & length(additional_fields) > 0) {
@@ -499,7 +507,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
     endpoint <- httr::parse_url("https://ieeexplore.ieee.org/search/searchresult.jsp?")
 
-    endpoint$query <- c(queryText = query, additional_fields) %>% lapply(str_squish)
+    endpoint$query <- c(queryText = query, additional_fields) %>% lapply(stringr::str_squish)
 
     url <- httr::build_url(endpoint)
 
@@ -587,7 +595,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     query <- c(
       querytext = query, additional_fields,
       apikey = api_key, format = "json"
-    ) %>% lapply(str_squish)
+    ) %>% lapply(stringr::str_squish)
 
     message("- fetching records")
 
@@ -796,6 +804,10 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
                                    session_name = "Session1", query_name = "Query1",
                                    records_folder = "Records", overwrite = FALSE,
                                    journal = "Session_journal.csv") {
+
+	# Silence CMD CHECK about non standard eval
+	write_csv <- Session_ID <- Query_ID <- Source <- Type <- Timestamp <- NULL
+
   load_if_exists <- function(out_file, overwrite) {
     if (file.exists(out_file)) {
       if (!overwrite) {
@@ -842,7 +854,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
         # find input files (i.e. files not containing API or parsed in the name)
         input_files <- list.files(folder_path, full.names = FALSE) %>%
           stringr::str_subset("API|parsed", negate = TRUE) %>%
-          stringr::str_subset(regex(source, ignore_case = TRUE))
+          stringr::str_subset(stringr::regex(source, ignore_case = TRUE))
 
         if (length(input_files) > 0) { # continue if any input file exists
 

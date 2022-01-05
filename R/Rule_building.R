@@ -41,6 +41,10 @@
 extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.25,
                           n.trees = 800, sessions_folder = getOption("baysren.sessions_folder"),
                           save_path = file.path(sessions_folder, session_name, "rule_data.rds"), ...) {
+
+	# Silence CMD CHECK about non standard eval
+	ID <- Target <- Score <- Term <- NULL
+
   message("Preparing the data")
 
   files <- get_session_files(session_name, sessions_folder) %>%
@@ -89,7 +93,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
     setNames(paste0("V__", specific.terms)) %>%
     bind_cols() %>%
     mutate_all(~ replace(.x, is.na(.x), 0)) %>%
-    select(where(~ n_distinct(.x) > 1))
+    select(tidyselect::where(~ n_distinct(.x) > 1))
 
   print(paste("N. features:", ncol(SpecificDTM)))
 
@@ -122,7 +126,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
   )
 
   if (!is.null(save_path)) {
-    readr::write_rds(file.path(sessions_folder, session_name, file_name))
+    readr::write_rds(save_path)
   }
 
   out
@@ -202,6 +206,10 @@ add_cumulative <- function(data, order_by = "score", rule_var = "rule") {
 #' }
 generate_rule_selection_set <- function(rules, target_vec, target_data, add_negative_terms = TRUE,
                                         save_path = NULL) {
+
+	# Silence CMD CHECK about non standard eval
+	rule <- term <- neg_term <- rule_with_negs <- cum_pos <- score <- NULL
+
   rules <- rules[stringr::str_detect(rules, '"1"')] %>% # Only rules with a least one positive component
     tidytrees::simplify_rules() %>% # Remove redundant rule components
     unique()
@@ -281,9 +289,9 @@ generate_rule_selection_set <- function(rules, target_vec, target_data, add_nega
 #' Increases rule specificity by adding negative terms iteratively, selecting
 #' only terms that remove non-relevant records without impacting the number of
 #' positive matches. Usually not used by itself, but inside
-#' \code{\link{generate_rule_selection_set()}}.
+#' [generate_rule_selection_set()].
 #'
-#' @param rules A vector of rules as produced by \code{\link{extract_rules()}}.
+#' @param rules A vector of rules as produced by [extract_rules()].
 #' @param target_vec A vector of labels.
 #' @param target_data A DTM with a number of rows as the elements in
 #'   \code{rules}.
@@ -294,12 +302,16 @@ generate_rule_selection_set <- function(rules, target_vec, target_data, add_nega
 #'
 
 add_negative_terms <- function(rules, target_vec, target_data) {
+
+	# Silence CMD CHECK about non standard eval
+	pos <- word <- term <- selected_term <- NULL
+
   message("- retrieving negative terms")
   pbmcapply::pbmclapply(rules, function(rule) {
     filt <- with(target_data, which(eval(str2expression(rule))))
 
     target_data <- target_data[filt, ] %>%
-    	select(where(~ n_distinct(.x) > 1))
+    	select(tidyselect::where(~ n_distinct(.x) > 1))
 
     target_vec <- target_vec[filt]
     tot_pos <- sum(target_vec == "y")
@@ -422,6 +434,10 @@ add_negative_terms <- function(rules, target_vec, target_data) {
 #'   pull(rule)
 #' }
 simplify_ruleset <- function(ruleset, target_vec, target_data) {
+
+	# Silence CMD CHECK about non standard eval
+	cum_neg <- cum_pos <- selected_rule <- rule <- NULL
+
   remove_redundant_rules <- function(data) {
     indexes <- data$pos_i
     subsets <- c()
@@ -444,7 +460,7 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
     ungroup() %>%
     filter(selected_rule %in% TRUE) %>%
     select(-selected_rule) %>%
-    mutate(across(rule, str_squish)) %>%
+    mutate(across(rule, stringr::str_squish)) %>%
     remove_redundant_rules() %>%
     summarise(
       local({
@@ -563,6 +579,10 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
 #' writeLines(rules_to_query, file.path("Sessions", "Session1", "Resulting_query.txt"))
 #' }
 rules_to_query <- function(rules) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- NULL
+
   stringr::str_remove_all(rules, "\\bV__") %>%
     sapply(function(r) {
       rules <- stringr::str_split(r, " & ") %>%

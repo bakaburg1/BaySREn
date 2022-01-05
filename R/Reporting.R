@@ -18,6 +18,10 @@
 #' # setosa: 50 (33.3%), versicolor: 50 (33.3%), virginica: 50 (33.3%)
 #'
 summarise_vector <- function(vec) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- NULL
+
   if (length(vec) == 0 | is.list(vec) | !is.null(dim(vec))) {
     return("incorrect input")
   }
@@ -60,6 +64,10 @@ summarise_vector <- function(vec) {
 #' }
 summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
                                 add_session_totals = TRUE) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- Records <- NULL
+
   data <- import_data(annotation_file)
 
   sources <- data$Source %>%
@@ -132,6 +140,10 @@ summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
 summarise_sources_by_session <- function(sessions = list.files(sessions_folder),
                                          sessions_folder = getOption("baysren.sessions_folder"),
                                          add_global_totals = TRUE, keep_session_label = FALSE, ...) {
+
+	# Silence CMD CHECK about non standard eval
+	session <- ID <- Session_label <- NULL
+
   if (length(sessions) == 1) {
     res <- get_session_files(session, sessions_folder)$Records %>%
       summarise_by_source(as_data_frame = TRUE, ...)
@@ -204,6 +216,10 @@ summarise_sources_by_session <- function(sessions = list.files(sessions_folder),
 #' source_session_summary_to_list(source_summary)
 #' }
 source_session_summary_to_list <- function(source_summary) { # TODO: include inside summarise_sources_by_session
+
+	# Silence CMD CHECK about non standard eval
+	Source <- Session_label <- NULL
+
   source_summary$Session_label %>%
     unique() %>%
     lapply(function(session) {
@@ -293,6 +309,10 @@ get_source_distribution <- function(annotation_file, as_propr = TRUE, format_fun
 #' }
 summarise_annotations <- function(session_name, sessions_folder = getOption("baysren.sessions_folder"),
                                   remove_empty_columns = TRUE, remove_raw_data = TRUE) {
+
+	# Silence CMD CHECK about non standard eval
+	Value <- Indicator <- `Target: y` <- `Target: n` <- Iter <- Positives <- Negatives <- `Change: unlab. -> y` <- `Change: unlab. -> n` <- `Change: unlab. -> *` <- `Change: y -> n` <- `Change: n -> y` <- `N. features` <- NULL
+
   result_list <- get_session_files(session_name, sessions_folder)$Results %>%
     lapply(function(file) {
       file %>%
@@ -359,7 +379,7 @@ summarise_annotations <- function(session_name, sessions_folder = getOption("bay
     bind_rows() %>%
     {
       if (remove_empty_columns) {
-        . <- select(., where(~ any(.x > 0)))
+        . <- select(., tidyselect::where(~ any(.x > 0)))
       }
 
       if (remove_raw_data) {
@@ -423,7 +443,7 @@ summarise_annotations_by_session <- function(sessions_folder = getOption("baysre
     bind_rows() %>%
     {
       if (remove_empty_columns) {
-        . <- select(., where(~ any(.x > 0)))
+        . <- select(., tidyselect::where(~ any(.x > 0)))
       }
 
       if (remove_raw_data) {
@@ -493,6 +513,10 @@ format_interval <- function(interval, percent = FALSE) { # TODO: change "percent
 #' format_performance(Performance$s1, Performance$s2)
 #' }
 format_performance <- function(..., session_names = NULL) {
+
+	# Silence CMD CHECK about non standard eval
+	total_records <- efficiency <- pred_positives <- sensitivity <- mod_r2 <- NULL
+
   elements <- list(...)
 
   if (is.null(session_names)) session_names <- paste("Session", 1:length(elements))
@@ -541,6 +565,10 @@ format_performance <- function(..., session_names = NULL) {
 #' format_var_imp(output)
 #' }
 format_var_imp <- function(var_imp, as_data_frame = TRUE) {
+
+	# Silence CMD CHECK about non standard eval
+	Term <- Value <- Score <- estimate <- statistic <- NULL
+
   var_imp <- var_imp %>%
     transmute(
       Component = stringr::str_extract(Term, "^\\w+(?=__)") %>%
@@ -582,7 +610,7 @@ print_table <- function(data, caption = "", allow_math = FALSE, ...) {
   if (knitr::is_latex_output()) {
     if (isTRUE(allow_math)) {
       data <- data %>%
-        mutate(across(where(is.character), ~ stringr::str_replace_all(.x, "%", "\\\\%"))) %>%
+        mutate(across(tidyselect::where(is.character), ~ stringr::str_replace_all(.x, "%", "\\\\%"))) %>%
         rename_with(~ stringr::str_replace_all(.x, "%", "\\\\%"))
     }
 
@@ -629,6 +657,10 @@ print_table <- function(data, caption = "", allow_math = FALSE, ...) {
 #'
 plot_predictive_densities <- function(session_name,
                                       sessions_folder = getOption("baysren.sessions_folder")) {
+
+	# Silence CMD CHECK about non standard eval
+	Target <- Rev_prediction_new <- Pred_Low <- Pred_Up <- ID <- Label <- . <- Iteration <- Samples <- Prob <- Dens <- Neg_lim <- Pos_lim <- NULL
+
   records_files <- get_session_files(session_name, sessions_folder)$Annotations
   samples_files <- get_session_files(session_name, sessions_folder)$Samples
 
@@ -736,6 +768,9 @@ plot_predictive_densities <- function(session_name,
 #' }
 plot_classification_trend <- function(records, column = NULL,
                                       step_size = 20, limit = NULL) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- Order <- Target <- Target <- Yes <- No <- NULL
 
   # Join manual classifications in one target column
   if (is.null(column)) {

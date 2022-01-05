@@ -27,9 +27,16 @@
 #'
 #' # The output is easier to read if changed in a long format:
 #' str(out) # the easiest solution for fast inspection of results
-#' tidyr::pivot_longer(everything(), names_to = "Indicator", values_to = "Value") # To get a long format data frame
+#'
+#' # To get a long format data frame
+#' tidyr::pivot_longer(out, everything(),
+#'   names_to = "Indicator", values_to = "Value")
 #' }
 compute_changes <- function(Annotations) {
+
+	# Silence CMD CHECK about non standard eval
+	Target <- . <- Col <- Total_labeled <- New_labels <- NULL
+
 	Annotations <- import_data(Annotations)
 
 	Annotations %>%
@@ -98,17 +105,18 @@ compute_changes <- function(Annotations) {
 #' @export
 #'
 estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
+
 	train_data$Target <- factor(coalesce_labels(train_data))
 
 	# TODO: switch to rstanarm to skip compilation
 	brms::brm(brms::brmsformula(Target ~ Pred_Low),
-						family = bernoulli,
+						family = brms::bernoulli,
 						data = train_data,
 						cores = 8, chains = 8, refresh = 0, iter = 8000, control = list(adapt_delta = .95),
 						backend = "cmdstan", seed = seed,
 						prior = c(
-							brms::prior(student_t(3, 0, 2.5), class = "Intercept"),
-							brms::prior(student_t(3, 0, 1.5), class = "b")
+							brms::set_prior("student_t(3, 0, 2.5)", class = "Intercept"),
+							brms::set_priorw("student_t(3, 0, 1.5)", class = "b")
 						)
 	)
 }
@@ -194,6 +202,10 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 																 nsamples = min(2500, sum(model$fit@sim$n_save)),
 																 seed = 23797297,
 																 save_preds = FALSE, save_model = FALSE) {
+
+	# Silence CMD CHECK about non standard eval
+	Order <- Target <- L <- M <- U <- NULL
+
 	records <- import_data(records)
 
 	if (is.null(model)) {
@@ -341,6 +353,10 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 #' }
 extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, recompute_DTM = FALSE,
 														sessions_folder = getOption("baysren.sessions_folder")) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- ID <- Target <- Term <- Score <- Value <- std.error <- p.value <- NULL
+
 	message("Retrieving data")
 	session_files <- get_session_files(session_name, sessions_folder)
 
@@ -444,6 +460,10 @@ extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, rec
 analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 																tot_records = NULL, plot = TRUE,
 																score = c("Sens_adj_eff", "Pos_rate", "Pos_rate_adj_sens")) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- Target <- Indicator <- Value <- Iter <- `Replication n.` <- Total_labeled <- `Target: y` <- Session <- Tot_labeled <- Pos_labels <- Pos_rate <- Sensitivity <- Efficiency <- Score <- rule <- estimate <- Score <- group <- Rule <- Rule <- Iter <- Rep <- Cluster <- NULL
+
 	score <- match.arg(score)
 
 	if (is.null(tot_pos) | is.null(tot_records)) {

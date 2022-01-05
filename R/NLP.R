@@ -215,6 +215,10 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
                         tokenize.fun = tokenize_text, add.ngrams = TRUE,
                         aggr.synonyms = TRUE, n.gram.thresh = .5,
                         syn.thresh = .9, label = "TERM__", na.as.missing = TRUE) {
+
+	# Silence CMD CHECK about non standard eval
+	pos <- word <- val <- term <- ID <- Freq <- NULL
+
   raw.corpus <- corpus
   order.ids <- 1:length(corpus)
   names(ids) <- order.ids

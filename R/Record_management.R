@@ -56,7 +56,7 @@ clean_record_textfields <- function(df) {
   mutate(
     df,
     across(
-      where(is.character),
+    	tidyselect::where(is.character),
       ~ stringr::str_replace_all(.x, c(" *; *" = ";", '["\']+' = " ")) %>%
         stringr::str_squish() %>%
         {
@@ -105,6 +105,10 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
                                       queries = journal$Query_ID,
                                       sources = journal$Source,
                                       records_folder = "Records") {
+
+	# Silence CMD CHECK about non standard eval
+	Session_ID <- Query_ID <- Source <- Output_file <- NULL
+
   import_data(journal) %>%
     filter(Session_ID %in% sessions, Query_ID %in% queries, Source %in% sources) %>%
     with(file.path(records_folder, Session_ID, Query_ID, Output_file)) %>%
@@ -134,7 +138,11 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
 #'
 #' parse_pubmed(dataRaw)
 #' }
-parse_pubmed <- function(entries, timestamp = now()) { # Probably
+parse_pubmed <- function(entries, timestamp = now()) {
+
+	# Silence CMD CHECK about non standard eval
+	PMID <- TI <- BTI <- AB <- LID <- AID <- FAU <- JT <- TA <- PT <- MH <- OT <- DP <- NULL
+
   entries <- entries %>%
     stringr::str_remove_all("\\r") %>%
     stringr::str_replace_all("\\n\\s\\s+", " ") %>%
@@ -197,6 +205,10 @@ parse_pubmed <- function(entries, timestamp = now()) { # Probably
 #' parse_wos(dataRaw)
 #' }
 parse_wos <- function(entries, timestamp = now()) {
+
+	# Silence CMD CHECK about non standard eval
+	`Times Cited, All Databases` <- `Journal ISO Abbreviation` <- `UT (Unique WOS ID)` <- `Article Title` <- Abstract <- DOI <- `Author Full Names` <- `Source Title` <- `Document Type` <- `Author Keywords` <- `Keywords Plus` <- `WoS Categories` <- `Publication Date` <- `Publication Year` <- `Pubmed Id` <- NULL
+
   entries %>%
     transmute(
       Order = 1:n(),
@@ -243,6 +255,10 @@ parse_wos <- function(entries, timestamp = now()) {
 #' parse_ieee(dataRaw)
 #' }
 parse_ieee <- function(entries, timestamp = now()) {
+
+	# Silence CMD CHECK about non standard eval
+	`Article Citation Count` <- `Document Identifier` <- `INSPEC Non-Controlled Terms` <- `INSPEC Controlled Terms` <- `PDF Link` <- `Document Title` <- Abstract <- DOI <- Authors <- `Publication Title` <- `Author Keywords` <- `IEEE Terms` <- Mesh_Terms <- `Online Date` <- NULL
+
   entries %>%
     transmute(
       Order = 1:n(),
@@ -287,6 +303,10 @@ parse_ieee <- function(entries, timestamp = now()) {
 #' parse_embase(dataRaw)
 #' }
 parse_embase <- function(entries, timestamp = now()) {
+
+	# Silence CMD CHECK about non standard eval
+	PUI <- Title <- Abstract <- DOI <- `Author Names` <- `Source title` <- `Author Keywords` <- `Publication Type` <- `Date of Publication` <- NULL
+
   entries %>%
     transmute(
       Order = 1:n(),
@@ -332,6 +352,10 @@ parse_embase <- function(entries, timestamp = now()) {
 #' parse_embase(dataRaw)
 #' }
 parse_scopus <- function(entries, timestamp = now()) {
+
+	# Silence CMD CHECK about non standard eval
+	EID <- Title <- Abstract <- DOI <- Link <- Authors <- `Source title` <- `Author Keywords` <- `Index Keywords` <- `Document Type` <- `Cited by` <- Year <- NULL
+
   entries %>%
     transmute(
       Order = 1:n(),
@@ -435,6 +459,10 @@ read_bib_files <- function(files) {
 #' join_records(record_list)
 #' }
 join_records <- function(record_list) {
+
+	# Silence CMD CHECK about non standard eval
+	Order <- DOI <- ID <- Title <- Abstract <- Authors <- Published <- URL <- Journal <- Journal_short <- Keywords <- Author_keywords <- Mesh <- Article_type <- N_citations <- Source <- Source_type <- FileID <- Keywords <- Author_keywords <- Order <- NULL
+
   lapply(record_list, function(source) {
     source %>%
       transmute(
@@ -486,6 +514,10 @@ join_records <- function(record_list) {
 #' @export
 #'
 fix_duplicated_records <- function(records) {
+
+	# Silence CMD CHECK about non standard eval
+	ID <- Title <- UID <- DOI <- Order <- Keywords <- N_citations <- NULL
+
   records <- records %>%
     group_by(ID) %>%
     mutate(Title = na.omit(Title)[1]) %>%
@@ -595,6 +627,10 @@ fix_duplicated_records <- function(records) {
 create_annotation_file <- function(records, reorder_query = NULL,
                                    prev_records = NULL,
                                    prev_classification = NULL) {
+
+	# Silence CMD CHECK about non standard eval
+	DOI <- ID <- NULL
+
   if (class(records) %nin% c("character", "list", "data.frame")) {
     stop('"records" should be either of vector of file/folder paths, a list of data.frame or a single data.frame')
   }
@@ -671,6 +707,10 @@ create_annotation_file <- function(records, reorder_query = NULL,
 #' @export
 #'
 order_by_query_match <- function(records, query) {
+
+	# Silence CMD CHECK about non standard eval
+	. <- Title <- Abstract <- text <- term.count <- doc.length <- score <- NULL
+
   terms <- stringr::str_remove_all(query, "NOT ?(\\w+|\\(.*?\\))") %>%
     stringr::str_remove_all("[^\\w\\s\\*]+|(?<= )(AND|OR)(?= )") %>%
     stringr::str_split("\\s+") %>%
@@ -707,6 +747,10 @@ order_by_query_match <- function(records, query) {
 #'
 #'
 import_classification <- function(records, prev_records, IDs = records$ID) {
+
+	# Silence CMD CHECK about non standard eval
+	uID <- . <- Rev_previous.y <- Rev_previous.x <- Order <- Rev_previous <- NULL
+
   prev_records <- import_data(prev_records)
 
   records$uID <- with(
@@ -898,6 +942,10 @@ get_session_files <- function(session_name,
                                 "Records", "Annotations",
                                 "DTM", "Samples", "Results"
                               )) {
+
+	# Silence CMD CHECK about non standard eval
+	iter <- NULL
+
   session_path <- file.path(sessions_folder, session_name)
 
   lapply(which, function(type) {

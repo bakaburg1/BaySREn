@@ -1,7 +1,11 @@
 #' Negation of %in% function
+#'
+#' @noRd
 "%nin%" <- Negate("%in%")
 
 #' Nicer output than scales::percent()
+#'
+#' @noRd
 percent <- function(x) {
 	sapply(x, function(x) {
 		if (!is.na(x)) {
@@ -18,25 +22,37 @@ percent <- function(x) {
 
 #' Override lubridate:today() which always complain about the missing
 #' timezone
+#'
+#' @noRd
 today <- function() {
-	lubridate::as_date(as_date(Sys.time()))
+	lubridate::as_date(Sys.time())
 }
 
 #' Override lubridate:now() which always complain about the missing
 #' timezone
+#'
+#' @noRd
 now <- function() {
 	Sys.time()
 }
 
 #' A file path friendly lubridate::now()
+#'
+#' @noRd
 safe_now <- function() {
 	stringr::str_replace_all(now(), c(" " = "T", ":" = "."))
 }
 
 #' Tool to grab XHR messages from dynamic websites
+#'
+#' @importFrom crrri %...>%
+#'
+#' @noRd
 get_website_resources <- function(url, url_filter = ".*", type_filter = ".*",
 																	wait_for = 20,
 																	n_of_resources = NULL, interactive = FALSE) {
+	. <- NULL
+
 	crrri::perform_with_chrome(function(client) {
 		Fetch <- client$Fetch
 		Page <- client$Page
