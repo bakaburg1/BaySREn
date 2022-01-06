@@ -45,12 +45,14 @@ safe_now <- function() {
 
 #' Tool to grab XHR messages from dynamic websites
 #'
-#' @importFrom crrri %...>%
+#' @importFrom promises %...>%
 #'
 #' @noRd
 get_website_resources <- function(url, url_filter = ".*", type_filter = ".*",
 																	wait_for = 20,
 																	n_of_resources = NULL, interactive = FALSE) {
+
+	# Silence CMD CHECK about non standard eval
 	. <- NULL
 
 	crrri::perform_with_chrome(function(client) {
