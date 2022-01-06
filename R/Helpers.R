@@ -106,3 +106,25 @@ get_website_resources <- function(url, url_filter = ".*", type_filter = ".*",
 		out$pr$then(function(x) x)
 	}, timeouts = max(wait_for + 3, 30), cleaning_timeout = max(wait_for + 3, 30))
 }
+
+
+ask_user_permission <- function(q, y_action, n_action = NULL) {
+	repeat {
+		ans <- readline(paste0(q, " "))
+
+		if (ans %nin% c("n", "y")) {
+			warning("Only accepted answers are 'y' or 'no'", immediate. = TRUE, call. = FALSE)
+		} else {
+
+			if (ans == "y") {
+				y_action()
+			} else {
+				if (is.function(n_action)) {
+					n_action()
+				}
+			}
+
+			break
+		}
+	}
+}
