@@ -189,7 +189,37 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
                                num_iterations_after_burn_in = 2000,
                                run_in_sample = FALSE, mem_cache_for_speed = TRUE,
                                use_missing_data = TRUE, verbose = TRUE, ...) {
-  if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
+
+	if (!requireNamespace("bartMachine", quietly = TRUE)) {
+		ans <- ask_user_permission(
+			q = "Package 'bartMachine' is required to run the model. Do you want to install it now? y/n",
+			y_action = function() {
+				install.packages("bartMachine")
+				return(TRUE)
+			},
+			n_action = function() return(FALSE)
+		)
+
+		if (isFALSE(ans)) {
+			stop("The model cannot run without the 'bartMachine' package.")
+		}
+	}
+
+	if (is.null(getOption('BartMem')) & interactive()) {
+		local({
+			mem <- readline("How much GB of memory should be used by the BART model? (better no more than 90% of available RAM) ")
+
+			if (is.na(as.numeric(mem))) stop('Input should be a number.')
+
+			mem <- paste0("-Xmx", mem, "g")
+
+			options(BartMem = mem)
+		})
+	}
+
+	options(java.parameters = getOption('BartMem'))
+
+	if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
 
   model_file <- file.path(folder, glue("{name}.rds"))
 

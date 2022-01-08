@@ -23,10 +23,8 @@ License: MIT + file LICENSE
 URL: https://github.com/bakaburg1/baysren
 BugReports: https://github.com/bakaburg1/baysren/issues
 Imports:
-    bartMachine (>= 1.2.6),
     brms (>= 2.16.3),
     broom (>= 0.7.10),
-    crrri (>= 0.0.13),
     dplyr (>= 1.0.2),
     extraDistr (>= 1.9.1),
     ggplot2 (>= 3.3.5),
@@ -48,11 +46,9 @@ Imports:
     pbapply (>= 1.5.0),
     pbmcapply (>= 1.5.0),
     promises (>= 1.2.0.1),
-    pubmedR (>= 0.0.3),
     purrr (>= 0.3.4),
     readr (>= 2.1.0),
     readxl (>= 1.3.1),
-    rentrez (>= 1.2.3),
     rpart (>= 4.1.15),
     stats (>= 4.1.2),
     stringr (>= 1.4.0),
@@ -62,9 +58,12 @@ Imports:
     tm (>= 0.7.8),
     utils (>= 4.1.2),
     viridis (>= 0.6.2),
-    wosr (>= 0.3.0)
 Suggests:
-    testthat (>= 3.0.0)
+		bartMachine (>= 1.2.6),
+		crrri (>= 0.0.13),
+		rentrez (>= 1.2.3),
+		testthat (>= 3.0.0),
+		wosr (>= 0.3.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

@@ -125,7 +125,7 @@ clean_date_filter_arg <- function(year_query, cases,
 #' authorized account (e.g. access through an academic VPN or proxy). The key
 #' can be found in the URL once the user is authorized. The key has a time
 #' limit, so it will need to be regenerated. The function is a wrapper over
-#' \code{\link[wosr:pull_wos]{wosr::pull_wos}}.
+#' \code{\link[wosr:pull_wos]{wosr::pull_wos}} and requires the [wosr] package.
 #'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'   grouping and quotation marks for n-grams.
@@ -171,6 +171,23 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 
 	# Silence CMD CHECK about non standard eval
 	schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
+
+	if (!requireNamespace("wosr", quietly = TRUE)) {
+		ans <- ask_user_permission(
+			q = "Package 'wosr' is required to download results from the WOS database. Do you want to install it now? y/n",
+			y_action = function() {
+				install.packages("wosr")
+				return(TRUE)
+			},
+			n_action = function() return(FALSE)
+		)
+
+		if (isFALSE(ans)) {
+			warning("Research on WOS database will be skipped")
+
+			return(data.frame())
+		}
+	}
 
   message("Searching WOS...")
 
@@ -300,6 +317,8 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 #' return a large number of results. Large results sets are obtained by
 #' iterative querying.
 #'
+#' Requires the [rentrez] package.
+#'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'   grouping and quotation marks for n-grams.
 #' @param year_query A year based filtering query. See
@@ -336,6 +355,23 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
                           api_key = getOption("baysren.ncbi_api_key"),
                           record_limit = numeric()) {
   message("Searching Pubmed...")
+
+	if (!requireNamespace("rentrez", quietly = TRUE)) {
+		ans <- ask_user_permission(
+			q = "Package 'wosr' is required to download results from the PUBMED database. Do you want to install it now? y/n",
+			y_action = function() {
+				install.packages("rentrez")
+				return(TRUE)
+			},
+			n_action = function() return(FALSE)
+		)
+
+		if (isFALSE(ans)) {
+			warning("Research on PUBMED database will be skipped")
+
+			return(data.frame())
+		}
+	}
 
   if (is.null(api_key)) warning("NCBI API key is not set.")
 
@@ -412,9 +448,9 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 #' Perform a search on \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 #'
 #' If an API key is available, the IEEE API will be used, otherwise Google
-#' Chrome APIs will be used to scrape records simulating a manual user search.
-#' This second method is not ensured to work and IEEE may blacklist your IP if
-#' abused.
+#' Chrome APIs through the [crrri] package will be used to scrape records
+#' simulating a manual user search. This second method is not ensured to work
+#' and IEEE may blacklist your IP if abused.
 #'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'   grouping and quotation marks for n-grams.
@@ -481,6 +517,25 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     warning("IEEE API key is not set, defaulting to webscraping.")
 
     if (!allow_web_scraping) stop("If API key is not present web scraping must be allowed.")
+
+  	if (!requireNamespace("crrri", quietly = TRUE)) {
+  		ans <- ask_user_permission(
+  			q = "Package 'crrri' is required for non-API downoload of results from IEEE. Do you want to install it now? y/n",
+  			y_action = function() {
+  				install.packages("crrri")
+  				return(TRUE)
+  				},
+  			n_action = function() {
+  				return(FALSE)
+  			}
+  		)
+
+  		if (isFALSE(ans)) {
+  			warning("Research on IEEE database will be skipped")
+
+  			return(data.frame())
+  		}
+  	}
 
     default_fields <- list(
       rowsPerPage = 100
