@@ -116,7 +116,7 @@ estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
 						backend = "cmdstan", seed = seed,
 						prior = c(
 							brms::set_prior("student_t(3, 0, 2.5)", class = "Intercept"),
-							brms::set_priorw("student_t(3, 0, 1.5)", class = "b")
+							brms::set_prior("student_t(3, 0, 1.5)", class = "b")
 						)
 	)
 }
