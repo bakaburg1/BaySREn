@@ -18,7 +18,7 @@ Shows for each unique element its numerosity and percentage.
 }
 \examples{
 
-summarise_vector(iris$Species)
+BaySREn:::summarise_vector(iris$Species)
 # setosa: 50 (33.3\%), versicolor: 50 (33.3\%), virginica: 50 (33.3\%)
 
 }

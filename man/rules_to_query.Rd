@@ -32,10 +32,8 @@ rules <- c(
 
 new_query <- rules_to_query(rules)
 
-writeLines(query, file.path("Sessions", "Session1", "Resulting_query.txt"))
-
 \dontrun{
-# Starting from a rule review file:
+# Produce a new query from a rule review file:
 
 candidate_queries <- readRDS(file.path("Sessions", "Session1", "rule_data.rds"))
 

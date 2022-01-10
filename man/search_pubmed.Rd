@@ -38,6 +38,8 @@ Perform an API search using Pubmed E-utilities
 An API key is not mandatory but may avoid quota limitation for searches that
 return a large number of results. Large results sets are obtained by
 iterative querying.
+
+Requires the \link{rentrez} package.
 }
 \examples{
 \dontrun{

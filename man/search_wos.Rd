@@ -47,7 +47,7 @@ provide an API key by accessing \url{https://www.webofknowledge.com} with an
 authorized account (e.g. access through an academic VPN or proxy). The key
 can be found in the URL once the user is authorized. The key has a time
 limit, so it will need to be regenerated. The function is a wrapper over
-\code{\link[wosr:pull_wos]{wosr::pull_wos}}.
+\code{\link[wosr:pull_wos]{wosr::pull_wos}} and requires the \link{wosr} package.
 }
 \examples{
 
@@ -59,12 +59,13 @@ hospital OR "long-term-care" OR "long term care" OR "longterm care" OR
 "long-term care" OR "healthcare associated") AND (infection OR resistance OR
 resistant))'
 
-# Year filter. The framework converts it to the API-specific format seamlessly.
-# common logical comparators can be used, i.e. <, <=, >, >=, while dashes
-# denotes inclusive date intervals. A single year restricts results to one year
-# period.
+# Year filter. The framework converts it to the API-specific format
+# seamlessly. Common logical comparators can be used, i.e. <, <=, >, >=,
+# while dashes denotes inclusive date intervals. A single year restricts
+# results to one year period.
 year_filter <- "2010-2020"
 
+\dontrun{
 records <- search_wos(query, year_filter)
-
+}
 }

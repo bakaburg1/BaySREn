@@ -45,9 +45,9 @@ Perform a search on \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 }
 \details{
 If an API key is available, the IEEE API will be used, otherwise Google
-Chrome APIs will be used to scrape records simulating a manual user search.
-This second method is not ensured to work and IEEE may blacklist your IP if
-abused.
+Chrome APIs through the \link{crrri} package will be used to scrape records
+simulating a manual user search. This second method is not ensured to work
+and IEEE may blacklist your IP if abused.
 }
 \examples{
 \dontrun{
