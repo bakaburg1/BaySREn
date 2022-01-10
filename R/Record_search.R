@@ -157,14 +157,15 @@ clean_date_filter_arg <- function(year_query, cases,
 #' "long-term care" OR "healthcare associated") AND (infection OR resistance OR
 #' resistant))'
 #'
-#' # Year filter. The framework converts it to the API-specific format seamlessly.
-#' # common logical comparators can be used, i.e. <, <=, >, >=, while dashes
-#' # denotes inclusive date intervals. A single year restricts results to one year
-#' # period.
+#' # Year filter. The framework converts it to the API-specific format
+#' # seamlessly. Common logical comparators can be used, i.e. <, <=, >, >=,
+#' # while dashes denotes inclusive date intervals. A single year restricts
+#' # results to one year period.
 #' year_filter <- "2010-2020"
 #'
+#'\dontrun{
 #' records <- search_wos(query, year_filter)
-#'
+#'}
 search_wos <- function(query, year_query = NULL, additional_fields = NULL,
                        api_key = getOption("baysren.wos_api_key"),
                        parallel = TRUE, parse_query = TRUE, ...) {
@@ -176,7 +177,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 		ans <- ask_user_permission(
 			q = "Package 'wosr' is required to download results from the WOS database. Do you want to install it now? y/n",
 			y_action = function() {
-				install.packages("wosr")
+				utils::install.packages("wosr")
 				return(TRUE)
 			},
 			n_action = function() return(FALSE)
@@ -360,7 +361,7 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 		ans <- ask_user_permission(
 			q = "Package 'wosr' is required to download results from the PUBMED database. Do you want to install it now? y/n",
 			y_action = function() {
-				install.packages("rentrez")
+				utils::install.packages("rentrez")
 				return(TRUE)
 			},
 			n_action = function() return(FALSE)
@@ -522,7 +523,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
   		ans <- ask_user_permission(
   			q = "Package 'crrri' is required for non-API downoload of results from IEEE. Do you want to install it now? y/n",
   			y_action = function() {
-  				install.packages("crrri")
+  				utils::install.packages("crrri")
   				return(TRUE)
   				},
   			n_action = function() {

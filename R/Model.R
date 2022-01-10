@@ -194,7 +194,7 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
 		ans <- ask_user_permission(
 			q = "Package 'bartMachine' is required to run the model. Do you want to install it now? y/n",
 			y_action = function() {
-				install.packages("bartMachine")
+				utils::install.packages("bartMachine")
 				return(TRUE)
 			},
 			n_action = function() return(FALSE)
