@@ -16,8 +16,8 @@ search_pubmed(
 \item{query}{A boolean query with AND/OR/NOT operators, brackets for term
 grouping and quotation marks for n-grams.}
 
-\item{year_query}{A year based filtering query. See
-\code{\link{clean_date_filter_arg}} for more info.}
+\item{year_query}{A year based filtering query. See \code{\link[=clean_date_filter_arg]{clean_date_filter_arg()}}
+for more info.}
 
 \item{additional_fields}{Additional fields to add to the query. Will not be
 normalized, so it must already follow Pubmed specific syntax.}
@@ -39,7 +39,7 @@ An API key is not mandatory but may avoid quota limitation for searches that
 return a large number of results. Large results sets are obtained by
 iterative querying.
 
-Requires the \link{rentrez} package.
+Requires the \code{rentrez} package.
 }
 \examples{
 \dontrun{

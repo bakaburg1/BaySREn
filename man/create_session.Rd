@@ -21,8 +21,8 @@ Session followed by a number, without white spaces.}
 
 \item{sessions_folder}{The path to the folder where all sessions are stored.}
 
-\item{DTM}{An already existing DTM matrix (see
-\code{\link{create_training_set}()} and \code{\link{text_to_DTM}()}).}
+\item{DTM}{An already existing DTM matrix (see \code{\link[=create_training_set]{create_training_set()}} and
+\code{\link[=text_to_DTM]{text_to_DTM()}}.}
 
 \item{dup_session_action}{What to do if a session with the same name already
 exists. the options are: skip (if the session exists do nothing but raise a
@@ -36,12 +36,12 @@ replace (overwrite the existing session).}
 The path to the created session folder.
 }
 \description{
-A session is identified by the subsequent iteration of automatic labelling and
-manual review. It is associated with a folder where the original annotation
-file (with the initial manual classification) is stored, plus its updates
-after each classification iteration and supplemental files containing the
-Document Term Matrix (DTM), a summary of each classification iteration and the
-posterior samples of the Bayesian predictions.
+A session is identified by the subsequent iteration of automatic labelling
+and manual review. It is associated with a folder where the original
+annotation file (with the initial manual classification) is stored, plus its
+updates after each classification iteration and supplemental files containing
+the Document Term Matrix (DTM), a summary of each classification iteration
+and the posterior samples of the Bayesian predictions.
 }
 \examples{
 \dontrun{

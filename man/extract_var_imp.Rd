@@ -32,7 +32,7 @@ models is used), the log-linear association according to the Poisson model
 and the linear Z score.
 }
 \description{
-Inside \code{\link{enrich_annotation_file}()}, the feature relevance for the
+Inside \code{\link[=enrich_annotation_file]{enrich_annotation_file()}}, the feature relevance for the
 classification model is estimated from the Document Term Matrix (DTM) and
 stored in the Annotation file. In the case of the default BART model, the
 feature importance is the rate of posterior trees in which a term was used,

@@ -8,13 +8,12 @@ estimate_positivity_rate_model(train_data, seed = 14129189)
 }
 \arguments{
 \item{train_data}{An Annotation data set with predictions produced by
-\code{\link{enrich_annotation_file}()}.}
+\code{\link[=enrich_annotation_file]{enrich_annotation_file()}}.}
 
 \item{seed}{An integer to replicate results}
 }
 \value{
-An object of class \code{brmsfit}. See
-\code{\link[brms:brm]{brms::brm}()} for mode info.
+An object of class \code{brmsfit}. See \code{\link[brms:brm]{brms::brm()}} for mode info.
 }
 \description{
 The function uses an Annotation data set to train a Bayesian logistic model
@@ -27,5 +26,5 @@ The produced model can be used to predict the distribution of the cumulative
 number of total unseen positive records.
 
 Usually this function is not to be used directly but through
-\code{\link{estimate_performance}()}.
+\code{\link[=estimate_performance]{estimate_performance()}}.
 }

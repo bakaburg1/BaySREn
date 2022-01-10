@@ -8,7 +8,7 @@ format_performance(..., session_names = NULL)
 }
 \arguments{
 \item{...}{One or more performance result data frames produced by
-\code{\link{estimate_performance}()}.}
+\code{\link[=estimate_performance]{estimate_performance()}}.}
 
 \item{session_names}{Names of the sessions corresponding to the result data
 frames passed to \code{...}. If missing, they will be "Session" followed by
@@ -19,9 +19,9 @@ A long format data frame with the statistical indicators on the first
 column and a column with values for each data frame passed to \code{...}.
 }
 \description{
-Publication friendly formatting of the results of
-\code{\link{estimate_performance}()}. If more than one results set is passed
-(i.e., one per session), the will be added as new columns.
+Publication friendly formatting of the results of \code{\link[=estimate_performance]{estimate_performance()}}.
+If more than one results set is passed (i.e., one per session), the will be
+added as new columns.
 }
 \examples{
 \dontrun{

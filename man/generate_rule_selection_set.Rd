@@ -13,7 +13,7 @@ generate_rule_selection_set(
 )
 }
 \arguments{
-\item{rules}{A vector of rules as produced by \code{\link{extract_rules()}}.}
+\item{rules}{A vector of rules as produced by \code{\link[=extract_rules]{extract_rules()}}.}
 
 \item{target_vec}{A vector of labels.}
 
@@ -34,9 +34,9 @@ sensitivity. The first column marks the suggested rule for each group. The
 data frame gets saved to the file in \code{save_path} if not \code{NULL}.
 }
 \description{
-The rules extracted by \code{\link{extract_rules}} rules are grouped by
-similar sensitivity and presented to the user who will need to select a
-subset of them (ideally one per sensitivity group).
+The rules extracted by \code{\link[=extract_rules]{extract_rules()}} rules are grouped by similar
+sensitivity and presented to the user who will need to select a subset of
+them (ideally one per sensitivity group).
 }
 \details{
 Only rules with at least one positive component are selected and (optionally)

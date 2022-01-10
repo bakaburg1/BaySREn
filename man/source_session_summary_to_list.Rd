@@ -8,14 +8,14 @@ source_session_summary_to_list(source_summary)
 }
 \arguments{
 \item{source_summary}{A data frame produced by
-\code{\link{summarise_sources_by_session}()}.}
+\code{\link[=summarise_sources_by_session]{summarise_sources_by_session()}}.}
 }
 \value{
 A hierarchical list with record distribution by source and session.
 }
 \description{
-Takes the output of \code{\link{summarise_sources_by_session}()} and formats it
-as a list.
+Takes the output of \code{\link[=summarise_sources_by_session]{summarise_sources_by_session()}} and formats it as a
+list.
 }
 \examples{
 \dontrun{

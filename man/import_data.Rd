@@ -9,10 +9,8 @@ import_data(input, ...)
 \arguments{
 \item{input}{A file path to an Excel/CSV/RDS file or a data frame object.}
 
-\item{...}{Additional arguments to pass to
-\code{\link[readxl:read_excel]{readxl::read_excel}},
-\code{\link[readr:read_csv]{readr::read_csv}}, or
-\code{\link[readr:read_rds]{readr::read_rds}}, depending on the file type.}
+\item{...}{Additional arguments to pass to \code{\link[readxl:read_excel]{readxl::read_excel()}},
+\code{\link[readr:read_delim]{readr::read_csv()}}, or \code{\link[readr:read_rds]{readr::read_rds()}}, depending on the file type.}
 }
 \value{
 A data frame object.

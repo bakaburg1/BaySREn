@@ -6,10 +6,8 @@
 #' through. An error is raised in the case of unrecognized objects/files.
 #'
 #' @param input A file path to an Excel/CSV/RDS file or a data frame object.
-#' @param ... Additional arguments to pass to
-#'   \code{\link[readxl:read_excel]{readxl::read_excel}},
-#'   \code{\link[readr:read_csv]{readr::read_csv}}, or
-#'   \code{\link[readr:read_rds]{readr::read_rds}}, depending on the file type.
+#' @param ... Additional arguments to pass to [readxl::read_excel()],
+#'   [readr::read_csv()], or [readr::read_rds()], depending on the file type.
 #'
 #' @return A data frame object.
 #'
@@ -70,12 +68,12 @@ clean_record_textfields <- function(df) {
 #' Extract the path to citation records files
 #'
 #' The information on the records' location is stored in the session journal
-#' created by \code{\link{perform_search_session}}. It is possible to select
-#' records from specific session, query, or source combinations. Only parsed or
-#' API downloaded record paths will be returned, not the raw data source files.
+#' created by [perform_search_session()]. It is possible to select records from
+#' specific session, query, or source combinations. Only parsed or API
+#' downloaded record paths will be returned, not the raw data source files.
 #'
-#' @param journal A data frame produced by \code{\link{perform_search_session}}
-#'   or a file path to it.
+#' @param journal A data frame produced by [perform_search_session()] or a file
+#'   path to it.
 #' @param sessions,queries,sources Sessions, queries and sources for the which
 #'   one wants to get the record data. By default, all record file paths are
 #'   retrieved.
@@ -121,8 +119,7 @@ extract_source_file_paths <- function(journal, sessions = journal$Session_ID,
 #' \url{https://pubmed.ncbi.nlm.nih.gov/}.
 #'
 #' @param entries A character vector containing the citation data.
-#' @param timestamp A timestamp as provided by
-#'   \code{\link[lubridate:now]{lubridate::now}()}.
+#' @param timestamp A timestamp as provided by [lubridate::now()].
 #'
 #' @return A data frame with the parsed data.
 #'
@@ -190,8 +187,7 @@ parse_pubmed <- function(entries, timestamp = now()) {
 #' files) from \url{https://www.webofknowledge.com}.
 #'
 #' @param entries An imported data frame.
-#' @param timestamp A timestamp as provided by
-#'   \code{\link[lubridate:now]{lubridate::now()}}.
+#' @param timestamp A timestamp as provided by [lubridate::now()].
 #'
 #' @return A data frame with the parsed data.
 #'
@@ -238,8 +234,7 @@ parse_wos <- function(entries, timestamp = now()) {
 #' from \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 #'
 #' @param entries An imported data frame.
-#' @param timestamp A timestamp as provided by
-#'   \code{\link[lubridate:now]{lubridate::now()}}.
+#' @param timestamp A timestamp as provided by [lubridate::now().
 #'
 #' @return A data frame with the parsed data.
 #'
@@ -286,8 +281,7 @@ parse_ieee <- function(entries, timestamp = now()) {
 #' from \url{https://www.embase.com/#advancedSearch/default}.
 #'
 #' @param entries An imported data frame.
-#' @param timestamp A timestamp as provided by
-#'   \code{\link[lubridate:now]{lubridate::now()}}.
+#' @param timestamp A timestamp as provided by [lubridate::now()].
 #'
 #' @return A data frame with the parsed data.
 #'
@@ -338,8 +332,7 @@ parse_embase <- function(entries, timestamp = now()) {
 #' from \url{https://www.scopus.com/search/form.uri?display=basic#basic}.
 #'
 #' @param entries An imported data frame.
-#' @param timestamp A timestamp as provided by
-#'   \code{\link[lubridate:now]{lubridate::now()}}.
+#' @param timestamp A timestamp as provided by [lubridate::now()].
 #'
 #' @return A data frame with the parsed data.
 #'
@@ -439,11 +432,10 @@ read_bib_files <- function(files) {
 #' Join citation data frames and resolve record duplication
 #'
 #' Take a list of data frames containing parsed citation data created using
-#' \code{\link{read_bib_files}()} and joins them, resolving duplicated records
-#' using \code{\link{fix_duplicated_records}()}.
+#' [read_bib_files()] and joins them, resolving duplicated records using
+#' [fix_duplicated_records()].
 #'
-#' @param record_list A list of data frames as created by
-#'   \code{\link{read_bib_files}()}.
+#' @param record_list A list of data frames as created by [read_bib_files()].
 #'
 #' @return A record data frame containing the citation data from multiple
 #'   sources.
@@ -506,8 +498,7 @@ join_records <- function(record_list) {
 #' records and join them. Some fields like the record keywords and source are
 #' joined between copies.
 #'
-#' @param record_list A list of data frames as created by
-#'   \code{\link{read_bib_files}()}.
+#' @param records A record data frame.
 #'
 #' @return A record data frame with no duplicated records.
 #'
@@ -797,24 +788,24 @@ import_classification <- function(records, prev_records, IDs = records$ID) {
 
 #' Create a Session starting from an annotation data set.
 #'
-#' A session is identified by the subsequent iteration of automatic labelling and
-#' manual review. It is associated with a folder where the original annotation
-#' file (with the initial manual classification) is stored, plus its updates
-#' after each classification iteration and supplemental files containing the
-#' Document Term Matrix (DTM), a summary of each classification iteration and the
-#' posterior samples of the Bayesian predictions.
+#' A session is identified by the subsequent iteration of automatic labelling
+#' and manual review. It is associated with a folder where the original
+#' annotation file (with the initial manual classification) is stored, plus its
+#' updates after each classification iteration and supplemental files containing
+#' the Document Term Matrix (DTM), a summary of each classification iteration
+#' and the posterior samples of the Bayesian predictions.
 #'
 #' @param Records An annotation data frame.
 #' @param session_name A character string to label the session. Usually is
-#'  Session followed by a number, without white spaces.
+#'   Session followed by a number, without white spaces.
 #' @param sessions_folder The path to the folder where all sessions are stored.
-#' @param DTM An already existing DTM matrix (see
-#'  \code{\link{create_training_set}()} and \code{\link{text_to_DTM}()}).
+#' @param DTM An already existing DTM matrix (see [create_training_set()] and
+#'   [text_to_DTM()].
 #' @param dup_session_action What to do if a session with the same name already
-#'  exists. the options are: skip (if the session exists do nothing but raise a
-#'  warning), stop (raise an error), silent (like skip but without warnings),
-#'  add (create a new session marking that is a replicate of an existing one),
-#'  replace (overwrite the existing session).
+#'   exists. the options are: skip (if the session exists do nothing but raise a
+#'   warning), stop (raise an error), silent (like skip but without warnings),
+#'   add (create a new session marking that is a replicate of an existing one),
+#'   replace (overwrite the existing session).
 #' @param use_time_stamp Add a times tamp to the original annotation file name.
 #'
 #' @return The path to the created session folder.

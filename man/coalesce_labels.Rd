@@ -27,7 +27,6 @@ hierarchies to fill up \code{NA}s in the upper ones. The hierarchy is
 considered from left to right.
 }
 \details{
-This function is a wrapper over
-\code{\link[dplyr:coalesce]{coalesce}()} which allow to have a
+This function is a wrapper over \code{\link[dplyr:coalesce]{dplyr::coalesce()}} which allow to have a
 standard coalescing scheme for an annotation file.
 }

@@ -7,7 +7,7 @@
 tokenize_MESH(mesh)
 }
 \arguments{
-\item{corpus}{A vector of MESH keywords fields from an annotation data set.}
+\item{mesh}{A vector of MESH keywords fields from an annotation data set.}
 }
 \value{
 The tokenized MESH keyword list.

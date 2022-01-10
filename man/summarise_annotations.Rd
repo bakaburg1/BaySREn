@@ -32,9 +32,9 @@ specific changes corresponding to each iteration.
 \description{
 Take a session identifier as input and describe the changes in the number of
 positive and negative matches after each Classification/Review iteration. It
-is necessary to run \code{\link{consolidate_results}()} before this command,
-otherwise the results would not consider the changes made through the manual
-review of the automatic classification.
+is necessary to run \code{\link[=consolidate_results]{consolidate_results()}} before this command, otherwise
+the results would not consider the changes made through the manual review of
+the automatic classification.
 }
 \examples{
 \dontrun{

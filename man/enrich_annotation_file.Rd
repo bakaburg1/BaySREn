@@ -20,7 +20,6 @@ enrich_annotation_file(
   dup_session_action = c("fill", "add", "replace", "stop"),
   limits = list(stop_after = 4, pos_target = NULL, labeling_limit = NULL),
   compute_performance = FALSE,
-  test_data = NULL,
   use_prev_labels = TRUE,
   prev_classification = NULL,
   save_samples = TRUE,
@@ -38,11 +37,11 @@ the last CR iteration to continue the cycle if the conditions in
 Annotation file can be used.}
 
 \item{DTM}{A path to a Document Term Matrix (DTM) as produced by
-\code{\link{create_training_set}}. If \code{NULL} two conditions can
-happen: if the current iteration is a replication and an existing DTM is
-present into the \code{session_name} folder, it will be used; if the CR
-iteration is not a replication or no backup DTM exists a new one will be
-generated from the Annotation data.}
+\code{\link[=create_training_set]{create_training_set()}}. If \code{NULL} two conditions can happen: if the
+current iteration is a replication and an existing DTM is present into the
+\code{session_name} folder, it will be used; if the CR iteration is not a
+replication or no backup DTM exists a new one will be generated from the
+Annotation data.}
 
 \item{pos_mult}{A model parameter. Defines the oversampling rate of positive
 records before training. A higher number increases sensitivity at the cost
@@ -109,7 +108,7 @@ used if \code{use_prev_labels} is \code{TRUE}.}
 
 \item{save_samples}{Whether to save on disk the PPDs of the records. These
 are necessary (at least those related to the last CR iteration) to create a
-new search query automatically with \code{\link{extract_rules}}.}
+new search query automatically with \code{\link[=extract_rules]{extract_rules()}}.}
 
 \item{rebuild}{Every time the function is run, a backup of the Bayesian model
 outputs (the PPDs samples and the variable importance) is saved in the file
@@ -118,7 +117,7 @@ the backed up copy is used instead of refitting the model. If set to
 \code{FALSE} it allows to skip model retraining if the function failed
 before finishing.}
 
-\item{...}{Additional parameters passed to \code{\link{compute_BART_model}}.}
+\item{...}{Additional parameters passed to \code{\link[=compute_BART_model]{compute_BART_model()}}.}
 }
 \value{
 An Annotation data frame with a number of extra columns:
@@ -178,10 +177,10 @@ The function take as arguments a number of parameters which may have an
 impact on the final CR cycle sensitivity and efficiency (fraction of total
 manually reviewed records): \code{pos_mult}, \code{n_models},
 \code{resample}, \code{pred_quants}. Default values are proposed for these
-which should work in most cases; \code{\link{perform_grid_evaluation}} can be
-used to evaluate the best parameter combination for a new data set if the
-user believes that there is margin of improvement, but the evaluation of the
-grid is extremely computationally intensive.
+which should work in most cases; \code{\link[=perform_grid_evaluation]{perform_grid_evaluation()}} can be used to
+evaluate the best parameter combination for a new data set if the user
+believes that there is margin of improvement, but the evaluation of the grid
+is extremely computationally intensive.
 
 The function saves a number of output files on disk.
 }

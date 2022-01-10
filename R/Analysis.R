@@ -93,14 +93,13 @@ compute_changes <- function(Annotations) {
 #' number of total unseen positive records.
 #'
 #' Usually this function is not to be used directly but through
-#' \code{\link{estimate_performance}()}.
+#' [estimate_performance()].
 #'
 #' @param train_data An Annotation data set with predictions produced by
-#'   \code{\link{enrich_annotation_file}()}.
+#'   [enrich_annotation_file()].
 #' @param seed An integer to replicate results
 #'
-#' @return An object of class \code{brmsfit}. See
-#'   \code{\link[brms:brm]{brms::brm}()} for mode info.
+#' @return An object of class \code{brmsfit}. See [brms::brm()] for mode info.
 #'
 #' @export
 #'
@@ -129,12 +128,12 @@ estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
 #' number of relevant (positive) records in the whole data set is produced to
 #' compute these statistics.
 #'
-#' For this purpose, \code{\link{estimate_positivity_rate_model}()} is employed,
-#' which uses a Bayesian logistic model to estimate the probability of a
-#' relevant record given the lower boundaries of the PPD produced by the
-#' classification model for the records whose label was manually reviewed. This
-#' model does not take into account records' other characteristics, providing a
-#' simple, maximum uncertainty model.
+#' For this purpose, [estimate_positivity_rate_model()] is employed, which uses
+#' a Bayesian logistic model to estimate the probability of a relevant record
+#' given the lower boundaries of the PPD produced by the classification model
+#' for the records whose label was manually reviewed. This model does not take
+#' into account records' other characteristics, providing a simple, maximum
+#' uncertainty model.
 #'
 #' The model is used to predict the distribution of the number of missed
 #' relevant matches among the unreviewed records. This number is then used to
@@ -154,14 +153,14 @@ estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
 #' plus its posterior predictive distribution according to the surrogate model.
 #'
 #'
-#' @param records An Annotation data set produced by
-#'   \code{\link{enrich_annotation_file()}} or a file path to it.
+#' @param records An Annotation data set produced by [enrich_annotation_file()]
+#'   or a file path to it.
 #' @param model A \code{brm} model built using
-#'   \code{\link{estimate_positivity_rate_model()}}. Will be created from
-#'   \code{records} if \code{NULL}.
+#'   [estimate_positivity_rate_model()]. Will be created from \code{records} if
+#'   \code{NULL}.
 #' @param preds A matrix of posterior predictions as produced by
-#'   \code{\link[brms:posterior_predict]{brms::posterior_predict}()}. If passed
-#'   they need to be derived by the same model in \code{model}.
+#'   [brms::posterior_predict()]. If passed they need to be derived by the same
+#'   model in \code{model}.
 #' @param plot Whether to plot the cumulative number of positive matches plus
 #'   the posterior predictive distribution as computed by \code{model},
 #'   truncated at the number of observed ones.
@@ -316,7 +315,7 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 
 #' Extract the importance of features in the Document Term Matrix
 #'
-#' Inside \code{\link{enrich_annotation_file}()}, the feature relevance for the
+#' Inside [enrich_annotation_file()], the feature relevance for the
 #' classification model is estimated from the Document Term Matrix (DTM) and
 #' stored in the Annotation file. In the case of the default BART model, the
 #' feature importance is the rate of posterior trees in which a term was used,
@@ -395,9 +394,8 @@ extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, rec
 #' Analyse the results of a parameter grid search
 #'
 #' Takes as input a folder with multiple session data produced by
-#' \code{\link{perform_grid_evaluation}()}, each session representing a
-#' combination of parameters and computes the best combinations in terms of a
-#' perfomance score.
+#' [perform_grid_evaluation()], each session representing a combination of
+#' parameters and computes the best combinations in terms of a perfomance score.
 #'
 #' For each session a performance score is computed. The default is
 #' \eqn{\text{sensitivity} \times \text{efficiency}}{sensitivity x efficiency},
@@ -414,7 +412,7 @@ extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, rec
 #' parameter.
 #'
 #' @param session_folder Where to find the result sessions produced by
-#'   \code{\link{perform_grid_evaluation()}}.
+#'   [perform_grid_evaluation()].
 #' @param tot_pos Total number of positive matches among records. If \code{NULL}
 #'   it will be inferred by the Annotation files in \code{session_folder} which
 #'   then need to be fully labelled.

@@ -23,7 +23,7 @@ the \code{sessions_folder} folder.}
 \item{keep_session_label}{Add a column which groups rows by session. Useful
 for subsequent sub-setting of the results.}
 
-\item{...}{Other arguments passed to \code{\link{summarise_by_source}()}.}
+\item{...}{Other arguments passed to \code{\link[=summarise_by_source]{summarise_by_source()}}.}
 }
 \value{
 A data frame with the number and fraction of total records per source
@@ -32,7 +32,7 @@ extra group with the overall results is reported if
 \code{add_global_totals} is \code{TRUE}.
 }
 \description{
-Applies \code{\link{summarise_by_source}()} to all selected sessions.
+Applies \code{\link[=summarise_by_source]{summarise_by_source()}} to all selected sessions.
 }
 \examples{
 \dontrun{

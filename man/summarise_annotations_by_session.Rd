@@ -26,7 +26,7 @@ negative matches after each Classification/Review iteration and the
 specific changes corresponding to each iteration.
 }
 \description{
-Applies \code{\link{summarise_annotations}()} to all session in the
+Applies \code{\link[=summarise_annotations]{summarise_annotations()}} to all session in the
 \code{sessions_folder} folder.
 }
 \examples{

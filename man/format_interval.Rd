@@ -13,7 +13,7 @@ boundaries.}
 \item{percent}{Whether to format the results as percentages.}
 }
 \value{
-A string in the "point statistic \link{interval boundaries}" format.
+A string in the "point statistic [interval boundaries]" format.
 }
 \description{
 Useful to format a 3-values statistic in the "point statistic [interval

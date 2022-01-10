@@ -30,16 +30,15 @@ to be considered.}
 \item{freq.subset.ids}{IDs to consider when computing term frequency.}
 
 \item{included.pos}{Part of speech (POS) to consider when building the DTM.
-See \code{\link[lexicon:hash_grady_pos]{lexicon::hash_grady_pos}()} for a
-list of recognized POS.}
+See \code{\link[lexicon:hash_grady_pos]{lexicon::hash_grady_pos()}} for a list of recognized POS.}
 
 \item{tokenize.fun}{Function to use to clean up text.}
 
 \item{add.ngrams}{Whether to search and add non-consecutive n-grams. See
-\code{\link{DTM.add_ngrams}}.}
+\code{\link[=DTM.add_ngrams]{DTM.add_ngrams()}}.}
 
 \item{aggr.synonyms}{Whether to aggregate terms which almost always appear
-together. See \code{\link{DTM.aggr_synonyms}()}.}
+together. See \code{\link[=DTM.aggr_synonyms]{DTM.aggr_synonyms()}}.}
 
 \item{n.gram.thresh}{The threshold to use to identify the network of
 non-consecutive n-grams if \code{add.ngrams} is \code{TRUE}.}

@@ -14,15 +14,13 @@ print_table(data, caption = "", allow_math = FALSE, ...)
 \item{allow_math}{Whether to allow latex math by disabling special character
 escape.}
 
-\item{...}{Other arguments passed to
-\code{\link[knitr:kable]{knitr::kable()}}}
+\item{...}{Other arguments passed to \code{\link[knitr:kable]{knitr::kable()}}.}
 }
 \value{
-An \code{\link[rmarkdown:render]{rkmarkdown::render()}} ready table.
+An \code{\link[rmarkdown:render]{rmarkdown::render()}} ready table.
 }
 \description{
-A publication friendly version of \code{\link[knitr:kable]{knitr::kable()}}.
-It automatically detect if the output is HTML or PDF and adapt the
-formatting, allowing for latex formulas, large table, etc in PDF outputs.
-Allows using \\% in PDF tables.
+A publication friendly version of \code{\link[knitr:kable]{knitr::kable()}}. It automatically detect
+if the output is HTML or PDF and adapt the formatting, allowing for latex
+formulas, large table, etc in PDF outputs. Allows using \\% in PDF tables.
 }

@@ -7,8 +7,7 @@
 join_records(record_list)
 }
 \arguments{
-\item{record_list}{A list of data frames as created by
-\code{\link{read_bib_files}()}.}
+\item{record_list}{A list of data frames as created by \code{\link[=read_bib_files]{read_bib_files()}}.}
 }
 \value{
 A record data frame containing the citation data from multiple
@@ -16,8 +15,8 @@ sources.
 }
 \description{
 Take a list of data frames containing parsed citation data created using
-\code{\link{read_bib_files}()} and joins them, resolving duplicated records
-using \code{\link{fix_duplicated_records}()}.
+\code{\link[=read_bib_files]{read_bib_files()}} and joins them, resolving duplicated records using
+\code{\link[=fix_duplicated_records]{fix_duplicated_records()}}.
 }
 \examples{
 \dontrun{

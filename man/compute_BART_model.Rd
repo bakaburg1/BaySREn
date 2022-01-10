@@ -43,22 +43,19 @@ backup will be used instead.}
 \item{rebuild}{If \code{TRUE}, retrain the model even if a model backup file
 exists.}
 
-\item{...}{More argument to pass to
-\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine}()}}
+\item{num_trees, k, num_iterations_after_burn_in, run_in_sample, mem_cache_for_speed, use_missing_data, verbose}{\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine()}} specific parameters.}
 
-\item{um_trees, k, num_iterations_after_burn_in, run_in_sample, mem_cache_for_speed, use_missing_data, verbose}{\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine}()} specific
-parameters.}
+\item{...}{More argument to pass to \code{\link[bartMachine:bartMachine]{bartMachine::bartMachine()}}.}
 }
 \value{
 An object of class \code{bartMachine}.
 }
 \description{
-The prediction engine of the framework. It produces a model which
-assigns a probability distribution for each record of the probability of
-being relevant (i.e., positive label). It is not used alone but inside
+The prediction engine of the framework. It produces a model which assigns a
+probability distribution for each record of the probability of being relevant
+(i.e., positive label). It is not used alone but inside
 \code{\link[=enrich_annotation_file]{enrich_annotation_file()}}.
 }
 \details{
-This implementation is built over
-\code{\link[bartMachine:bartMachine]{bartMachine::bartMachine()}}.
+This implementation is built over \code{\link[bartMachine:bartMachine]{bartMachine::bartMachine()}}.
 }

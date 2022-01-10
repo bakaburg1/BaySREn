@@ -7,8 +7,7 @@
 #' hierarchies to fill up \code{NA}s in the upper ones. The hierarchy is
 #' considered from left to right.
 #'
-#' This function is a wrapper over
-#' \code{\link[dplyr:coalesce]{coalesce}()} which allow to have a
+#' This function is a wrapper over [dplyr::coalesce()] which allow to have a
 #' standard coalescing scheme for an annotation file.
 #'
 #' @param data An Annotation data frame.
@@ -152,13 +151,12 @@ create_training_set <- function(Records, min_freq = 0.05) {
 
 #' Use Bayesian Additive Regression Trees to predict records labels
 #'
-#' The prediction engine of the framework. It produces a model which
-#' assigns a probability distribution for each record of the probability of
-#' being relevant (i.e., positive label). It is not used alone but inside
+#' The prediction engine of the framework. It produces a model which assigns a
+#' probability distribution for each record of the probability of being relevant
+#' (i.e., positive label). It is not used alone but inside
 #' [enrich_annotation_file()].
 #'
-#' This implementation is built over
-#' [bartMachine::bartMachine()].
+#' This implementation is built over [bartMachine::bartMachine()].
 #'
 #' @param train_data A Document Term Matrix with an outcome column. if
 #'   \code{pred} is null, all column apart from \code{Y} will be considered as
@@ -173,11 +171,9 @@ create_training_set <- function(Records, min_freq = 0.05) {
 #'   backup will be used instead.
 #' @param rebuild If \code{TRUE}, retrain the model even if a model backup file
 #'   exists.
-#' @param um_trees,k,num_iterations_after_burn_in,run_in_sample,mem_cache_for_speed,use_missing_data,verbose
-#'    \code{\link[bartMachine:bartMachine]{bartMachine::bartMachine}()} specific
-#'   parameters.
-#' @param ... More argument to pass to
-#'   \code{\link[bartMachine:bartMachine]{bartMachine::bartMachine}()}
+#' @param num_trees,k,num_iterations_after_burn_in,run_in_sample,mem_cache_for_speed,use_missing_data,verbose
+#' [bartMachine::bartMachine()] specific parameters.
+#' @param ... More argument to pass to [bartMachine::bartMachine()].
 #'
 #' @return An object of class \code{bartMachine}.
 #'
@@ -318,10 +314,10 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
 #' impact on the final CR cycle sensitivity and efficiency (fraction of total
 #' manually reviewed records): \code{pos_mult}, \code{n_models},
 #' \code{resample}, \code{pred_quants}. Default values are proposed for these
-#' which should work in most cases; \code{\link{perform_grid_evaluation}} can be
-#' used to evaluate the best parameter combination for a new data set if the
-#' user believes that there is margin of improvement, but the evaluation of the
-#' grid is extremely computationally intensive.
+#' which should work in most cases; [perform_grid_evaluation()] can be used to
+#' evaluate the best parameter combination for a new data set if the user
+#' believes that there is margin of improvement, but the evaluation of the grid
+#' is extremely computationally intensive.
 #'
 #' The function saves a number of output files on disk.
 #'
@@ -333,11 +329,11 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
 #' @param file In alternative to \code{session_name}, a direct path to an
 #'   Annotation file can be used.
 #' @param DTM A path to a Document Term Matrix (DTM) as produced by
-#'   \code{\link{create_training_set}}. If \code{NULL} two conditions can
-#'   happen: if the current iteration is a replication and an existing DTM is
-#'   present into the \code{session_name} folder, it will be used; if the CR
-#'   iteration is not a replication or no backup DTM exists a new one will be
-#'   generated from the Annotation data.
+#'   [create_training_set()]. If \code{NULL} two conditions can happen: if the
+#'   current iteration is a replication and an existing DTM is present into the
+#'   \code{session_name} folder, it will be used; if the CR iteration is not a
+#'   replication or no backup DTM exists a new one will be generated from the
+#'   Annotation data.
 #' @param pos_mult A model parameter. Defines the oversampling rate of positive
 #'   records before training. A higher number increases sensitivity at the cost
 #'   of lower efficiency (more records to manually review) and training times.
@@ -390,14 +386,14 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
 #'   used if \code{use_prev_labels} is \code{TRUE}.
 #' @param save_samples Whether to save on disk the PPDs of the records. These
 #'   are necessary (at least those related to the last CR iteration) to create a
-#'   new search query automatically with \code{\link{extract_rules}}.
+#'   new search query automatically with [extract_rules()].
 #' @param rebuild Every time the function is run, a backup of the Bayesian model
 #'   outputs (the PPDs samples and the variable importance) is saved in the file
 #'   "Model_backup.rds". If \code{rebuild} is \code{FALSE} and such file exist,
 #'   the backed up copy is used instead of refitting the model. If set to
 #'   \code{FALSE} it allows to skip model retraining if the function failed
 #'   before finishing.
-#' @param ... Additional parameters passed to \code{\link{compute_BART_model}}.
+#' @param ... Additional parameters passed to [compute_BART_model()].
 #'
 #' @return An Annotation data frame with a number of extra columns:
 #'   \code{Rev_prediction} and a \code{Rev_prediction_new} which contains
@@ -446,7 +442,7 @@ enrich_annotation_file <- function(session_name,
                                      labeling_limit = NULL
                                    ),
                                    compute_performance = FALSE,
-                                   test_data = NULL,
+                                   #test_data = NULL,
                                    use_prev_labels = TRUE,
                                    prev_classification = NULL,
                                    save_samples = TRUE,
@@ -973,11 +969,11 @@ enrich_annotation_file <- function(session_name,
 
 #' Include manual review in annotation result summaries
 #'
-#' \code{\link{enrich_annotation_file}()} creates summary files of each
-#' classification iteration into the Results session sub-folder, but these
-#' summaries do not includes the manual review of the predicted labels.
-#' \link{consolidate_results} regenerates these files including the changes
-#' resulting from the manual review of the automatic classification.
+#' [enrich_annotation_file()] creates summary files of each classification
+#' iteration into the Results session sub-folder, but these summaries do not
+#' includes the manual review of the predicted labels. [consolidate_results()]
+#' regenerates these files including the changes resulting from the manual
+#' review of the automatic classification.
 #'
 #' The results summary, not including the manual review, is still available
 #' inside the annotation files.
@@ -1051,9 +1047,9 @@ consolidate_results <- function(session_name, sessions_folder = getOption("baysr
 #' rate of the positive labeled records. \item \code{pred_quants}: The quantiles
 #' used to summarise the records' PPD and built the Uncertainty zone. }
 #'
-#' Check \code{\link{enrich_annotation_file}} for more insight about their
-#' influence on the framework and the classification results. Since all records
-#' are pre-labelled, the manual review phase is performed automatically.
+#' Check [enrich_annotation_file()] for more insight about their influence on
+#' the framework and the classification results. Since all records are
+#' pre-labelled, the manual review phase is performed automatically.
 #'
 #' The algorithm starts from a fully labelled Annotation set and performs a
 #' Classification/Review cycle for each combination of parameters.
@@ -1077,9 +1073,9 @@ consolidate_results <- function(session_name, sessions_folder = getOption("baysr
 #'   \code{records} data set selecting records in descending order.
 #' @param pos_mult,n_models,resample,pred_quants A vector of values for each
 #'   parameter. For \code{pred_quants} a list of vectors. See
-#'   \code{\link{enrich_annotation_file}} for more details.
+#'   [enrich_annotation_file()] for more details.
 #' @param limits The conditions on which a CR cycle is stopped. See
-#'   \code{\link{enrich_annotation_file}}.
+#'   [enrich_annotation_file()].
 #'
 #' @return A message with the number of parameter combinations evaluated.
 #'

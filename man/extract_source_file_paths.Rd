@@ -13,8 +13,8 @@ extract_source_file_paths(
 )
 }
 \arguments{
-\item{journal}{A data frame produced by \code{\link{perform_search_session}}
-or a file path to it.}
+\item{journal}{A data frame produced by \code{\link[=perform_search_session]{perform_search_session()}} or a file
+path to it.}
 
 \item{sessions, queries, sources}{Sessions, queries and sources for the which
 one wants to get the record data. By default, all record file paths are
@@ -28,9 +28,9 @@ A vector of file paths.
 }
 \description{
 The information on the records' location is stored in the session journal
-created by \code{\link{perform_search_session}}. It is possible to select
-records from specific session, query, or source combinations. Only parsed or
-API downloaded record paths will be returned, not the raw data source files.
+created by \code{\link[=perform_search_session]{perform_search_session()}}. It is possible to select records from
+specific session, query, or source combinations. Only parsed or API
+downloaded record paths will be returned, not the raw data source files.
 }
 \examples{
 \dontrun{

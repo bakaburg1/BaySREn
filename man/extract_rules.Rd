@@ -35,8 +35,7 @@ sensitivity of the rules found.}
 it's advisable to save the output in a .rds file placed inside the
 \code{session_name} folder. User need only to provide the name of the file.}
 
-\item{...}{Additional arguments passed to
-\code{\link[rpart:rpart.control]{rpart::rpart.control()}}.}
+\item{...}{Additional arguments passed to \code{\link[rpart:rpart.control]{rpart::rpart.control()}}.}
 }
 \value{
 A list with: \item{SpecificDTM}{The DTM with the less relevant terms

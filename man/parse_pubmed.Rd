@@ -9,8 +9,7 @@ parse_pubmed(entries, timestamp = now())
 \arguments{
 \item{entries}{A character vector containing the citation data.}
 
-\item{timestamp}{A timestamp as provided by
-\code{\link[lubridate:now]{lubridate::now}()}.}
+\item{timestamp}{A timestamp as provided by \code{\link[lubridate:now]{lubridate::now()}}.}
 }
 \value{
 A data frame with the parsed data.

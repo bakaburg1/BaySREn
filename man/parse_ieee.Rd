@@ -9,8 +9,7 @@ parse_ieee(entries, timestamp = now())
 \arguments{
 \item{entries}{An imported data frame.}
 
-\item{timestamp}{A timestamp as provided by
-\code{\link[lubridate:now]{lubridate::now()}}.}
+\item{timestamp}{A timestamp as provided by [lubridate::now().}
 }
 \value{
 A data frame with the parsed data.

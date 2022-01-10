@@ -18,8 +18,8 @@ search_ieee(
 \item{query}{A boolean query with AND/OR/NOT operators, brackets for term
 grouping and quotation marks for n-grams.}
 
-\item{year_query}{A year based filtering query. See
-\code{\link{clean_date_filter_arg}} for more info.}
+\item{year_query}{A year based filtering query. See \code{\link[=clean_date_filter_arg]{clean_date_filter_arg()}}
+for more info.}
 
 \item{additional_fields}{Additional fields to add to the query. Will not be
 normalized, so it must already follow WOS specific syntax.}
@@ -45,7 +45,7 @@ Perform a search on \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 }
 \details{
 If an API key is available, the IEEE API will be used, otherwise Google
-Chrome APIs through the \link{crrri} package will be used to scrape records
+Chrome APIs through the \code{crrri} package will be used to scrape records
 simulating a manual user search. This second method is not ensured to work
 and IEEE may blacklist your IP if abused.
 }

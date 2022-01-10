@@ -115,7 +115,7 @@ summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
 
 #' Record distribution between sources for each session
 #'
-#' Applies \code{\link{summarise_by_source}()} to all selected sessions.
+#' Applies [summarise_by_source()] to all selected sessions.
 #'
 #' @param sessions A vector of session identifiers corresponding to folders into
 #'   the \code{sessions_folder} folder.
@@ -123,7 +123,7 @@ summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
 #' @param add_global_totals Add results for all sessions considered together.
 #' @param keep_session_label Add a column which groups rows by session. Useful
 #'   for subsequent sub-setting of the results.
-#' @param ... Other arguments passed to \code{\link{summarise_by_source}()}.
+#' @param ... Other arguments passed to [summarise_by_source()].
 #'
 #' @return A data frame with the number and fraction of total records per source
 #'   and number and fraction of source-specific records, grouped by session. An
@@ -197,11 +197,11 @@ summarise_sources_by_session <- function(sessions = list.files(sessions_folder),
 
 #' Format records' source distribution as a list
 #'
-#' Takes the output of \code{\link{summarise_sources_by_session}()} and formats it
-#' as a list.
+#' Takes the output of [summarise_sources_by_session()] and formats it as a
+#' list.
 #'
 #' @param source_summary A data frame produced by
-#'   \code{\link{summarise_sources_by_session}()}.
+#'   [summarise_sources_by_session()].
 #'
 #' @return A hierarchical list with record distribution by source and session.
 #'
@@ -283,9 +283,9 @@ get_source_distribution <- function(annotation_file, as_propr = TRUE, format_fun
 #'
 #' Take a session identifier as input and describe the changes in the number of
 #' positive and negative matches after each Classification/Review iteration. It
-#' is necessary to run \code{\link{consolidate_results}()} before this command,
-#' otherwise the results would not consider the changes made through the manual
-#' review of the automatic classification.
+#' is necessary to run [consolidate_results()] before this command, otherwise
+#' the results would not consider the changes made through the manual review of
+#' the automatic classification.
 #'
 #' @param session_name A session identifier corresponding to folders into the
 #'   \code{sessions_folder} folder.
@@ -392,7 +392,7 @@ summarise_annotations <- function(session_name, sessions_folder = getOption("bay
 
 #' Describe results of all Classification/Review sessions
 #'
-#' Applies \code{\link{summarise_annotations}()} to all session in the
+#' Applies [summarise_annotations()] to all session in the
 #' \code{sessions_folder} folder.
 #'
 #' @param sessions_folder A repository where session folders are stored.
@@ -468,7 +468,7 @@ summarise_annotations_by_session <- function(sessions_folder = getOption("baysre
 #'  boundaries.
 #' @param percent Whether to format the results as percentages.
 #'
-#' @return A string in the "point statistic [interval boundaries]" format.
+#' @return A string in the "point statistic \[interval boundaries\]" format.
 #'
 #' @examples
 #'
@@ -487,18 +487,18 @@ format_interval <- function(interval, percent = FALSE) { # TODO: change "percent
 
 #' Pretty formatting of Session performance analysis
 #'
-#' Publication friendly formatting of the results of
-#' \code{\link{estimate_performance}()}. If more than one results set is passed
-#' (i.e., one per session), the will be added as new columns.
+#' Publication friendly formatting of the results of [estimate_performance()].
+#' If more than one results set is passed (i.e., one per session), the will be
+#' added as new columns.
 #'
 #' @param ... One or more performance result data frames produced by
-#'  \code{\link{estimate_performance}()}.
+#'   [estimate_performance()].
 #' @param session_names Names of the sessions corresponding to the result data
-#'  frames passed to \code{...}. If missing, they will be "Session" followed by
-#'  an incremental number for each data frame passed to \code{...}.
+#'   frames passed to \code{...}. If missing, they will be "Session" followed by
+#'   an incremental number for each data frame passed to \code{...}.
 #'
 #' @return A long format data frame with the statistical indicators on the first
-#'  column and a column with values for each data frame passed to \code{...}.
+#'   column and a column with values for each data frame passed to \code{...}.
 #' @export
 #'
 #' @examples
@@ -545,12 +545,12 @@ format_performance <- function(..., session_names = NULL) {
 
 #' Format variable importance results
 #'
-#' Publication ready formatting of the output of
-#' [extract_var_imp()]. Separate the term from the part of the
-#' record it was found in; uses "&" and "|" to identify non-consecutive n-grams
-#' and redundant terms; reduce numeric values to significant digits.
+#' Publication ready formatting of the output of [extract_var_imp()]. Separate
+#' the term from the part of the record it was found in; uses "&" and "|" to
+#' identify non-consecutive n-grams and redundant terms; reduce numeric values
+#' to significant digits.
 #'
-#' @param var_imp A data frame produced by \code{\link{extract_var_imp}()}.
+#' @param var_imp A data frame produced by [extract_var_imp()].
 #' @param as_data_frame Whether to format the output as data frame or as text.
 #'
 #' @return A formatted data frame or a string of text, depending on the
@@ -592,19 +592,17 @@ format_var_imp <- function(var_imp, as_data_frame = TRUE) {
 
 #' Publication friendly tables for .rmd files
 #'
-#' A publication friendly version of \code{\link[knitr:kable]{knitr::kable()}}.
-#' It automatically detect if the output is HTML or PDF and adapt the
-#' formatting, allowing for latex formulas, large table, etc in PDF outputs.
-#' Allows using \% in PDF tables.
+#' A publication friendly version of [knitr::kable()]. It automatically detect
+#' if the output is HTML or PDF and adapt the formatting, allowing for latex
+#' formulas, large table, etc in PDF outputs. Allows using \% in PDF tables.
 #'
 #' @param data A data frame
 #' @param caption A caption to be displayed in the table.
 #' @param allow_math Whether to allow latex math by disabling special character
 #'   escape.
-#' @param ... Other arguments passed to
-#'   \code{\link[knitr:kable]{knitr::kable()}}
+#' @param ... Other arguments passed to [knitr::kable()].
 #'
-#' @return An \code{\link[rmarkdown:render]{rkmarkdown::render()}} ready table.
+#' @return An [rmarkdown::render()] ready table.
 #'
 print_table <- function(data, caption = "", allow_math = FALSE, ...) {
   if (knitr::is_latex_output()) {

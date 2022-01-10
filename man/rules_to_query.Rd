@@ -14,11 +14,10 @@ A string with the rules joined and transformed into a format ready
 for online use.
 }
 \description{
-The rules produced by \code{\link{extract_rules()}} and modified by the other
-tools in the framework are in a format ready for using as boolean filtering
-tools in R, for example by using \code{eval(str2expression(rule)))}. To be
-used online with citation database they need to be converted in another
-format.
+The rules produced by \code{\link[=extract_rules]{extract_rules()}} and modified by the other tools in
+the framework are in a format ready for using as boolean filtering tools in
+R, for example by using \code{eval(str2expression(rule)))}. To be used online
+with citation database they need to be converted in another format.
 }
 \examples{
 

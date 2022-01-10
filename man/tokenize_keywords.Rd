@@ -7,7 +7,7 @@
 tokenize_keywords(keywords)
 }
 \arguments{
-\item{corpus}{A vector of keywords fields from an annotation data set.}
+\item{keywords}{A vector of keywords fields from an annotation data set.}
 }
 \value{
 The tokenized keyword list.

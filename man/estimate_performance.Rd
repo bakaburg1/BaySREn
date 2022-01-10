@@ -17,16 +17,16 @@ estimate_performance(
 )
 }
 \arguments{
-\item{records}{An Annotation data set produced by
-\code{\link{enrich_annotation_file()}} or a file path to it.}
+\item{records}{An Annotation data set produced by \code{\link[=enrich_annotation_file]{enrich_annotation_file()}}
+or a file path to it.}
 
 \item{model}{A \code{brm} model built using
-\code{\link{estimate_positivity_rate_model()}}. Will be created from
-\code{records} if \code{NULL}.}
+\code{\link[=estimate_positivity_rate_model]{estimate_positivity_rate_model()}}. Will be created from \code{records} if
+\code{NULL}.}
 
 \item{preds}{A matrix of posterior predictions as produced by
-\code{\link[brms:posterior_predict]{brms::posterior_predict}()}. If passed
-they need to be derived by the same model in \code{model}.}
+\code{\link[brms:posterior_predict.brmsfit]{brms::posterior_predict()}}. If passed they need to be derived by the same
+model in \code{model}.}
 
 \item{plot}{Whether to plot the cumulative number of positive matches plus
 the posterior predictive distribution as computed by \code{model},
@@ -67,12 +67,12 @@ number of relevant (positive) records in the whole data set is produced to
 compute these statistics.
 }
 \details{
-For this purpose, \code{\link{estimate_positivity_rate_model}()} is employed,
-which uses a Bayesian logistic model to estimate the probability of a
-relevant record given the lower boundaries of the PPD produced by the
-classification model for the records whose label was manually reviewed. This
-model does not take into account records' other characteristics, providing a
-simple, maximum uncertainty model.
+For this purpose, \code{\link[=estimate_positivity_rate_model]{estimate_positivity_rate_model()}} is employed, which uses
+a Bayesian logistic model to estimate the probability of a relevant record
+given the lower boundaries of the PPD produced by the classification model
+for the records whose label was manually reviewed. This model does not take
+into account records' other characteristics, providing a simple, maximum
+uncertainty model.
 
 The model is used to predict the distribution of the number of missed
 relevant matches among the unreviewed records. This number is then used to

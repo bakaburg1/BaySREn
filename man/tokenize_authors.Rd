@@ -4,10 +4,10 @@
 \alias{tokenize_authors}
 \title{Tokenize authors in records}
 \usage{
-tokenize_authors(corpus)
+tokenize_authors(authors)
 }
 \arguments{
-\item{corpus}{A vector of author fields from an annotation data set.}
+\item{authors}{A vector of author fields from an annotation data set.}
 }
 \value{
 The tokenized author list.

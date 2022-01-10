@@ -117,35 +117,34 @@ clean_date_filter_arg <- function(year_query, cases,
   as.character(year_query)
 }
 
-#' Automatic search on Web Of Science database
+#'Automatic search on Web Of Science database
 #'
-#' This function performs an API search on Web Of Science (WOS), taking care of
-#' the authorization steps and query normalization. The user is needed to
-#' provide an API key by accessing \url{https://www.webofknowledge.com} with an
-#' authorized account (e.g. access through an academic VPN or proxy). The key
-#' can be found in the URL once the user is authorized. The key has a time
-#' limit, so it will need to be regenerated. The function is a wrapper over
-#' \code{\link[wosr:pull_wos]{wosr::pull_wos}} and requires the [wosr] package.
+#'This function performs an API search on Web Of Science (WOS), taking care of
+#'the authorization steps and query normalization. The user is needed to provide
+#'an API key by accessing \url{https://www.webofknowledge.com} with an
+#'authorized account (e.g. access through an academic VPN or proxy). The key can
+#'be found in the URL once the user is authorized. The key has a time limit, so
+#'it will need to be regenerated. The function is a wrapper over
+#'[wosr::pull_wos()] and requires the `wosr` package.
 #'
-#' @param query A boolean query with AND/OR/NOT operators, brackets for term
-#'   grouping and quotation marks for n-grams.
-#' @param year_query A year based filtering query. See
-#'   \code{\link{clean_date_filter_arg}} for more info.
-#' @param additional_fields Additional fields to add to the query. Won't be
-#'   normalized so it must already follow WOS specific syntax.
-#' @param api_key Necessary to access WOS database. See Details.
-#' @param parallel Whether to use parallel execution to speed up result
-#'   collection. Works only on Unix-based systems.
-#' @param parse_query Whether to normalize the query into WOS specific syntax.
-#'   If \code{FALSE}, it is assumed that the query is already in the format
-#'   required by WOS API.
-#' @param ... Additional arguments for
-#'   \code{\link[wosr:pull_wos]{wosr::pull_wos}}, excluding \code{query} and
-#'   \code{sid}.
+#'@param query A boolean query with AND/OR/NOT operators, brackets for term
+#'  grouping and quotation marks for n-grams.
+#'@param year_query A year based filtering query. See [clean_date_filter_arg()]
+#'  for more info.
+#'@param additional_fields Additional fields to add to the query. Won't be
+#'  normalized so it must already follow WOS specific syntax.
+#'@param api_key Necessary to access WOS database. See Details.
+#'@param parallel Whether to use parallel execution to speed up result
+#'  collection. Works only on Unix-based systems.
+#'@param parse_query Whether to normalize the query into WOS specific syntax. If
+#'  \code{FALSE}, it is assumed that the query is already in the format required
+#'  by WOS API.
+#'@param ... Additional arguments for [wosr::pull_wos()], excluding \code{query}
+#'  and \code{sid}.
 #'
-#' @return A data frame of records.
+#'@return A data frame of records.
 #'
-#' @export
+#'@export
 #'
 #' @examples
 #'
@@ -326,12 +325,12 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 #' return a large number of results. Large results sets are obtained by
 #' iterative querying.
 #'
-#' Requires the [rentrez] package.
+#' Requires the `rentrez` package.
 #'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'   grouping and quotation marks for n-grams.
-#' @param year_query A year based filtering query. See
-#'   \code{\link{clean_date_filter_arg}} for more info.
+#' @param year_query A year based filtering query. See [clean_date_filter_arg()]
+#'   for more info.
 #' @param additional_fields Additional fields to add to the query. Will not be
 #'   normalized, so it must already follow Pubmed specific syntax.
 #' @param api_key Not mandatory but is helpful when performing searches with a
@@ -457,14 +456,14 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 #' Perform a search on \url{https://ieeexplore.ieee.org/Xplore/home.jsp}.
 #'
 #' If an API key is available, the IEEE API will be used, otherwise Google
-#' Chrome APIs through the [crrri] package will be used to scrape records
+#' Chrome APIs through the `crrri` package will be used to scrape records
 #' simulating a manual user search. This second method is not ensured to work
 #' and IEEE may blacklist your IP if abused.
 #'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'   grouping and quotation marks for n-grams.
-#' @param year_query A year based filtering query. See
-#'   \code{\link{clean_date_filter_arg}} for more info.
+#' @param year_query A year based filtering query. See [clean_date_filter_arg()]
+#'   for more info.
 #' @param additional_fields Additional fields to add to the query. Will not be
 #'   normalized, so it must already follow WOS specific syntax.
 #' @param api_key Necessary to use IEEE APIs. See details.
@@ -790,8 +789,8 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 #' Wrapper function to acquire citation data from multiple sources
 #'
 #' It is better to use this function instead of the individual \code{search_*}
-#' tools, since it also automatically acquires manually downloaded records (e.g.,
-#' for EMBASE and SCOPUS for which automatic search is not available).
+#' tools, since it also automatically acquires manually downloaded records
+#' (e.g., for EMBASE and SCOPUS for which automatic search is not available).
 #'
 #' The function organizes search results into folder defined by the pattern
 #' \code{records_folder}/\code{session_name}/\code{query_name}, which allows to
@@ -801,42 +800,42 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 #' downloaded citation data must be put into these folders to be acquired by the
 #' functions.
 #'
-#' To acquire the manually downloaded files, they must be given a name containing
-#' the source as in \code{sources}. There could be more files for the same
-#' sources, since all research databases have download limits and users may need
-#' to download results in batches. The function acquires these files and parse
-#' them into a standard format, creating a new file for each source.
+#' To acquire the manually downloaded files, they must be given a name
+#' containing the source as in \code{sources}. There could be more files for the
+#' same sources, since all research databases have download limits and users may
+#' need to download results in batches. The function acquires these files and
+#' parse them into a standard format, creating a new file for each source.
 #'
 #' The output is a "journal" file storing all information about the queries, the
 #' sources used, the number of results, etc... which allow keeping track of all
-#' search sessions. If a journal file is already present, the new results will be
-#' added.
+#' search sessions. If a journal file is already present, the new results will
+#' be added.
 #'
 #' @param query A boolean query with AND/OR/NOT operators, brackets for term
-#'  grouping and quotation marks for n-grams.
-#' @param year_query A year based filtering query. See
-#'  \code{\link{clean_date_filter_arg}} for more info.
-#' @param actions Whether to acquire records through automatic search, parsing of
-#'  manually downloaded data, or both.
+#'   grouping and quotation marks for n-grams.
+#' @param year_query A year based filtering query. See [clean_date_filter_arg()]
+#'   for more info.
+#' @param actions Whether to acquire records through automatic search, parsing
+#'   of manually downloaded data, or both.
 #' @param sources The sources for which records should be collected
-#' @param session_name How to name the current search session and will be used to
-#'  create a folder to collect search results. It should be the same as the name
-#'  used for classification session of the same records.
+#' @param session_name How to name the current search session and will be used
+#'   to create a folder to collect search results. It should be the same as the
+#'   name used for classification session of the same records.
 #' @param query_name A label for the current query. It will be used to name a
-#'  folder inside the \code{session_name} folder. It is useful to separate
-#'  records acquired with different queries in the same search session.
+#'   folder inside the \code{session_name} folder. It is useful to separate
+#'   records acquired with different queries in the same search session.
 #' @param records_folder The path to a folder where to store search results.
 #' @param overwrite Whether to overwrite results for a given
-#'  \code{session_name}/\code{query_name}/\code{sources} if the search is
-#'  repeated and a result file already exists.
+#'   \code{session_name}/\code{query_name}/\code{sources} if the search is
+#'   repeated and a result file already exists.
 #' @param journal A path to a file (Excel or CSV) to store a summary of the
-#'  search results. If the file already exists, the summary of the new
-#'  \code{session_name}/\code{query_name}/\code{sources} will be added to the
-#'  file.
+#'   search results. If the file already exists, the summary of the new
+#'   \code{session_name}/\code{query_name}/\code{sources} will be added to the
+#'   file.
 #'
 #' @return A "Journal" data frame containing a summary of the search results
-#'  grouped by
-#'  \code{session_name}/\code{query_name}/\code{sources}/\code{actions}.
+#'   grouped by
+#'   \code{session_name}/\code{query_name}/\code{sources}/\code{actions}.
 #'
 #' @export
 #'

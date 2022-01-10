@@ -2,8 +2,7 @@
 #'
 #' @param text_vec A vector of text documents.
 #' @param dict A dictionary to use to find base forms. See
-#'   \code{\link[lexicon:hash_lemmas]{lexicon::hash_lemmas}()} for the required
-#'   structure.
+#'   [lexicon::hash_lemmas()] for the required structure.
 #'
 #' @return The vector with terms transformed into their base form, when
 #'   possible.
@@ -68,26 +67,26 @@ tokenize_text <- function(corpus) {
 #'
 #' Use different tokenization approaches based on author field format.
 #'
-#' @param corpus A vector of author fields from an annotation data set.
+#' @param authors A vector of author fields from an annotation data set.
 #'
 #' @return The tokenized author list.
 #'
-tokenize_authors <- function(corpus) {
+tokenize_authors <- function(authors) {
   message("- tokenizing authors")
   tictoc::tic()
 
-  ids <- 1:length(corpus)
+  ids <- 1:length(authors)
 
-  with.comma <- stringr::str_detect(corpus, ",")
+  with.comma <- stringr::str_detect(authors, ",")
 
-  corpus <- corpus %>% stringr::str_squish()
+  authors <- authors %>% stringr::str_squish()
 
-  output <- parallel::mclapply(1:length(corpus), function(i) {
+  output <- parallel::mclapply(1:length(authors), function(i) {
     if (is.na(with.comma[i])) {
       NA
     } # No authors listed
     else if (with.comma[i] == TRUE) { # Pubmed or WOS style author list
-      corpus[i] %>%
+      authors[i] %>%
         stringr::str_remove_all("[^\\w ,;]") %>%
         stringr::str_replace_all("(?<=,)[ \\-\\w]+?(?:(?=;)|$)", function(x) {
           paste0(stringr::str_extract_all(x, "\\b\\w")[[1]], collapse = "")
@@ -95,7 +94,7 @@ tokenize_authors <- function(corpus) {
         stringr::str_replace_all(",", "_") %>%
         stringr::str_remove_all(" +")
     } else { # IEEE style author list
-      corpus[i] %>%
+      authors[i] %>%
         stringr::str_remove_all("[^\\w\\.;]") %>% # remove non letters and other characters
         stringr::str_replace_all("[^;]+(?:(?=;)|$)", function(x) { # extract names between ;
           stringr::str_replace(x, "([\\w \\.]+)\\.([\\w ]+)", "\\2_\\1") # use the rightmost dot to separate first and last names
@@ -115,7 +114,7 @@ tokenize_authors <- function(corpus) {
 #'
 #' Clean up the keyword fields in the records.
 #'
-#' @param corpus A vector of keywords fields from an annotation data set.
+#' @param keywords A vector of keywords fields from an annotation data set.
 #'
 #' @return The tokenized keyword list.
 #'
@@ -134,7 +133,7 @@ tokenize_keywords <- function(keywords) {
 #'
 #' Clean up the keyword fields in the records.
 #'
-#' @param corpus A vector of MESH keywords fields from an annotation data set.
+#' @param mesh A vector of MESH keywords fields from an annotation data set.
 #'
 #' @return The tokenized MESH keyword list.
 #'
@@ -176,15 +175,14 @@ tokenize_MESH <- function(mesh) {
 #' @param ids Identification ID of documents.
 #' @param freq.subset.ids IDs to consider when computing term frequency.
 #' @param included.pos Part of speech (POS) to consider when building the DTM.
-#'   See \code{\link[lexicon:hash_grady_pos]{lexicon::hash_grady_pos}()} for a
-#'   list of recognized POS.
+#'   See [lexicon::hash_grady_pos()] for a list of recognized POS.
 #' @param tokenize.fun Function to use to clean up text.
 #' @param add.ngrams Whether to search and add non-consecutive n-grams. See
-#'   \code{\link{DTM.add_ngrams}}.
+#'   [DTM.add_ngrams()].
 #' @param n.gram.thresh The threshold to use to identify the network of
 #'   non-consecutive n-grams if \code{add.ngrams} is \code{TRUE}.
 #' @param aggr.synonyms Whether to aggregate terms which almost always appear
-#'   together. See \code{\link{DTM.aggr_synonyms}()}.
+#'   together. See [DTM.aggr_synonyms()].
 #' @param syn.thresh The threshold to use to identify the network of terms to
 #'   aggregate if \code{aggr.synonyms} is \code{TRUE}.
 #' @param label A label to prepend to term columns in the DTM.

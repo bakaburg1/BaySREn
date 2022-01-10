@@ -18,8 +18,8 @@ search_wos(
 \item{query}{A boolean query with AND/OR/NOT operators, brackets for term
 grouping and quotation marks for n-grams.}
 
-\item{year_query}{A year based filtering query. See
-\code{\link{clean_date_filter_arg}} for more info.}
+\item{year_query}{A year based filtering query. See \code{\link[=clean_date_filter_arg]{clean_date_filter_arg()}}
+for more info.}
 
 \item{additional_fields}{Additional fields to add to the query. Won't be
 normalized so it must already follow WOS specific syntax.}
@@ -29,25 +29,24 @@ normalized so it must already follow WOS specific syntax.}
 \item{parallel}{Whether to use parallel execution to speed up result
 collection. Works only on Unix-based systems.}
 
-\item{parse_query}{Whether to normalize the query into WOS specific syntax.
-If \code{FALSE}, it is assumed that the query is already in the format
-required by WOS API.}
+\item{parse_query}{Whether to normalize the query into WOS specific syntax. If
+\code{FALSE}, it is assumed that the query is already in the format required
+by WOS API.}
 
-\item{...}{Additional arguments for
-\code{\link[wosr:pull_wos]{wosr::pull_wos}}, excluding \code{query} and
-\code{sid}.}
+\item{...}{Additional arguments for \code{\link[wosr:pull_wos]{wosr::pull_wos()}}, excluding \code{query}
+and \code{sid}.}
 }
 \value{
 A data frame of records.
 }
 \description{
 This function performs an API search on Web Of Science (WOS), taking care of
-the authorization steps and query normalization. The user is needed to
-provide an API key by accessing \url{https://www.webofknowledge.com} with an
-authorized account (e.g. access through an academic VPN or proxy). The key
-can be found in the URL once the user is authorized. The key has a time
-limit, so it will need to be regenerated. The function is a wrapper over
-\code{\link[wosr:pull_wos]{wosr::pull_wos}} and requires the \link{wosr} package.
+the authorization steps and query normalization. The user is needed to provide
+an API key by accessing \url{https://www.webofknowledge.com} with an
+authorized account (e.g. access through an academic VPN or proxy). The key can
+be found in the URL once the user is authorized. The key has a time limit, so
+it will need to be regenerated. The function is a wrapper over
+\code{\link[wosr:pull_wos]{wosr::pull_wos()}} and requires the \code{wosr} package.
 }
 \examples{
 

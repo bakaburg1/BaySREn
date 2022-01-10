@@ -14,7 +14,7 @@ analyse_grid_search(
 }
 \arguments{
 \item{session_folder}{Where to find the result sessions produced by
-\code{\link{perform_grid_evaluation()}}.}
+\code{\link[=perform_grid_evaluation]{perform_grid_evaluation()}}.}
 
 \item{tot_pos}{Total number of positive matches among records. If \code{NULL}
 it will be inferred by the Annotation files in \code{session_folder} which
@@ -48,9 +48,8 @@ parameter if the \code{plot} argument is \code{TRUE}, otherwise
 }
 \description{
 Takes as input a folder with multiple session data produced by
-\code{\link{perform_grid_evaluation}()}, each session representing a
-combination of parameters and computes the best combinations in terms of a
-perfomance score.
+\code{\link[=perform_grid_evaluation]{perform_grid_evaluation()}}, each session representing a combination of
+parameters and computes the best combinations in terms of a perfomance score.
 }
 \details{
 For each session a performance score is computed. The default is

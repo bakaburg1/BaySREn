@@ -20,11 +20,11 @@ The list of the regenerated Results' file content as data frames,
 invisibly.
 }
 \description{
-\code{\link{enrich_annotation_file}()} creates summary files of each
-classification iteration into the Results session sub-folder, but these
-summaries do not includes the manual review of the predicted labels.
-\link{consolidate_results} regenerates these files including the changes
-resulting from the manual review of the automatic classification.
+\code{\link[=enrich_annotation_file]{enrich_annotation_file()}} creates summary files of each classification
+iteration into the Results session sub-folder, but these summaries do not
+includes the manual review of the predicted labels. \code{\link[=consolidate_results]{consolidate_results()}}
+regenerates these files including the changes resulting from the manual
+review of the automatic classification.
 }
 \details{
 The results summary, not including the manual review, is still available

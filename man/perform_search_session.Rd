@@ -20,17 +20,17 @@ perform_search_session(
 \item{query}{A boolean query with AND/OR/NOT operators, brackets for term
 grouping and quotation marks for n-grams.}
 
-\item{year_query}{A year based filtering query. See
-\code{\link{clean_date_filter_arg}} for more info.}
+\item{year_query}{A year based filtering query. See \code{\link[=clean_date_filter_arg]{clean_date_filter_arg()}}
+for more info.}
 
-\item{actions}{Whether to acquire records through automatic search, parsing of
-manually downloaded data, or both.}
+\item{actions}{Whether to acquire records through automatic search, parsing
+of manually downloaded data, or both.}
 
 \item{sources}{The sources for which records should be collected}
 
-\item{session_name}{How to name the current search session and will be used to
-create a folder to collect search results. It should be the same as the name
-used for classification session of the same records.}
+\item{session_name}{How to name the current search session and will be used
+to create a folder to collect search results. It should be the same as the
+name used for classification session of the same records.}
 
 \item{query_name}{A label for the current query. It will be used to name a
 folder inside the \code{session_name} folder. It is useful to separate
@@ -54,8 +54,8 @@ grouped by
 }
 \description{
 It is better to use this function instead of the individual \code{search_*}
-tools, since it also automatically acquires manually downloaded records (e.g.,
-for EMBASE and SCOPUS for which automatic search is not available).
+tools, since it also automatically acquires manually downloaded records
+(e.g., for EMBASE and SCOPUS for which automatic search is not available).
 }
 \details{
 The function organizes search results into folder defined by the pattern
@@ -66,16 +66,16 @@ into a single query). These folders can be created manually and manually
 downloaded citation data must be put into these folders to be acquired by the
 functions.
 
-To acquire the manually downloaded files, they must be given a name containing
-the source as in \code{sources}. There could be more files for the same
-sources, since all research databases have download limits and users may need
-to download results in batches. The function acquires these files and parse
-them into a standard format, creating a new file for each source.
+To acquire the manually downloaded files, they must be given a name
+containing the source as in \code{sources}. There could be more files for the
+same sources, since all research databases have download limits and users may
+need to download results in batches. The function acquires these files and
+parse them into a standard format, creating a new file for each source.
 
 The output is a "journal" file storing all information about the queries, the
 sources used, the number of results, etc... which allow keeping track of all
-search sessions. If a journal file is already present, the new results will be
-added.
+search sessions. If a journal file is already present, the new results will
+be added.
 }
 \examples{
 \dontrun{
