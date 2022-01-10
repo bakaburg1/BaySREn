@@ -93,7 +93,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
     setNames(paste0("V__", specific.terms)) %>%
     bind_cols() %>%
     mutate_all(~ replace(.x, is.na(.x), 0)) %>%
-    select(tidyselect::where(~ n_distinct(.x) > 1))
+    select(tidyselect::vars_select_helpers$where(~ n_distinct(.x) > 1))
 
   print(paste("N. features:", ncol(SpecificDTM)))
 
@@ -311,7 +311,7 @@ add_negative_terms <- function(rules, target_vec, target_data) {
     filt <- with(target_data, which(eval(str2expression(rule))))
 
     target_data <- target_data[filt, ] %>%
-    	select(tidyselect::where(~ n_distinct(.x) > 1))
+    	select(tidyselect::vars_select_helpers$where(~ n_distinct(.x) > 1))
 
     target_vec <- target_vec[filt]
     tot_pos <- sum(target_vec == "y")

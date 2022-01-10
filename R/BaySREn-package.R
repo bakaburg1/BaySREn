@@ -21,7 +21,9 @@
 #'
 #' @import dplyr ggplot2
 #' @importFrom glue glue
-#' @importFrom utils head tail str capture.output
+#' @importFrom tidyselect all_of any_of one_of contains ends_with starts_with
+#'   everything
+#' @importFrom utils head tail str capture.output getFromNamespace
 #' @importFrom stats setNames quantile na.omit plogis qlogis sd
 #'
 NULL

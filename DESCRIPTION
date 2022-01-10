@@ -55,6 +55,7 @@ Imports:
     tictoc (>= 1.0.1),
     tidyr (>= 1.1.4),
     tidytrees (>= 0.2.3),
+    tidyselect (>= 1.1.1),
     tm (>= 0.7.8),
     utils (>= 4.1.2),
     viridis (>= 0.6.2),

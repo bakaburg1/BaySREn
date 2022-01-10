@@ -379,7 +379,7 @@ summarise_annotations <- function(session_name, sessions_folder = getOption("bay
     bind_rows() %>%
     {
       if (remove_empty_columns) {
-        . <- select(., tidyselect::where(~ any(.x > 0)))
+        . <- select(., tidyselect::vars_select_helpers$where(~ any(.x > 0)))
       }
 
       if (remove_raw_data) {
@@ -443,7 +443,7 @@ summarise_annotations_by_session <- function(sessions_folder = getOption("baysre
     bind_rows() %>%
     {
       if (remove_empty_columns) {
-        . <- select(., tidyselect::where(~ any(.x > 0)))
+        . <- select(., tidyselect::vars_select_helpers$where(~ any(.x > 0)))
       }
 
       if (remove_raw_data) {
@@ -608,11 +608,15 @@ format_var_imp <- function(var_imp, as_data_frame = TRUE) {
 #'
 print_table <- function(data, caption = "", allow_math = FALSE, ...) {
   if (knitr::is_latex_output()) {
-    if (isTRUE(allow_math)) {
-      data <- data %>%
-        mutate(across(tidyselect::where(is.character), ~ stringr::str_replace_all(.x, "%", "\\\\%"))) %>%
-        rename_with(~ stringr::str_replace_all(.x, "%", "\\\\%"))
-    }
+  	if (isTRUE(allow_math)) {
+  		data <- data %>%
+  			mutate(across(
+  				tidyselect::vars_select_helpers$where(is.character),
+  				~ stringr::str_replace_all(.x, "%", "\\\\%"))
+  			) %>%
+  			rename_with(~ stringr::str_replace_all(.x, "%", "\\\\%")
+  			)
+  	}
 
     data %>%
       knitr::kable(

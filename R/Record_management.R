@@ -56,7 +56,7 @@ clean_record_textfields <- function(df) {
   mutate(
     df,
     across(
-    	tidyselect::where(is.character),
+    	tidyselect::vars_select_helpers$where(is.character),
       ~ stringr::str_replace_all(.x, c(" *; *" = ";", '["\']+' = " ")) %>%
         stringr::str_squish() %>%
         {

@@ -173,6 +173,14 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 	# Silence CMD CHECK about non standard eval
 	schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
 
+	# Declare some non-exported wosr functions
+	one_parse <- utils::getFromNamespace("one_parse", "wosr")
+	download_wos <- utils::getFromNamespace("download_wos", "wosr")
+	data_frame_wos <- utils::getFromNamespace("data_frame_wos", "wosr")
+	process_wos_apply <- utils::getFromNamespace("process_wos_apply", "wosr")
+	enforce_schema <- utils::getFromNamespace("enforce_schema", "wosr")
+	append_class <- utils::getFromNamespace("append_class", "wosr")
+
 	if (!requireNamespace("wosr", quietly = TRUE)) {
 		ans <- ask_user_permission(
 			q = "Package 'wosr' is required to download results from the WOS database. Do you want to install it now? y/n",
@@ -201,7 +209,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
                              ),
                              sid = wosr::auth(Sys.getenv("WOS_USERNAME"), Sys.getenv("WOS_PASSWORD")), ...) {
       parse_wos <- function(all_resps) {
-        pbmcapply::pbmclapply(all_resps, wosr:::one_parse)
+        pbmcapply::pbmclapply(all_resps, one_parse)
       }
 
       qr_out <- wosr::query_wos(query,
@@ -214,16 +222,16 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
         names(wos_unenforced) <- dfs
       } else {
         message("- fetching records")
-        all_resps <- wosr:::download_wos(qr_out, ...)
+        all_resps <- download_wos(qr_out, ...)
         all_resps <- all_resps[vapply(all_resps, length, numeric(1)) >
           1]
         message("- parsing results")
         parse_list <- parse_wos(all_resps)
-        df_list <- wosr:::data_frame_wos(parse_list)
-        wos_unenforced <- wosr:::process_wos_apply(df_list)
+        df_list <- data_frame_wos(parse_list)
+        wos_unenforced <- process_wos_apply(df_list)
       }
-      wos_data <- wosr:::enforce_schema(wos_unenforced)
-      wosr:::append_class(wos_data, "wos_data")
+      wos_data <- enforce_schema(wos_unenforced)
+      append_class(wos_data, "wos_data")
     }
   } else {
     pull_records <- wosr::pull_wos

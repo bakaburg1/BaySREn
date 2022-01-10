@@ -145,8 +145,8 @@ create_training_set <- function(Records, min_freq = 0.05) {
   ) %>%
     distinct() %>% # remove the duplicated positive matches
     select(
-    	tidyselect::where(~ !is.numeric(.x)), # Keep ID and Target
-    	tidyselect::where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
+    	tidyselect::vars_select_helpers$where(~ !is.numeric(.x)), # Keep ID and Target
+    	tidyselect::vars_select_helpers$where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
     )
 }
 
