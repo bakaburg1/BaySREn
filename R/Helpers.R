@@ -43,6 +43,24 @@ safe_now <- function() {
 	stringr::str_replace_all(now(), c(" " = "T", ":" = "."))
 }
 
+#' Create an empty data.frame out of template with column names and types
+#'
+#' @noRd
+create_empty_df <- function(cols_spec) {
+	df <- data.frame()
+
+	for (col in cols_spec) {
+		if (col %in% c("POSIXct", "POSIXt")) {
+			v <- structure(numeric(), class = c("POSIXct", "POSIXt"), tzone = "")
+			df <- cbind(df, v)
+		} else {
+			df <- cbind(df, vector(col, 0))
+		}
+	}
+
+	setNames(df, names(cols_spec))
+}
+
 #' Tool to grab XHR messages from dynamic websites
 #'
 #' @importFrom promises %...>%

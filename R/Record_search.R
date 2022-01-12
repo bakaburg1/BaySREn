@@ -172,6 +172,13 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 	# Silence CMD CHECK about non standard eval
 	schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
 
+	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
+											 DOI = "character", Journal = "character", N_citations = "integer",
+											 Published = "character", Source = "character", Source_type = "character",
+											 Creation_date = "character", Authors = "character", Topic = "character",
+											 Article_type = "character", Author_keywords = "character", Keywords = "character"
+	)
+
 	# Declare some non-exported wosr functions
 	one_parse <- utils::getFromNamespace("one_parse", "wosr")
 	download_wos <- utils::getFromNamespace("download_wos", "wosr")
@@ -193,7 +200,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 		if (isFALSE(ans)) {
 			warning("Research on WOS database will be skipped", call. = FALSE, immediate. = TRUE)
 
-			return(data.frame())
+			return(create_empty_df(output_template))
 		}
 	}
 
@@ -285,6 +292,11 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
     error = function(e) stop(e, glue("\n\nquery: {query}"))
   )
 
+  if (is.null(records_list$publication)) {
+  	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+  	return(create_empty_df(output_template))
+  }
+
   records <- records_list$publication %>%
     transmute(
       Order = 1:n(), ID = ut, Title = title, Abstract = abstract,
@@ -362,6 +374,14 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
                           api_key = getOption("baysren.ncbi_api_key"),
                           record_limit = numeric()) {
+
+	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
+											 DOI = "character", Authors = "character", URL = "character",
+											 Journal = "character", Journal_short = "character", Article_type = "character",
+											 Mesh = "character", Author_keywords = "character", Published = "character",
+											 Source = "character", Source_type = "character", Creation_date = "POSIXct"
+	)
+
   message("Searching Pubmed...")
 
 	if (!requireNamespace("rentrez", quietly = TRUE)) {
@@ -377,7 +397,7 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 		if (isFALSE(ans)) {
 			warning("Research on PUBMED database will be skipped", call. = FALSE, immediate. = TRUE)
 
-			return(data.frame())
+			return(create_empty_df(output_template))
 		}
 	}
 
@@ -411,6 +431,11 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
   )
 
   total_count <- min(res$count, record_limit)
+
+  if (total_count == 0) {
+  	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+  	return(create_empty_df(output_template))
+  }
 
   message("- fetching records")
 
@@ -505,6 +530,12 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 	# Silence CMD CHECK about non standard eval
 	articleNumber <- articleTitle <- doi <- authors <- publicationTitle <- contentType <- citationCount <- publicationDate <- abstract_url <- title <- abstract <- publication_title <- content_type <- citing_paper_count <- publication_date <- kwd <- firstName <- lastName <- Order <- ID <- Title <- Abstract <- DOI <- URL <- Authors <- Journal <- Article_type <- Author_keywords <- Keywords <- Mesh <- N_citations <- Published <- Source <- Source_type <- NULL
 
+	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
+											 DOI = "character", URL = "character", Authors = "character",
+											 Journal = "character", Article_type = "character", Author_keywords = "character",
+											 Keywords = "character", N_citations = "integer", Published = "character",
+											 Source = "character", Source_type = "character")
+
   message("Searching IEEE...")
 
   if (!is.null(additional_fields) & length(additional_fields) > 0) {
@@ -541,7 +572,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
   		if (isFALSE(ans)) {
   			warning("Research on IEEE database will be skipped", call. = FALSE, immediate. = TRUE)
 
-  			return(data.frame())
+  			return(create_empty_df(output_template))
   		}
   	}
 
@@ -613,6 +644,11 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
       records <- bind_rows(records, other_pages)
     }
 
+    if (is.null(response$records)) {
+    	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+    	return(create_empty_df(output_template))
+    }
+
     records <- response$records %>%
       transmute(
         Order = 1:n(),
@@ -676,6 +712,11 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     results <- httr::content(response, "text") %>% jsonlite::fromJSON()
 
     records <- results$articles
+
+    if (is.null(records)) {
+    	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+    	return(create_empty_df(output_template))
+    }
 
     max_records <- additional_fields$max_records
 
