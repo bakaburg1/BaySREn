@@ -26,7 +26,7 @@ The framework employs automatic citation collection from online scientific datab
 it uses a Bayesian active machine-learning algorithm to screen relevant citation, requiring human input only at the beginning of the process and to review uncertain classifications.
 Finally, the framework provides a tool to generate search queries with online scientific databases based on an already labelled corpus of citation data.
 
-This document will guide the user along the steps to utilise the framework, using as example the inputs and parameters used in ... .
+This document will guide the user along the steps to utilise the framework, using as example the inputs and parameters used in the manuscrip "An open-source integrated framework for the automation of citation collection and screening in systematic reviews" published in BMC Medical Research Methodology.
 
 
 ## Installation

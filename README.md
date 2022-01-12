@@ -24,7 +24,10 @@ provides a tool to generate search queries with online scientific
 databases based on an already labelled corpus of citation data.
 
 This document will guide the user along the steps to utilise the
-framework, using as example the inputs and parameters used in … .
+framework, using as example the inputs and parameters used in the
+manuscrip “An open-source integrated framework for the automation of
+citation collection and screening in systematic reviews” published in
+BMC Medical Research Methodology.
 
 ## Installation
 
