@@ -788,7 +788,7 @@ enrich_annotation_file <- function(session_name,
         case_when( # assign y if a record range is included into global y range and don't overlap the n range. The opposite is true for n labels
           Pred_Low > negLim & Pred_Low > posLim ~ "y",
           Pred_Up < posLim & Pred_Up < negLim ~ "n",
-          T ~ "unk" # Assign unk if the label is not clearly defined
+          TRUE ~ "unk" # Assign unk if the label is not clearly defined
         )
       },
       Predicted_label = replace(

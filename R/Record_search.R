@@ -738,7 +738,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
         group_by(type = case_when(
           stringr::str_detect(type, "MeSH") ~ "Mesh",
           stringr::str_detect(type, "Author") ~ "Author",
-          T ~ "IEEE"
+          TRUE ~ "IEEE"
         )) %>%
         summarise(kwd = paste(unlist(kwd), collapse = "; "))
 
