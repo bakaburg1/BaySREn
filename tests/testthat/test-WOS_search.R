@@ -1,0 +1,18 @@
+query <- "(systematic review) AND ((heart failure) AND (COPD))"
+year_query <- "2021"
+
+expected_struct <- c() #TODO: to be filled
+
+test_that("WOS can be searched using an API key", {
+	skip_if(is.null(getOption("baysren.wos_api_key")), 'WOS API key required')
+
+	results <- try(search_wos(query, year_query, api_key = getOption("baysren.wos_api_key")), silent = TRUE)
+
+	skip_if(grepl("Session not found", results), "WOS API key is outdated and needs renewal")
+
+	expect_s3_class(results, class = 'data.frame')
+
+	result_struct <- sapply(results, class) %>% unlist()
+
+	expect_mapequal(result_struct, expected = expected_struct)
+})
