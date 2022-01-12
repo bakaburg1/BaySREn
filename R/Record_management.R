@@ -419,7 +419,7 @@ read_bib_files <- function(files) {
     }
 
     if (is.null(type)) {
-      warning("Format not recognized for ", file)
+      warning("Format not recognized for ", file, call. = FALSE, immediate. = TRUE)
       return(NULL)
     }
 
@@ -882,11 +882,11 @@ create_session <- function(Records, session_name,
         return(session_path)
       },
       skip = {
-        warning('Session "', session_name, '" exists. Skipping...')
+        warning('Session "', session_name, '" exists. Skipping...', call. = FALSE, immediate. = TRUE)
         return(session_path)
       },
       add = {
-        warning('Session "', session_name, '" exists. Adding a replicate...')
+        warning('Session "', session_name, '" exists. Adding a replicate...', call. = FALSE, immediate. = TRUE)
         cur_rep <- max(stringr::str_extract(session_name, "(?<=_r)\\d+") %>% as.numeric(), 1, na.rm = TRUE)
 
         session_name <- stringr::str_remove(session_name, "_r\\d+$") %>% paste0("_r", cur_rep + 1)
@@ -898,7 +898,7 @@ create_session <- function(Records, session_name,
         )
       },
       replace = {
-        warning('Session "', session_name, '" exists. Replacing...')
+        warning('Session "', session_name, '" exists. Replacing...', call. = FALSE, immediate. = TRUE)
         failure <- unlink(session_path, recursive = TRUE)
 
         if (failure == 1) stop("Session removal failed!")

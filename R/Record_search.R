@@ -76,7 +76,7 @@ clean_date_filter_arg <- function(year_query, cases,
 
     if (!is.null(arg_in_query_test) & !is.null(query)) {
       if (stringr::str_detect(query, stringr::fixed(arg_in_query_test))) {
-        warning("Year filter already in query. The query will be used")
+        warning("Year filter already in query. The query will be used", call. = FALSE, immediate. = TRUE)
         return(NULL)
       }
     }
@@ -85,7 +85,7 @@ clean_date_filter_arg <- function(year_query, cases,
 
       year_piece <- stringr::str_split(year_query, "-") %>% unlist()
 
-      if (year_piece[2] < year_piece[1]) warning("Years' order seems wrong, please check it.")
+      if (year_piece[2] < year_piece[1]) warning("Years' order seems wrong, please check it.", call. = FALSE, immediate. = TRUE)
 
       year_query <- glue(cases$range)
     } else if (stringr::str_detect(year_query, "^(<|<=|>=|>)\\d{4}$")) { # boundary
@@ -191,7 +191,7 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 		)
 
 		if (isFALSE(ans)) {
-			warning("Research on WOS database will be skipped")
+			warning("Research on WOS database will be skipped", call. = FALSE, immediate. = TRUE)
 
 			return(data.frame())
 		}
@@ -375,13 +375,13 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 		)
 
 		if (isFALSE(ans)) {
-			warning("Research on PUBMED database will be skipped")
+			warning("Research on PUBMED database will be skipped", call. = FALSE, immediate. = TRUE)
 
 			return(data.frame())
 		}
 	}
 
-  if (is.null(api_key)) warning("NCBI API key is not set.")
+  if (is.null(api_key)) warning("NCBI API key is not set.", call. = FALSE, immediate. = TRUE)
 
   query <- stringr::str_squish(query)
 
@@ -522,7 +522,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
   }
 
   if (is.null(api_key)) {
-    warning("IEEE API key is not set, defaulting to webscraping.")
+    warning("IEEE API key is not set, defaulting to webscraping.", call. = FALSE, immediate. = TRUE)
 
     if (!allow_web_scraping) stop("If API key is not present web scraping must be allowed.")
 
@@ -539,7 +539,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
   		)
 
   		if (isFALSE(ans)) {
-  			warning("Research on IEEE database will be skipped")
+  			warning("Research on IEEE database will be skipped", call. = FALSE, immediate. = TRUE)
 
   			return(data.frame())
   		}
@@ -589,7 +589,9 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     records <- response$records
 
     if (response$totalPages > 1) {
-      if (response$totalPages > 100) warning("Only results up to page 100 are available")
+      if (response$totalPages > 100) {
+      	warning("Only results up to page 100 are available", call. = FALSE, immediate. = TRUE)
+      }
 
       other_pages <- pbapply::pblapply(2:min(response$totalPages, 100), function(page) {
         endpoint$query$pageNumber <- page
@@ -874,11 +876,11 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
   load_if_exists <- function(out_file, overwrite) {
     if (file.exists(out_file)) {
       if (!overwrite) {
-        warning(basename(out_file), " already present and argument overwrite is FALSE.", call. = FALSE)
+        warning(basename(out_file), " already present and argument overwrite is FALSE.", call. = FALSE, immediate. = TRUE)
 
         readr::read_csv(out_file, col_types = readr::cols())
       } else {
-        warning(basename(out_file), " will be overwritten.", call. = FALSE)
+        warning(basename(out_file), " will be overwritten.", call. = FALSE, immediate. = TRUE)
         NULL
       }
     } else {
@@ -959,7 +961,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
   }) %>% bind_rows()
 
   if (nrow(record_data) == 0) {
-    warning("No records were added", call. = FALSE)
+    warning("No records were added", call. = FALSE, immediate. = TRUE)
   }
 
   if (!is.null(journal)) {

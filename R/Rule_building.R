@@ -100,7 +100,9 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
 
   message("Computing trees")
 
-  if (n.trees > ncol(Draws)) warning("Number of trees > than number of MCMC draws. All draws will be used")
+  if (n.trees > ncol(Draws)) {
+  	warning("Number of trees > than number of MCMC draws. All draws will be used", call. = FALSE, immediate. = TRUE)
+  }
 
   # Add the median estimate and ensure it is included among the candidate draws
   Draws <- cbind(Draws[, -1], Records$Pred_Med)
