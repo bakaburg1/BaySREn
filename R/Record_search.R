@@ -872,6 +872,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 #' @param overwrite Whether to overwrite results for a given
 #'   \code{session_name}/\code{query_name}/\code{sources} if the search is
 #'   repeated and a result file already exists.
+#' @param skip_on_failure Whether to skip problematic sources of fail.
 #' @param journal A path to a file (Excel or CSV) to store a summary of the
 #'   search results. If the file already exists, the summary of the new
 #'   \code{session_name}/\code{query_name}/\code{sources} will be added to the
@@ -910,6 +911,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
                                    sources = c("IEEE", "WOS", "Pubmed", "Scopus", "Embase"),
                                    session_name = "Session1", query_name = "Query1",
                                    records_folder = "Records", overwrite = FALSE,
+																	 skip_on_failure = FALSE,
                                    journal = "Session_journal.csv") {
 
 	# Silence CMD CHECK about non standard eval
@@ -942,46 +944,60 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
     lapply(actions, function(action) {
       records <- NULL
 
-      if (action == "API") {
-        ## API search
+      trial <- try({
+      	if (action == "API") {
+      		## API search
 
-        output_file <- file.path(folder_path, glue("{source}_API.csv"))
+      		output_file <- file.path(folder_path, glue("{source}_API.csv"))
 
-        records <- load_if_exists(output_file, overwrite) # load records if output already existing
+      		records <- load_if_exists(output_file, overwrite) # load records if output already existing
 
-        search_fun <- paste0("search_", stringr::str_to_lower(source))
+      		search_fun <- paste0("search_", stringr::str_to_lower(source))
 
-        if (is.null(records) & exists(search_fun)) { # if output not existing search via API and API search is available
+      		if (is.null(records) & exists(search_fun)) { # if output not existing search via API and API search is available
 
-          records <- get(search_fun)(query = query, year_query = year_query)
-        }
-      } else if (action == "parsed") {
-        ## Parsing downloaded records
+      			records <- try(get(search_fun)(query = query, year_query = year_query), silent = TRUE)
 
-        # find input files (i.e. files not containing API or parsed in the name)
-        input_files <- list.files(folder_path, full.names = FALSE) %>%
-          stringr::str_subset("API|parsed", negate = TRUE) %>%
-          stringr::str_subset(stringr::regex(source, ignore_case = TRUE))
+      		}
+      	} else if (action == "parsed") {
+      		## Parsing downloaded records
 
-        if (length(input_files) > 0) { # continue if any input file exists
+      		# find input files (i.e. files not containing API or parsed in the name)
+      		input_files <- list.files(folder_path, full.names = FALSE) %>%
+      			stringr::str_subset("API|parsed", negate = TRUE) %>%
+      			stringr::str_subset(stringr::regex(source, ignore_case = TRUE))
 
-          output_file <- file.path(folder_path, glue("{source}_parsed.csv"))
+      		if (length(input_files) > 0) { # continue if any input file exists
 
-          records <- load_if_exists(output_file, overwrite) # load records if output already existing
+      			output_file <- file.path(folder_path, glue("{source}_parsed.csv"))
 
-          if (is.null(records)) { # in output not existing parse the raw data
-            records <- file.path(folder_path, input_files) %>%
-              read_bib_files() %>%
-              bind_rows()
-          }
+      			records <- load_if_exists(output_file, overwrite) # load records if output already existing
 
-          input_files <- paste(input_files, collapse = ", ")
-        } else {
-          input_files <- NA
-        }
+      			if (is.null(records)) { # in output not existing parse the raw data
+      				records <- file.path(folder_path, input_files) %>%
+      					read_bib_files() %>%
+      					bind_rows()
+      			}
+
+      			input_files <- paste(input_files, collapse = ", ")
+      		} else {
+      			input_files <- NA
+      		}
+      	}
+      }, silent = TRUE)
+
+      if (class(trial) == 'try-error') {
+      	if (isTRUE(skip_on_failure)) {
+      		message <- glue(
+      			"Importing from source: \"{source}\" via action \"{action}\" failed with error:\n{attributes(records)$condition$message}"
+      		)
+      		warning(message, call. = FALSE, immediate. = TRUE)
+      	} else {
+      		stop(message)
+      	}
       }
 
-      if (!is.null(records) && nrow(records) > 0) {
+      if (is.data.frame(records) && nrow(records) > 0) {
         records$FileID <- file.path(session_name, query_name, basename(output_file))
 
         readr::write_csv(records, output_file)
@@ -1000,7 +1016,9 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
         )
       }
     })
-  }) %>% bind_rows()
+  }) %>%
+  	bind_rows() %>%
+  	mutate_all(as.character)
 
   if (nrow(record_data) == 0) {
     warning("No records were added", call. = FALSE, immediate. = TRUE)
@@ -1008,7 +1026,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
 
   if (!is.null(journal)) {
     if (stringr::str_detect(journal, "\\.csv$")) {
-      write_fun <- write_csv
+      write_fun <- readr::write_csv
     } else if (stringr::str_detect(journal, "\\.xlsx?$")) {
       write_fun <- function(x, file) openxlsx::write.xlsx(x, file, asTable = TRUE)
     } else {
@@ -1016,7 +1034,8 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
     }
 
     if (file.exists(journal)) {
-      previous_data <- import_data(journal)
+      previous_data <- import_data(journal) %>%
+      	mutate_all(as.character)
 
       record_data <- previous_data %>%
         bind_rows(record_data) %>%
