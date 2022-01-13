@@ -981,7 +981,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
         }
       }
 
-      if (!is.null(records)) {
+      if (!is.null(records) && nrow(records) > 0) {
         records$FileID <- file.path(session_name, query_name, basename(output_file))
 
         readr::write_csv(records, output_file)
