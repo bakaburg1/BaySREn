@@ -225,7 +225,8 @@ parse_wos <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    clean_record_textfields() %>%
+  	as.data.frame()
 }
 
 #' Parse IEEE raw data
@@ -272,7 +273,8 @@ parse_ieee <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = now()
     ) %>%
-    clean_record_textfields()
+    clean_record_textfields() %>%
+  	as.data.frame()
 }
 
 #' Parse EMBASE raw data
@@ -323,7 +325,8 @@ parse_embase <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    clean_record_textfields() %>%
+  	as.data.frame()
 }
 
 #' Parse SCOPUS raw data
@@ -368,7 +371,8 @@ parse_scopus <- function(entries, timestamp = now()) {
       Source_type = "parsed",
       Creation_date = timestamp
     ) %>%
-    clean_record_textfields()
+    clean_record_textfields() %>%
+  	as.data.frame()
 }
 
 #' Import and parse citation data files
