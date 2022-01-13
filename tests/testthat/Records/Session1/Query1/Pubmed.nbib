@@ -1,0 +1,2023 @@
+PMID- 32014114
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200316
+LR  - 20200417
+IS  - 1474-547X (Electronic)
+IS  - 0140-6736 (Print)
+IS  - 0140-6736 (Linking)
+VI  - 395
+IP  - 10225
+DP  - 2020 Feb 29
+TI  - Nowcasting and forecasting the potential domestic and international spread of the 
+      2019-nCoV outbreak originating in Wuhan, China: a modelling study.
+PG  - 689-697
+LID - S0140-6736(20)30260-9 [pii]
+LID - 10.1016/S0140-6736(20)30260-9 [doi]
+AB  - BACKGROUND: Since Dec 31, 2019, the Chinese city of Wuhan has reported an outbreak 
+      of atypical pneumonia caused by the 2019 novel coronavirus (2019-nCoV). Cases have 
+      been exported to other Chinese cities, as well as internationally, threatening to 
+      trigger a global outbreak. Here, we provide an estimate of the size of the epidemic 
+      in Wuhan on the basis of the number of cases exported from Wuhan to cities outside 
+      mainland China and forecast the extent of the domestic and global public health 
+      risks of epidemics, accounting for social and non-pharmaceutical prevention 
+      interventions. METHODS: We used data from Dec 31, 2019, to Jan 28, 2020, on the 
+      number of cases exported from Wuhan internationally (known days of symptom onset 
+      from Dec 25, 2019, to Jan 19, 2020) to infer the number of infections in Wuhan from 
+      Dec 1, 2019, to Jan 25, 2020. Cases exported domestically were then estimated. We 
+      forecasted the national and global spread of 2019-nCoV, accounting for the effect of 
+      the metropolitan-wide quarantine of Wuhan and surrounding cities, which began Jan 
+      23-24, 2020. We used data on monthly flight bookings from the Official Aviation 
+      Guide and data on human mobility across more than 300 prefecture-level cities in 
+      mainland China from the Tencent database. Data on confirmed cases were obtained from 
+      the reports published by the Chinese Center for Disease Control and Prevention. 
+      Serial interval estimates were based on previous studies of severe acute respiratory 
+      syndrome coronavirus (SARS-CoV). A susceptible-exposed-infectious-recovered 
+      metapopulation model was used to simulate the epidemics across all major cities in 
+      China. The basic reproductive number was estimated using Markov Chain Monte Carlo 
+      methods and presented using the resulting posterior mean and 95% credibile interval 
+      (CrI). FINDINGS: In our baseline scenario, we estimated that the basic reproductive 
+      number for 2019-nCoV was 2·68 (95% CrI 2·47-2·86) and that 75 815 individuals (95% 
+      CrI 37 304-130 330) have been infected in Wuhan as of Jan 25, 2020. The epidemic 
+      doubling time was 6·4 days (95% CrI 5·8-7·1). We estimated that in the baseline 
+      scenario, Chongqing, Beijing, Shanghai, Guangzhou, and Shenzhen had imported 461 
+      (95% CrI 227-805), 113 (57-193), 98 (49-168), 111 (56-191), and 80 (40-139) 
+      infections from Wuhan, respectively. If the transmissibility of 2019-nCoV were 
+      similar everywhere domestically and over time, we inferred that epidemics are 
+      already growing exponentially in multiple major cities of China with a lag time 
+      behind the Wuhan outbreak of about 1-2 weeks. INTERPRETATION: Given that 2019-nCoV 
+      is no longer contained within Wuhan, other major Chinese cities are probably 
+      sustaining localised outbreaks. Large cities overseas with close transport links to 
+      China could also become outbreak epicentres, unless substantial public health 
+      interventions at both the population and personal levels are implemented 
+      immediately. Independent self-sustaining outbreaks in major cities globally could 
+      become inevitable because of substantial exportation of presymptomatic cases and in 
+      the absence of large-scale public health interventions. Preparedness plans and 
+      mitigation interventions should be readied for quick deployment globally. FUNDING: 
+      Health and Medical Research Fund (Hong Kong, China).
+CI  - Copyright © 2020 Elsevier Ltd. All rights reserved.
+FAU - Wu, Joseph T
+AU  - Wu JT
+AD  - WHO Collaborating Centre for Infectious Disease Epidemiology and Control, School of 
+      Public Health, Li Ka Shing Faculty of Medicine, University of Hong Kong, Hong Kong, 
+      China. Electronic address: joewu@hku.hk.
+FAU - Leung, Kathy
+AU  - Leung K
+AD  - WHO Collaborating Centre for Infectious Disease Epidemiology and Control, School of 
+      Public Health, Li Ka Shing Faculty of Medicine, University of Hong Kong, Hong Kong, 
+      China.
+FAU - Leung, Gabriel M
+AU  - Leung GM
+AD  - WHO Collaborating Centre for Infectious Disease Epidemiology and Control, School of 
+      Public Health, Li Ka Shing Faculty of Medicine, University of Hong Kong, Hong Kong, 
+      China.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20200131
+TA  - Lancet
+JT  - Lancet (London, England)
+JID - 2985213R
+SB  - AIM
+SB  - IM
+EIN - Lancet. 2020 Feb 4;:. PMID: 32032528
+CIN - J Infect. 2020 Aug;81(2):318-356. PMID: 32283145
+CIN - Lancet. 2020 May 16;395(10236):1532-1533. PMID: 32380045
+MH  - China/epidemiology
+MH  - *Computer Simulation
+MH  - Coronavirus Infections/*epidemiology/transmission
+MH  - *Epidemics
+MH  - Forecasting
+MH  - Hospitalization/statistics & numerical data
+MH  - Humans
+MH  - Infectious Disease Incubation Period
+MH  - Internationality
+MH  - Markov Chains
+MH  - Monte Carlo Method
+MH  - Prevalence
+PMC - PMC7159271
+EDAT- 2020/02/06 06:00
+MHDA- 2020/03/17 06:00
+CRDT- 2020/02/05 06:00
+PHST- 2020/01/26 00:00 [received]
+PHST- 2020/01/29 00:00 [revised]
+PHST- 2020/01/29 00:00 [accepted]
+PHST- 2020/02/06 06:00 [pubmed]
+PHST- 2020/03/17 06:00 [medline]
+PHST- 2020/02/05 06:00 [entrez]
+AID - S0140-6736(20)30260-9 [pii]
+AID - 10.1016/S0140-6736(20)30260-9 [doi]
+PST - ppublish
+SO  - Lancet. 2020 Feb 29;395(10225):689-697. doi: 10.1016/S0140-6736(20)30260-9. Epub 
+      2020 Jan 31.
+
+PMID- 28837555
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20170905
+LR  - 20181113
+IS  - 1553-7358 (Electronic)
+IS  - 1553-734X (Print)
+IS  - 1553-734X (Linking)
+VI  - 13
+IP  - 8
+DP  - 2017 Aug
+TI  - Spread of hospital-acquired infections: A comparison of healthcare networks.
+PG  - e1005666
+LID - 10.1371/journal.pcbi.1005666 [doi]
+LID - e1005666
+AB  - Hospital-acquired infections (HAIs), including emerging multi-drug resistant 
+      organisms, threaten healthcare systems worldwide. Efficient containment measures of 
+      HAIs must mobilize the entire healthcare network. Thus, to best understand how to 
+      reduce the potential scale of HAI epidemic spread, we explore patient transfer 
+      patterns in the French healthcare system. Using an exhaustive database of all 
+      hospital discharge summaries in France in 2014, we construct and analyze three 
+      patient networks based on the following: transfers of patients with HAI 
+      (HAI-specific network); patients with suspected HAI (suspected-HAI network); and all 
+      patients (general network). All three networks have heterogeneous patient flow and 
+      demonstrate small-world and scale-free characteristics. Patient populations that 
+      comprise these networks are also heterogeneous in their movement patterns. Ranking 
+      of hospitals by centrality measures and comparing community clustering using 
+      community detection algorithms shows that despite the differences in patient 
+      population, the HAI-specific and suspected-HAI networks rely on the same underlying 
+      structure as that of the general network. As a result, the general network may be 
+      more reliable in studying potential spread of HAIs. Finally, we identify transfer 
+      patterns at both the French regional and departmental (county) levels that are 
+      important in the identification of key hospital centers, patient flow trajectories, 
+      and regional clusters that may serve as a basis for novel wide-scale infection 
+      control strategies.
+FAU - Nekkab, Narimane
+AU  - Nekkab N
+AUID- ORCID: 0000-0001-5422-9861
+AD  - Laboratoire MESuRS, Conservatoire National des Arts et Métiers, 292 Rue 
+      Saint-Martin, Paris, France.
+AD  - Institut Pasteur, Cnam, Unité PACRI, 25-28, rue du Docteur Roux, Paris, France.
+AD  - Ecole des Hautes Etudes en Santé Publique, Département d'Epidémiologie et de 
+      Biostatistiques, 15 Avenue du Professeur-Léon-Bernard, Rennes, France.
+FAU - Astagneau, Pascal
+AU  - Astagneau P
+AD  - Ecole des Hautes Etudes en Santé Publique, Département d'Epidémiologie et de 
+      Biostatistiques, 15 Avenue du Professeur-Léon-Bernard, Rennes, France.
+AD  - Centre de prévention des infections associées aux soins (C-CLIN), APHP, Paris, 
+      France.
+AD  - Faculté de médecine Pierre et Marie Curie, Sorbonne Universités, Paris, France.
+FAU - Temime, Laura
+AU  - Temime L
+AUID- ORCID: 0000-0002-8850-5403
+AD  - Laboratoire MESuRS, Conservatoire National des Arts et Métiers, 292 Rue 
+      Saint-Martin, Paris, France.
+AD  - Institut Pasteur, Cnam, Unité PACRI, 25-28, rue du Docteur Roux, Paris, France.
+FAU - Crépey, Pascal
+AU  - Crépey P
+AD  - Ecole des Hautes Etudes en Santé Publique, Département d'Epidémiologie et de 
+      Biostatistiques, 15 Avenue du Professeur-Léon-Bernard, Rennes, France.
+AD  - UMR190, Emergence des Pathologies Virales, Marseille, France.
+AD  - UPRES EA 7449 Reperes, Rennes, France.
+LA  - eng
+PT  - Journal Article
+DEP - 20170824
+TA  - PLoS Comput Biol
+JT  - PLoS computational biology
+JID - 101238922
+SB  - IM
+MH  - Algorithms
+MH  - Cluster Analysis
+MH  - Computational Biology/*methods
+MH  - Cross Infection/epidemiology/prevention & control/*transmission
+MH  - France/epidemiology
+MH  - Hospitals
+MH  - Humans
+MH  - Infection Control
+MH  - Patient Transfer/*statistics & numerical data
+PMC - PMC5570216
+COIS- The authors have declared that no competing interests exist.
+EDAT- 2017/08/25 06:00
+MHDA- 2017/09/07 06:00
+CRDT- 2017/08/25 06:00
+PHST- 2017/01/06 00:00 [received]
+PHST- 2017/07/03 00:00 [accepted]
+PHST- 2017/08/25 06:00 [entrez]
+PHST- 2017/08/25 06:00 [pubmed]
+PHST- 2017/09/07 06:00 [medline]
+AID - PCOMPBIOL-D-17-00029 [pii]
+AID - 10.1371/journal.pcbi.1005666 [doi]
+PST - epublish
+SO  - PLoS Comput Biol. 2017 Aug 24;13(8):e1005666. doi: 10.1371/journal.pcbi.1005666. 
+      eCollection 2017 Aug.
+
+PMID- 32202401
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200702
+LR  - 20201218
+IS  - 1827-1758 (Electronic)
+IS  - 0393-2249 (Linking)
+VI  - 72
+IP  - 3
+DP  - 2020 Jun
+TI  - Urology practice during the COVID-19 pandemic.
+PG  - 369-375
+LID - 10.23736/S0393-2249.20.03846-1 [doi]
+AB  - The severe acute respiratory syndrome coronavirus 2 and the disease it causes, 
+      coronavirus disease 2019 (COVID-19) is generating a rapid and tragic health 
+      emergency in Italy due to the need to provide assistance to an overwhelming number 
+      of infected patients and, at the same time, treat all the non-deferrable oncological 
+      and benign conditions. A panel of Italian urologists has agreed on possible 
+      strategies for the reorganization of urological routine practice and on a set of 
+      recommendations that should facilitate the process of rescheduling both surgical and 
+      outpatient activities during the COVID-19 pandemic and in the subsequent phases. 
+      This document could be a valid tool to be used in routine clinical practice and, 
+      possibly, a cornerstone for further discussion on the topic also considering the 
+      further evolution of the COVID-19 pandemic. It also may provide useful 
+      recommendations for national and international urological societies in a condition 
+      of emergency.
+FAU - Ficarra, Vincenzo
+AU  - Ficarra V
+AD  - Section of Urology, Department of Human and Pediatric Pathology Gaetano Barresi, 
+      University of Messina, Messina, Italy - vficarra@unime.it.
+FAU - Novara, Giacomo
+AU  - Novara G
+AD  - Department of Surgery, Oncology, and Gastroenterology, Urology Clinic, University of 
+      Padua, Padua, Italy.
+FAU - Abrate, Alberto
+AU  - Abrate A
+AD  - Section of Urology, Department of Surgical, Oncological and Oral Sciences, 
+      University of Palermo, Palermo, Italy.
+FAU - Bartoletti, Riccardo
+AU  - Bartoletti R
+AD  - Unit of Urology, Department of Translational Research and New Technologies, 
+      University of Pisa, Pisa, Italy.
+FAU - Crestani, Alessandro
+AU  - Crestani A
+AD  - Unit of Urology, Veneto Institute of Oncology IOV - IRCCS, Padua, Italy.
+FAU - De Nunzio, Cosimo
+AU  - De Nunzio C
+AD  - Department of Urology, Sant'Andrea Hospital, Sapienza University, Rome, Italy.
+FAU - Giannarini, Gianluca
+AU  - Giannarini G
+AD  - Unit of Urology, Santa Maria della Misericordia Academic Medical Center, Udine, 
+      Italy.
+FAU - Gregori, Andrea
+AU  - Gregori A
+AD  - Unit of Urology, ASST Fatebenefratelli-Sacco, Sacco Hospital, Milan, Italy.
+FAU - Liguori, Giovanni
+AU  - Liguori G
+AD  - Department of Urology, Cattinara Hospital, University of Trieste, Trieste, Italy.
+FAU - Mirone, Vincenzo
+AU  - Mirone V
+AD  - Department of Urology, Federico II University of Naples, Naples, Italy.
+FAU - Pavan, Nicola
+AU  - Pavan N
+AD  - Department of Urology, Cattinara Hospital, University of Trieste, Trieste, Italy.
+FAU - Scarpa, Roberto M
+AU  - Scarpa RM
+AD  - Department of Urology, Campus Bio-Medico University, Rome, Italy.
+FAU - Simonato, Alchiede
+AU  - Simonato A
+AD  - Section of Urology, Department of Surgical, Oncological and Oral Sciences, 
+      University of Palermo, Palermo, Italy.
+AD  - Urology Unit, Department of Surgery, S. Croce e Carle Hospital, Cuneo, Italy.
+FAU - Trombetta, Carlo
+AU  - Trombetta C
+AD  - Department of Urology, Cattinara Hospital, University of Trieste, Trieste, Italy.
+FAU - Tubaro, Andrea
+AU  - Tubaro A
+AD  - Department of Urology, Sant'Andrea Hospital, Sapienza University, Rome, Italy.
+FAU - Porpiglia, Francesco
+AU  - Porpiglia F
+AD  - Division of Urology, Department of Oncology, School of Medicine, San Luigi Hospital, 
+      University of Turin, Orbassano, Turin, Italy.
+CN  - Research Urology Network (RUN)
+LA  - eng
+PT  - Journal Article
+DEP - 20200323
+PL  - Italy
+TA  - Minerva Urol Nefrol
+JT  - Minerva urologica e nefrologica = The Italian journal of urology and nephrology
+JID - 8503649
+SB  - IM
+CIN - J Pediatr Urol. 2020 Jun;16(3):295-296. PMID: 32359910
+CIN - Eur Urol. 2020 Jul;78(1):e21-e24. PMID: 32362496
+MH  - Anesthesiology
+MH  - COVID-19
+MH  - *Coronavirus Infections
+MH  - Hospitalization/statistics & numerical data
+MH  - Hospitals
+MH  - Humans
+MH  - Infectious Disease Transmission, Patient-to-Professional/prevention & control
+MH  - Italy
+MH  - *Pandemics
+MH  - Patient Care Team
+MH  - Patient Safety
+MH  - *Pneumonia, Viral
+MH  - Urologic Surgical Procedures/adverse effects/*statistics & numerical data
+MH  - Urologists
+MH  - Urology
+EDAT- 2020/03/24 06:00
+MHDA- 2020/07/03 06:00
+CRDT- 2020/03/24 06:00
+PHST- 2020/03/24 06:00 [pubmed]
+PHST- 2020/07/03 06:00 [medline]
+PHST- 2020/03/24 06:00 [entrez]
+AID - S0393-2249.20.03846-1 [pii]
+AID - 10.23736/S0393-2249.20.03846-1 [doi]
+PST - ppublish
+SO  - Minerva Urol Nefrol. 2020 Jun;72(3):369-375. doi: 10.23736/S0393-2249.20.03846-1. 
+      Epub 2020 Mar 23.
+
+PMID- 26336062
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20160229
+LR  - 20181202
+IS  - 1741-7015 (Electronic)
+IS  - 1741-7015 (Linking)
+VI  - 13
+DP  - 2015 Sep 3
+TI  - Transmission characteristics of MERS and SARS in the healthcare setting: a 
+      comparative study.
+PG  - 210
+LID - 10.1186/s12916-015-0450-0 [doi]
+LID - 210
+AB  - BACKGROUND: The Middle East respiratory syndrome (MERS) coronavirus has caused 
+      recurrent outbreaks in the Arabian Peninsula since 2012. Although MERS has low 
+      overall human-to-human transmission potential, there is occasional amplification in 
+      the healthcare setting, a pattern reminiscent of the dynamics of the severe acute 
+      respiratory syndrome (SARS) outbreaks in 2003. Here we provide a head-to-head 
+      comparison of exposure patterns and transmission dynamics of large hospital clusters 
+      of MERS and SARS, including the most recent South Korean outbreak of MERS in 2015. 
+      METHODS: To assess the unexpected nature of the recent South Korean nosocomial 
+      outbreak of MERS and estimate the probability of future large hospital clusters, we 
+      compared exposure and transmission patterns for previously reported hospital 
+      clusters of MERS and SARS, based on individual-level data and transmission tree 
+      information. We carried out simulations of nosocomial outbreaks of MERS and SARS 
+      using branching process models rooted in transmission tree data, and inferred the 
+      probability and characteristics of large outbreaks. RESULTS: A significant fraction 
+      of MERS cases were linked to the healthcare setting, ranging from 43.5 % for the 
+      nosocomial outbreak in Jeddah, Saudi Arabia, in 2014 to 100 % for both the outbreak 
+      in Al-Hasa, Saudi Arabia, in 2013 and the outbreak in South Korea in 2015. Both MERS 
+      and SARS nosocomial outbreaks are characterized by early nosocomial super-spreading 
+      events, with the reproduction number dropping below 1 within three to five disease 
+      generations. There was a systematic difference in the exposure patterns of MERS and 
+      SARS: a majority of MERS cases occurred among patients who sought care in the same 
+      facilities as the index case, whereas there was a greater concentration of SARS 
+      cases among healthcare workers throughout the outbreak. Exposure patterns differed 
+      slightly by disease generation, however, especially for SARS. Moreover, the 
+      distributions of secondary cases per single primary case varied highly across 
+      individual hospital outbreaks (Kruskal-Wallis test; P < 0.0001), with significantly 
+      higher transmission heterogeneity in the distribution of secondary cases for MERS 
+      than SARS. Simulations indicate a 2-fold higher probability of occurrence of large 
+      outbreaks (>100 cases) for SARS than MERS (2 % versus 1 %); however, owing to higher 
+      transmission heterogeneity, the largest outbreaks of MERS are characterized by 
+      sharper incidence peaks. The probability of occurrence of MERS outbreaks larger than 
+      the South Korean cluster (n = 186) is of the order of 1 %. CONCLUSIONS: Our study 
+      suggests that the South Korean outbreak followed a similar progression to previously 
+      described hospital clusters involving coronaviruses, with early super-spreading 
+      events generating a disproportionately large number of secondary infections, and the 
+      transmission potential diminishing greatly in subsequent generations. Differences in 
+      relative exposure patterns and transmission heterogeneity of MERS and SARS could 
+      point to changes in hospital practices since 2003 or differences in transmission 
+      mechanisms of these coronaviruses.
+FAU - Chowell, Gerardo
+AU  - Chowell G
+AD  - School of Public Health, Georgia State University, Atlanta, Georgia, USA. 
+      gchowell@gsu.edu.
+AD  - Division of Epidemiology and Population Studies, Fogarty International Center, 
+      National Institutes of Health, Bethesda, Maryland, USA. gchowell@gsu.edu.
+FAU - Abdirizak, Fatima
+AU  - Abdirizak F
+AD  - School of Public Health, Georgia State University, Atlanta, Georgia, USA. 
+      fabdirizak@gmail.com.
+FAU - Lee, Sunmi
+AU  - Lee S
+AD  - Department of Applied Mathematics, Kyung Hee University, Yongin-si, 446-701, 
+      Republic of Korea. mathever@gmail.com.
+FAU - Lee, Jonggul
+AU  - Lee J
+AD  - Department of Mathematics, Konkuk University, 120 Neungdong-ro, Gwngjin-gu, Seoul, 
+      143-701, Republic of Korea. jg4lee@gmail.com.
+FAU - Jung, Eunok
+AU  - Jung E
+AD  - Department of Mathematics, Konkuk University, 120 Neungdong-ro, Gwngjin-gu, Seoul, 
+      143-701, Republic of Korea. eunokjung@gmail.com.
+FAU - Nishiura, Hiroshi
+AU  - Nishiura H
+AD  - Graduate School of Medicine, The University of Tokyo, Tokyo, Japan. 
+      nishiurah@gmail.com.
+AD  - CREST, Japan Science and Technology Agency, Saitama, Japan. nishiurah@gmail.com.
+FAU - Viboud, Cécile
+AU  - Viboud C
+AD  - Division of Epidemiology and Population Studies, Fogarty International Center, 
+      National Institutes of Health, Bethesda, Maryland, USA. viboudc@mail.nih.gov.
+LA  - eng
+PT  - Comparative Study
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20150903
+TA  - BMC Med
+JT  - BMC medicine
+JID - 101190723
+SB  - IM
+CIN - Lancet Infect Dis. 2020 Dec;20(12):1351-1352. PMID: 32758436
+MH  - Aged
+MH  - Coronavirus Infections/*transmission
+MH  - Cross Infection/*epidemiology
+MH  - Disease Outbreaks
+MH  - Female
+MH  - Hospitals
+MH  - Humans
+MH  - Male
+MH  - Middle Aged
+MH  - Middle East Respiratory Syndrome Coronavirus
+MH  - Models, Theoretical
+MH  - Republic of Korea/epidemiology
+MH  - Saudi Arabia/epidemiology
+MH  - Severe Acute Respiratory Syndrome/*transmission
+PMC - PMC4558759
+EDAT- 2015/09/04 06:00
+MHDA- 2016/03/02 06:00
+CRDT- 2015/09/04 06:00
+PHST- 2015/06/16 00:00 [received]
+PHST- 2015/08/13 00:00 [accepted]
+PHST- 2015/09/04 06:00 [entrez]
+PHST- 2015/09/04 06:00 [pubmed]
+PHST- 2016/03/02 06:00 [medline]
+AID - 10.1186/s12916-015-0450-0 [pii]
+AID - 450 [pii]
+AID - 10.1186/s12916-015-0450-0 [doi]
+PST - epublish
+SO  - BMC Med. 2015 Sep 3;13:210. doi: 10.1186/s12916-015-0450-0.
+
+PMID- 30858309
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20190520
+LR  - 20200225
+IS  - 1091-6490 (Electronic)
+IS  - 0027-8424 (Print)
+IS  - 0027-8424 (Linking)
+VI  - 116
+IP  - 13
+DP  - 2019 Mar 26
+TI  - Incentivizing hospital infection control.
+PG  - 6221-6225
+LID - 10.1073/pnas.1812231116 [doi]
+AB  - Healthcare-associated infections (HAIs) pose a significant burden to patient safety. 
+      Institutions can implement hospital infection control (HIC) measures to reduce the 
+      impact of HAIs. Since patients can carry pathogens between institutions, there is an 
+      economic incentive for hospitals to free ride on the HIC investments of other 
+      facilities. Subsidies for infection control by public health authorities could 
+      encourage regional spending on HIC. We develop coupled mathematical models of 
+      epidemiology and hospital behavior in a game-theoretic framework to investigate how 
+      hospitals may change spending behavior in response to subsidies. We demonstrate that 
+      under a limited budget, a dollar-for-dollar matching grant outperforms both a 
+      fixed-amount subsidy and a subsidy on uninfected patients in reducing the number of 
+      HAIs in a single institution. Additionally, when multiple hospitals serve a 
+      community, funding priority should go to the hospital with a lower transmission 
+      rate. Overall, subsidies incentivize HIC spending and reduce the overall prevalence 
+      of HAIs.
+CI  - Copyright © 2019 the Author(s). Published by PNAS.
+FAU - Drohan, Sarah E
+AU  - Drohan SE
+AUID- ORCID: 0000-0001-9789-2815
+AD  - Program in Applied and Computational Mathematics, Princeton University, Princeton, 
+      NJ 08544; sedrohan@princeton.edu slevin@princeton.edu ramanan@cddep.org.
+FAU - Levin, Simon A
+AU  - Levin SA
+AD  - Program in Applied and Computational Mathematics, Princeton University, Princeton, 
+      NJ 08544; sedrohan@princeton.edu slevin@princeton.edu ramanan@cddep.org.
+AD  - Department of Ecology and Evolutionary Biology, Princeton University, Princeton, NJ 
+      08544.
+AD  - Princeton Environmental Institute, Princeton University, Princeton, NJ 08544.
+FAU - Grenfell, Bryan T
+AU  - Grenfell BT
+AD  - Department of Ecology and Evolutionary Biology, Princeton University, Princeton, NJ 
+      08544.
+AD  - Fogarty International Center, National Institutes of Health, Bethesda, MD 20892.
+FAU - Laxminarayan, Ramanan
+AU  - Laxminarayan R
+AUID- ORCID: 0000-0002-1390-9016
+AD  - Princeton Environmental Institute, Princeton University, Princeton, NJ 08544; 
+      sedrohan@princeton.edu slevin@princeton.edu ramanan@cddep.org.
+AD  - Center for Disease Dynamics, Economics & Policy, Washington, DC 20036.
+LA  - eng
+GR  - P2C HD047879/HD/NICHD NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, P.H.S.
+DEP - 20190311
+TA  - Proc Natl Acad Sci U S A
+JT  - Proceedings of the National Academy of Sciences of the United States of America
+JID - 7505876
+SB  - IM
+MH  - Budgets
+MH  - Cross Infection/economics/*epidemiology
+MH  - Drug Resistance, Microbial
+MH  - Economics, Hospital
+MH  - *Game Theory
+MH  - Hospital Costs
+MH  - *Hospitals
+MH  - Humans
+MH  - *Infection Control
+MH  - *Models, Theoretical
+MH  - Prevalence
+PMC - PMC6442548
+OTO - NOTNLM
+OT  - *antimicrobial resistance
+OT  - *game theory
+OT  - *nosocomial infection
+OT  - *subsidy
+EDAT- 2019/03/13 06:00
+MHDA- 2019/05/21 06:00
+CRDT- 2019/03/13 06:00
+PHST- 2019/03/13 06:00 [pubmed]
+PHST- 2019/05/21 06:00 [medline]
+PHST- 2019/03/13 06:00 [entrez]
+AID - 1812231116 [pii]
+AID - 201812231 [pii]
+AID - 10.1073/pnas.1812231116 [doi]
+PST - ppublish
+SO  - Proc Natl Acad Sci U S A. 2019 Mar 26;116(13):6221-6225. doi: 
+      10.1073/pnas.1812231116. Epub 2019 Mar 11.
+
+PMID- 32327608
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200519
+LR  - 20201218
+IS  - 1091-6490 (Electronic)
+IS  - 0027-8424 (Print)
+IS  - 0027-8424 (Linking)
+VI  - 117
+IP  - 19
+DP  - 2020 May 12
+TI  - Spread and dynamics of the COVID-19 epidemic in Italy: Effects of emergency 
+      containment measures.
+PG  - 10484-10491
+LID - 10.1073/pnas.2004978117 [doi]
+AB  - The spread of coronavirus disease 2019 (COVID-19) in Italy prompted drastic measures 
+      for transmission containment. We examine the effects of these interventions, based 
+      on modeling of the unfolding epidemic. We test modeling options of the spatially 
+      explicit type, suggested by the wave of infections spreading from the initial foci 
+      to the rest of Italy. We estimate parameters of a metacommunity 
+      Susceptible-Exposed-Infected-Recovered (SEIR)-like transmission model that includes 
+      a network of 107 provinces connected by mobility at high resolution, and the 
+      critical contribution of presymptomatic and asymptomatic transmission. We estimate a 
+      generalized reproduction number ([Formula: see text] = 3.60 [3.49 to 3.84]), the 
+      spectral radius of a suitable next-generation matrix that measures the potential 
+      spread in the absence of containment interventions. The model includes the 
+      implementation of progressive restrictions after the first case confirmed in Italy 
+      (February 21, 2020) and runs until March 25, 2020. We account for uncertainty in 
+      epidemiological reporting, and time dependence of human mobility matrices and 
+      awareness-dependent exposure probabilities. We draw scenarios of different 
+      containment measures and their impact. Results suggest that the sequence of 
+      restrictions posed to mobility and human-to-human interactions have reduced 
+      transmission by 45% (42 to 49%). Averted hospitalizations are measured by running 
+      scenarios obtained by selectively relaxing the imposed restrictions and total about 
+      200,000 individuals (as of March 25, 2020). Although a number of assumptions need to 
+      be reexamined, like age structure in social mixing patterns and in the distribution 
+      of mobility, hospitalization, and fatality, we conclude that verifiable evidence 
+      exists to support the planning of emergency measures.
+CI  - Copyright © 2020 the Author(s). Published by PNAS.
+FAU - Gatto, Marino
+AU  - Gatto M
+AUID- ORCID: 0000-0001-8063-9178
+AD  - Dipartimento di Elettronica, Informazione e Bioingegneria, Politecnico di Milano, 
+      20133 Milano, Italy; andrea.rinaldo@epfl.ch marino.gatto@polimi.it.
+FAU - Bertuzzo, Enrico
+AU  - Bertuzzo E
+AUID- ORCID: 0000-0001-5872-0666
+AD  - Dipartimento di Scienze Ambientali, Informatica e Statistica, Università Ca' Foscari 
+      Venezia, 30172 Venezia-Mestre, Italy.
+AD  - Science of Complexity Research Unit, European Centre for Living Technology, 30123 
+      Venice, Italy.
+FAU - Mari, Lorenzo
+AU  - Mari L
+AUID- ORCID: 0000-0003-1326-9992
+AD  - Dipartimento di Elettronica, Informazione e Bioingegneria, Politecnico di Milano, 
+      20133 Milano, Italy.
+FAU - Miccoli, Stefano
+AU  - Miccoli S
+AUID- ORCID: 0000-0002-7447-049X
+AD  - Dipartimento di Meccanica, Politecnico di Milano, 20133 Milano, Italy.
+FAU - Carraro, Luca
+AU  - Carraro L
+AUID- ORCID: 0000-0002-3933-1144
+AD  - Department of Aquatic Ecology, Swiss Federal Institute of Aquatic Science and 
+      Technology, 8600 Dübendorf, Switzerland.
+AD  - Department of Evolutionary Biology and Environmental Studies, University of Zurich, 
+      8057 Zurich, Switzerland.
+FAU - Casagrandi, Renato
+AU  - Casagrandi R
+AUID- ORCID: 0000-0001-5177-803X
+AD  - Dipartimento di Elettronica, Informazione e Bioingegneria, Politecnico di Milano, 
+      20133 Milano, Italy.
+FAU - Rinaldo, Andrea
+AU  - Rinaldo A
+AD  - Laboratory of Ecohydrology, École Polytechnique Fédérale de Lausanne, 1015 Lausanne, 
+      Switzerland; andrea.rinaldo@epfl.ch marino.gatto@polimi.it.
+AD  - Dipartimento di Ingegneria Civile, Edile e Ambientale, Università di Padova, 35131 
+      Padova, Italy.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Video-Audio Media
+DEP - 20200423
+TA  - Proc Natl Acad Sci U S A
+JT  - Proceedings of the National Academy of Sciences of the United States of America
+JID - 7505876
+SB  - IM
+MH  - Basic Reproduction Number
+MH  - Betacoronavirus
+MH  - COVID-19
+MH  - Communicable Disease Control/*methods
+MH  - Coronavirus Infections/*epidemiology/*prevention & control/transmission
+MH  - Hospitalization/statistics & numerical data
+MH  - Humans
+MH  - Italy/epidemiology
+MH  - Models, Theoretical
+MH  - Pandemics/*prevention & control
+MH  - Pneumonia, Viral/*epidemiology/*prevention & control/transmission
+MH  - SARS-CoV-2
+PMC - PMC7229754
+OTO - NOTNLM
+OT  - *SARS-CoV-2
+OT  - *SEIR models
+OT  - *disease outbreak scenarios
+OT  - *social contact restrictions
+OT  - *spatially explicit epidemiology
+COIS- The authors declare no competing interest.
+EDAT- 2020/04/25 06:00
+MHDA- 2020/05/20 06:00
+CRDT- 2020/04/25 06:00
+PHST- 2020/04/25 06:00 [pubmed]
+PHST- 2020/05/20 06:00 [medline]
+PHST- 2020/04/25 06:00 [entrez]
+AID - 2004978117 [pii]
+AID - 202004978 [pii]
+AID - 10.1073/pnas.2004978117 [doi]
+PST - ppublish
+SO  - Proc Natl Acad Sci U S A. 2020 May 12;117(19):10484-10491. doi: 
+      10.1073/pnas.2004978117. Epub 2020 Apr 23.
+
+PMID- 28951015
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20190923
+LR  - 20191210
+IS  - 1995-9133 (Electronic)
+IS  - 1684-1182 (Linking)
+VI  - 52
+IP  - 3
+DP  - 2019 Jun
+TI  - Effectiveness of an ultraviolet-C disinfection system for reduction of 
+      healthcare-associated pathogens.
+PG  - 487-493
+LID - S1684-1182(17)30200-1 [pii]
+LID - 10.1016/j.jmii.2017.08.017 [doi]
+AB  - BACKGROUND: Healthcare-associated infections caused by multidrug-resistant (MDR) 
+      pathogens are significantly associated with increased mortality and morbidity. 
+      Environmental cleaning can reduce transmission of these pathogens but is often 
+      inadequate. Adjunctive methods are warranted to enhance the effectiveness of 
+      disinfection particularly in hospital settings where healthcare-associated 
+      infections are of major concern. METHODS: We conducted a study to examine the 
+      effectiveness of a mobile, automatic device, Hyper Light Disinfection Robot (model: 
+      Hyper Light P3), which utilized ultraviolet-C (UV-C) to kill MDR-Pseudomonas 
+      aeruginosa, MDR- Acinetobacter baumannii, methicillin-resistant Staphylococcus 
+      aureus (MRSA), vancomycin-resistant Enterococcus faecium (VRE), Mycobacterium 
+      abscessus and Aspergillus fumigatus. The performance of this device in disinfecting 
+      hospital rooms previously admitted by patients harboring MRSA and VRE was also 
+      assessed. RESULTS: Except for VRE and M. abscessus, more than 3 log(10) reduction of 
+      vegetative bacteria colonies was observed after UV-C irradiation of 5 min at a 
+      distance of 3 m from the device. At the distance of 1 m, substantial and comparable 
+      reduction of colonies was observed across all tested microorganisms regardless of 
+      exposure time. The killing effect was less pronounced for A. fumigatus particularly 
+      at the distance of 2-3 m. In uncleaned hospital rooms, there was significant 
+      reduction in the number of bacteria colonies sampled from different surfaces after 
+      UV-C irradiation for 15 min. CONCLUSIONS: UV-C disinfection system was effective in 
+      killing MDR pathogens. Further study is warranted to confirm its effectiveness as an 
+      adjunctive method in disinfecting hospital environment.
+CI  - Copyright © 2017. Published by Elsevier B.V.
+FAU - Yang, Jui-Hsuan
+AU  - Yang JH
+AD  - Department of Internal Medicine, National Taiwan University Hospital, Taipei, 
+      Taiwan.
+FAU - Wu, Un-In
+AU  - Wu UI
+AD  - Department of Internal Medicine, National Taiwan University Hospital, Taipei, 
+      Taiwan.
+FAU - Tai, Huei-Min
+AU  - Tai HM
+AD  - Department of Internal Medicine, National Taiwan University Hospital, Taipei, 
+      Taiwan.
+FAU - Sheng, Wang-Huei
+AU  - Sheng WH
+AD  - Department of Internal Medicine, National Taiwan University Hospital, Taipei, 
+      Taiwan; Center for Infection Control, National Taiwan University Hospital, Taipei, 
+      Taiwan. Electronic address: whsheng@ntu.edu.tw.
+LA  - eng
+PT  - Evaluation Study
+PT  - Journal Article
+DEP - 20170918
+PL  - England
+TA  - J Microbiol Immunol Infect
+JT  - Journal of microbiology, immunology, and infection = Wei mian yu gan ran za zhi
+JID - 100956211
+SB  - IM
+MH  - Bacteria/growth & development/*radiation effects
+MH  - Colony Count, Microbial
+MH  - Cross Infection/*prevention & control
+MH  - Disinfection/instrumentation/*methods/*standards
+MH  - Drug Resistance, Microbial/radiation effects
+MH  - Fungi/growth & development/*radiation effects
+MH  - Hospitals
+MH  - Patients' Rooms
+MH  - Spores/growth & development/radiation effects
+MH  - Time Factors
+MH  - *Ultraviolet Rays
+OTO - NOTNLM
+OT  - Healthcare-associated pathogens
+OT  - Multidrug-resistant pathogens
+OT  - UV-C device
+OT  - Ultraviolet-C
+EDAT- 2017/09/28 06:00
+MHDA- 2019/09/24 06:00
+CRDT- 2017/09/28 06:00
+PHST- 2017/04/29 00:00 [received]
+PHST- 2017/07/31 00:00 [revised]
+PHST- 2017/08/22 00:00 [accepted]
+PHST- 2017/09/28 06:00 [pubmed]
+PHST- 2019/09/24 06:00 [medline]
+PHST- 2017/09/28 06:00 [entrez]
+AID - S1684-1182(17)30200-1 [pii]
+AID - 10.1016/j.jmii.2017.08.017 [doi]
+PST - ppublish
+SO  - J Microbiol Immunol Infect. 2019 Jun;52(3):487-493. doi: 10.1016/j.jmii.2017.08.017. 
+      Epub 2017 Sep 18.
+
+PMID- 31631371
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20201204
+LR  - 20201214
+IS  - 1097-0258 (Electronic)
+IS  - 0277-6715 (Linking)
+VI  - 38
+IP  - 28
+DP  - 2019 Dec 10
+TI  - Analysis of network interventions with an application to hospital-acquired 
+      infections.
+PG  - 5376-5390
+LID - 10.1002/sim.8373 [doi]
+AB  - Regional interventions to prevent the spread of hospital-acquired infections, 
+      vaccination campaigns, and information dissemination strategies are examples of 
+      treatment interventions applied to members of a network with the intent of effecting 
+      a network-wide change. In designing clinical trials or determining policy changes, 
+      it may not be cost effective or otherwise possible to treat all actors of a network. 
+      There is a notable lack of study designs and statistical frameworks with which to 
+      plan a network-wide intervention in this context and analyze the resulting data. 
+      This paper builds off of the network autocorrelation model in order to provide such 
+      a framework for a pre-post study design. We derive key quantitative measures of the 
+      network-wide treatment effect, exact formulas for power analyses of these measures, 
+      and extensions for the context in which the network is unknown. As the treatment 
+      assignation is part of the network-wide treatment, we provide methods for 
+      determining the assignation which optimizes the overall treatment effect over all 
+      members of the network subject to any arbitrary set of implementation costs and cost 
+      constraint. We implement these methods on Clostridioides difficile data for the 
+      state of California, where the hospitals are linked through patient sharing.
+CI  - © 2019 John Wiley & Sons, Ltd.
+FAU - Sewell, Daniel K
+AU  - Sewell DK
+AUID- ORCID: 0000-0002-9238-4026
+AD  - Department of Biostatistics, University of Iowa, Iowa City, Iowa.
+CN  - CDC MInD-Healthcare Program
+LA  - eng
+GR  - 5 U01 CK000531-02/CC/CDC HHS/United States
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+DEP - 20191020
+PL  - England
+TA  - Stat Med
+JT  - Statistics in medicine
+JID - 8215016
+SB  - IM
+MH  - Bayes Theorem
+MH  - Biostatistics
+MH  - California/epidemiology
+MH  - Clostridioides difficile
+MH  - Clostridium Infections/epidemiology/prevention & control
+MH  - Computer Simulation
+MH  - Cross Infection/*prevention & control/therapy/transmission
+MH  - Humans
+MH  - Information Services
+MH  - Likelihood Functions
+MH  - Models, Statistical
+MH  - Outcome Assessment, Health Care/statistics & numerical data
+MH  - Treatment Outcome
+OTO - NOTNLM
+OT  - *infectious disease
+OT  - *network autocorrelation model
+OT  - *optimization
+OT  - *power analyses
+OT  - *study design
+EDAT- 2019/10/22 06:00
+MHDA- 2020/12/15 06:00
+CRDT- 2019/10/22 06:00
+PHST- 2018/11/19 00:00 [received]
+PHST- 2019/08/20 00:00 [revised]
+PHST- 2019/08/24 00:00 [accepted]
+PHST- 2019/10/22 06:00 [pubmed]
+PHST- 2020/12/15 06:00 [medline]
+PHST- 2019/10/22 06:00 [entrez]
+AID - 10.1002/sim.8373 [doi]
+PST - ppublish
+SO  - Stat Med. 2019 Dec 10;38(28):5376-5390. doi: 10.1002/sim.8373. Epub 2019 Oct 20.
+
+PMID- 31862167
+OWN - NLM
+STAT- In-Process
+LR  - 20210110
+IS  - 1527-3296 (Electronic)
+IS  - 0196-6553 (Print)
+IS  - 0196-6553 (Linking)
+VI  - 48
+IP  - 7
+DP  - 2020 Jul
+TI  - Simulation models for transmission of health care-associated infection: A systematic 
+      review.
+PG  - 810-821
+LID - S0196-6553(19)30960-5 [pii]
+LID - 10.1016/j.ajic.2019.11.005 [doi]
+AB  - BACKGROUND: Health care-associated infections (HAIs) are a global health burden 
+      because of their significant impact on patient health and health care systems. 
+      Mechanistic simulation modeling that captures the dynamics between patients, 
+      pathogens, and the environment is increasingly being used to improve understanding 
+      of epidemiological patterns of HAIs and to facilitate decisions on infection 
+      prevention and control (IPC). The purpose of this review is to present a systematic 
+      review to establish (1) how simulation models have been used to investigate HAIs and 
+      their mitigation and (2) how these models have evolved over time, as well as 
+      identify (3) gaps in their adoption and (4) useful directions for their future 
+      development. METHODS: The review involved a systematic search and identification of 
+      studies using system dynamics, discrete event simulation, and agent-based model to 
+      study HAIs. RESULTS: The complexity of simulation models developed for HAIs 
+      significantly increased but heavily concentrated on transmission dynamics of 
+      methicillin-resistant Staphylococcus aureus in the hospitals of high-income 
+      countries. Neither HAIs in other health care settings, the influence of contact 
+      networks within a health care facility, nor patient sharing and referring networks 
+      across health care settings were sufficiently understood. CONCLUSIONS: This 
+      systematic review provides a broader overview of existing simulation models in HAIs 
+      to identify the gaps and to direct and facilitate further development of appropriate 
+      models in this emerging field.
+CI  - Copyright © 2019 Association for Professionals in Infection Control and 
+      Epidemiology, Inc. Published by Elsevier Inc. All rights reserved.
+FAU - Nguyen, Le Khanh Ngan
+AU  - Nguyen LKN
+AD  - Department of Management Science, Cathedral Wing, Strathclyde Business School, 
+      University of Strathclyde, Glasgow, United Kingdom. Electronic address: 
+      nguyen-le-knanh-ngan@strath.ac.uk.
+FAU - Megiddo, Itamar
+AU  - Megiddo I
+AD  - Department of Management Science, Cathedral Wing, Strathclyde Business School, 
+      University of Strathclyde, Glasgow, United Kingdom.
+FAU - Howick, Susan
+AU  - Howick S
+AD  - Department of Management Science, Cathedral Wing, Strathclyde Business School, 
+      University of Strathclyde, Glasgow, United Kingdom.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+DEP - 20191218
+TA  - Am J Infect Control
+JT  - American journal of infection control
+JID - 8004854
+SB  - IM
+PMC - PMC7161411
+OTO - NOTNLM
+OT  - *Agent-based model
+OT  - *Discrete event simulation
+OT  - *Hybrid simulation models
+OT  - *Simulation modeling
+OT  - *System dynamics
+EDAT- 2019/12/22 06:00
+MHDA- 2019/12/22 06:00
+CRDT- 2019/12/22 06:00
+PHST- 2019/08/08 00:00 [received]
+PHST- 2019/11/01 00:00 [revised]
+PHST- 2019/11/03 00:00 [accepted]
+PHST- 2019/12/22 06:00 [pubmed]
+PHST- 2019/12/22 06:00 [medline]
+PHST- 2019/12/22 06:00 [entrez]
+AID - S0196-6553(19)30960-5 [pii]
+AID - 10.1016/j.ajic.2019.11.005 [doi]
+PST - ppublish
+SO  - Am J Infect Control. 2020 Jul;48(7):810-821. doi: 10.1016/j.ajic.2019.11.005. Epub 
+      2019 Dec 18.
+
+PMID- 31137240
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200108
+LR  - 20200108
+IS  - 1551-0018 (Electronic)
+IS  - 1547-1063 (Linking)
+VI  - 16
+IP  - 4
+DP  - 2019 Apr 2
+TI  - The SIS model with diffusion of virus in the environment.
+PG  - 2852-2874
+LID - 10.3934/mbe.2019141 [doi]
+AB  - In this paper, we propose an SIS-type reaction-diffusion equations, which contains 
+      both direct transmission and indirect transmission via free-living and spatially 
+      diffusive bacteria/virus in the contaminated environment, motivated by the dynamics 
+      of hospital infections. We establish the basic reproduction number R₀ which can act 
+      as threshold level to determine whether the disease persists or not. In particular, 
+      if R₀<1 then="" the="" disease-free="" equilibrium="" is="" globally="" 
+      asymptotically="" stable="" whereas="". For the spatially homogeneous system, we 
+      investigate the traveling wave solutions and obtain that there exists a critical 
+      wave speed, below which there has no traveling waves, above which the traveling wave 
+      solutions may exist for small diffusion coefficient by the geometric singular 
+      perturbation method. The finding implies that great spatial transmission leads to an 
+      increase in new infection, while large diffusion of bacteria/virus results in the 
+      new infection decline for spatially heterogeneous environment.
+FAU - Pang, Dan Feng
+AU  - Pang DF
+AD  - School of Mathematics and Statistics, Xi'an Jiaotong University, Xi'an 710049, P.R. 
+      China.
+FAU - Xiao, Yan Ni
+AU  - Xiao YN
+AD  - School of Mathematics and Statistics, Xi'an Jiaotong University, Xi'an 710049, P.R. 
+      China.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PL  - United States
+TA  - Math Biosci Eng
+JT  - Mathematical biosciences and engineering : MBE
+JID - 101197794
+SB  - IM
+MH  - Algorithms
+MH  - Bacterial Infections/epidemiology/*physiopathology/*transmission
+MH  - *Basic Reproduction Number
+MH  - Computer Simulation
+MH  - Cross Infection/epidemiology/physiopathology/transmission
+MH  - Diffusion
+MH  - Disease Susceptibility
+MH  - Disease-Free Survival
+MH  - Epidemics
+MH  - Humans
+MH  - Models, Biological
+MH  - Skin/virology
+MH  - Travel
+MH  - Virus Diseases/epidemiology/*physiopathology/*transmission
+OTO - NOTNLM
+OT  - * basic reproduction number
+OT  - * diffusion
+OT  - * spatial heterogeneity
+OT  - * threshold dynamics
+OT  - * traveling wave solution
+EDAT- 2019/05/30 06:00
+MHDA- 2020/01/09 06:00
+CRDT- 2019/05/30 06:00
+PHST- 2019/05/30 06:00 [entrez]
+PHST- 2019/05/30 06:00 [pubmed]
+PHST- 2020/01/09 06:00 [medline]
+AID - 10.3934/mbe.2019141 [doi]
+PST - ppublish
+SO  - Math Biosci Eng. 2019 Apr 2;16(4):2852-2874. doi: 10.3934/mbe.2019141.
+
+PMID- 32343222
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200729
+LR  - 20210104
+IS  - 1080-6059 (Electronic)
+IS  - 1080-6040 (Print)
+IS  - 1080-6040 (Linking)
+VI  - 26
+IP  - 8
+DP  - 2020 Aug
+TI  - Evaluating the Effectiveness of Social Distancing Interventions to Delay or Flatten 
+      the Epidemic Curve of Coronavirus Disease.
+PG  - 1740-1748
+LID - 10.3201/eid2608.201093 [doi]
+AB  - By April 2, 2020, >1 million persons worldwide were infected with severe acute 
+      respiratory syndrome coronavirus 2. We used a mathematical model to investigate the 
+      effectiveness of social distancing interventions in a mid-sized city. Interventions 
+      reduced contacts of adults >60 years of age, adults 20-59 years of age, and children 
+      <19 years of age for 6 weeks. Our results suggest interventions started earlier in 
+      the epidemic delay the epidemic curve and interventions started later flatten the 
+      epidemic curve. We noted that, while social distancing interventions were in place, 
+      most new cases, hospitalizations, and deaths were averted, even with modest 
+      reductions in contact among adults. However, when interventions ended, the epidemic 
+      rebounded. Our models suggest that social distancing can provide crucial time to 
+      increase healthcare capacity but must occur in conjunction with testing and contact 
+      tracing of all suspected cases to mitigate virus transmission.
+FAU - Matrajt, Laura
+AU  - Matrajt L
+FAU - Leung, Tiffany
+AU  - Leung T
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20200428
+TA  - Emerg Infect Dis
+JT  - Emerging infectious diseases
+JID - 9508155
+SB  - IM
+MH  - Adolescent
+MH  - Adult
+MH  - Age Factors
+MH  - Aged
+MH  - Aged, 80 and over
+MH  - Betacoronavirus/*pathogenicity
+MH  - COVID-19
+MH  - COVID-19 Testing
+MH  - Child
+MH  - Child, Preschool
+MH  - Cities
+MH  - Clinical Laboratory Techniques/methods
+MH  - Communicable Disease Control/methods/statistics & numerical data
+MH  - Contact Tracing/*statistics & numerical data
+MH  - Coronavirus Infections/diagnosis/*epidemiology/mortality/*prevention & control
+MH  - Female
+MH  - Hospitalization/*statistics & numerical data
+MH  - Humans
+MH  - Incidence
+MH  - Infant
+MH  - Infant, Newborn
+MH  - Infectious Disease Incubation Period
+MH  - Male
+MH  - Middle Aged
+MH  - *Models, Statistical
+MH  - Pandemics/*prevention & control
+MH  - Patient Isolation/methods/statistics & numerical data
+MH  - Physical Distancing
+MH  - Pneumonia, Viral/diagnosis/*epidemiology/mortality/*prevention & control
+MH  - SARS-CoV-2
+MH  - Severity of Illness Index
+MH  - Survival Analysis
+MH  - United States/epidemiology
+PMC - PMC7392458
+OTO - NOTNLM
+OT  - *2019 novel coronavirus disease
+OT  - *COVID-19
+OT  - *SARS
+OT  - *SARS-CoV-2
+OT  - *coronavirus
+OT  - *coronavirus disease
+OT  - *disease transmission
+OT  - *mathematical model
+OT  - *nonpharmaceutical interventions
+OT  - *respiratory infections
+OT  - *severe acute respiratory syndrome coronavirus 2
+OT  - *social distancing interventions
+OT  - *viruses
+OT  - *zoonoses
+EDAT- 2020/04/29 06:00
+MHDA- 2020/07/30 06:00
+CRDT- 2020/04/29 06:00
+PHST- 2020/04/29 06:00 [pubmed]
+PHST- 2020/07/30 06:00 [medline]
+PHST- 2020/04/29 06:00 [entrez]
+AID - 20-1093 [pii]
+AID - 10.3201/eid2608.201093 [doi]
+PST - ppublish
+SO  - Emerg Infect Dis. 2020 Aug;26(8):1740-1748. doi: 10.3201/eid2608.201093. Epub 2020 
+      Apr 28.
+
+PMID- 30919885
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20210106
+LR  - 20210109
+IS  - 1537-6591 (Electronic)
+IS  - 1058-4838 (Print)
+IS  - 1058-4838 (Linking)
+VI  - 70
+IP  - 3
+DP  - 2020 Jan 16
+TI  - Modeling Regional Transmission and Containment of a Healthcare-associated 
+      Multidrug-resistant Organism.
+PG  - 388-394
+LID - 10.1093/cid/ciz248 [doi]
+LID - ciz248
+AB  - BACKGROUND: The Centers for Disease Control and Prevention (CDC) recently published 
+      interim guidance for a public health response to contain novel or targeted 
+      multidrug-resistant organisms (MDROs). We assessed the impact of implementing the 
+      strategy in a US state using a mathematical model. METHODS: We used a deterministic 
+      compartmental model, parametrized via a novel analysis of carbapenem-resistant 
+      Enterobacteriaceae data reported to the National Healthcare Safety Network and 
+      patient transfer data from the Centers for Medicare and Medicaid Services. The 
+      simulations assumed that after the importation of the MDRO and its initial detection 
+      by clinical culture at an index hospital, fortnightly prevalence surveys for 
+      colonization and additional infection control interventions were implemented at the 
+      index facility; similar surveys were then also implemented at those facilities known 
+      to be connected most strongly to it as measured by patient transfer data; and 
+      prevalence surveys were discontinued after 2 consecutive negative surveys. RESULTS: 
+      If additional infection-control interventions are assumed to lead to a 20% reduction 
+      in transmissibility in intervention facilities, prevalent case count in the state 3 
+      years after importation would be reduced by 76% (interquartile range: 73-77%). 
+      During the third year, these additional infection-control measures would be applied 
+      in facilities accounting for 42% (37-46%) of inpatient days. CONCLUSIONS: CDC 
+      guidance for containing MDROs, when used in combination with information on transfer 
+      of patients among hospitals, is predicted to be effective, enabling targeted and 
+      efficient use of prevention resources during an outbreak response. Even modestly 
+      effective infection-control measures may lead to a substantial reduction in 
+      transmission events.
+CI  - Published by Oxford University Press for the Infectious Diseases Society of America 
+      2019.
+FAU - Paul, Prabasaj
+AU  - Paul P
+AD  - Division of Healthcare Quality Promotion, Centers for Disease Control and 
+      Prevention, Atlanta, Georgia.
+FAU - Slayton, Rachel B
+AU  - Slayton RB
+AD  - Division of Healthcare Quality Promotion, Centers for Disease Control and 
+      Prevention, Atlanta, Georgia.
+FAU - Kallen, Alexander J
+AU  - Kallen AJ
+AD  - Division of Healthcare Quality Promotion, Centers for Disease Control and 
+      Prevention, Atlanta, Georgia.
+FAU - Walters, Maroya S
+AU  - Walters MS
+AD  - Division of Healthcare Quality Promotion, Centers for Disease Control and 
+      Prevention, Atlanta, Georgia.
+FAU - Jernigan, John A
+AU  - Jernigan JA
+AD  - Division of Healthcare Quality Promotion, Centers for Disease Control and 
+      Prevention, Atlanta, Georgia.
+LA  - eng
+GR  - CC999999/ImCDC/Intramural CDC HHS/United States
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+TA  - Clin Infect Dis
+JT  - Clinical infectious diseases : an official publication of the Infectious Diseases 
+      Society of America
+JID - 9203213
+SB  - IM
+MH  - Aged
+MH  - *Cross Infection/epidemiology/prevention & control
+MH  - Delivery of Health Care
+MH  - *Drug Resistance, Multiple, Bacterial
+MH  - Health Facilities
+MH  - Humans
+MH  - Medicare
+MH  - United States/epidemiology
+PMC - PMC6765447
+MID - NIHMS1024873
+OTO - NOTNLM
+OT  - *healthcare epidemiology
+OT  - *mathematical model
+OT  - *multidrug-resistant organism
+COIS- No authors have any potential conflicts of interest to disclose.
+EDAT- 2019/03/29 06:00
+MHDA- 2021/01/07 06:00
+CRDT- 2019/03/29 06:00
+PHST- 2018/11/13 00:00 [received]
+PHST- 2019/03/20 00:00 [accepted]
+PHST- 2019/03/29 06:00 [pubmed]
+PHST- 2021/01/07 06:00 [medline]
+PHST- 2019/03/29 06:00 [entrez]
+AID - 5421270 [pii]
+AID - 10.1093/cid/ciz248 [doi]
+PST - ppublish
+SO  - Clin Infect Dis. 2020 Jan 16;70(3):388-394. doi: 10.1093/cid/ciz248.
+
+PMID- 31089148
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20201021
+LR  - 20210109
+IS  - 2045-2322 (Electronic)
+IS  - 2045-2322 (Linking)
+VI  - 9
+IP  - 1
+DP  - 2019 May 14
+TI  - Comparative Analysis of Eleven Healthcare-Associated Outbreaks of Middle East 
+      Respiratory Syndrome Coronavirus (Mers-Cov) from 2015 to 2017.
+PG  - 7385
+LID - 10.1038/s41598-019-43586-9 [doi]
+LID - 7385
+AB  - Since its emergence in 2012, 2,260 cases and 803 deaths due to Middle East 
+      respiratory syndrome coronavirus (MERS-CoV) have been reported to the World Health 
+      Organization. Most cases were due to transmission in healthcare settings, sometimes 
+      causing large outbreaks. We analyzed epidemiologic and clinical data of 
+      laboratory-confirmed MERS-CoV cases from eleven healthcare-associated outbreaks in 
+      the Kingdom of Saudi Arabia and the Republic of Korea between 2015-2017. We 
+      quantified key epidemiological differences between outbreaks. Twenty-five percent 
+      (n = 105/422) of MERS cases who acquired infection in a hospital setting were 
+      healthcare personnel. In multivariate analyses, age ≥65 (OR 4.8, 95%CI: 2.6-8.7) and 
+      the presence of underlying comorbidities (OR: 2.7, 95% CI: 1.3-5.7) were associated 
+      with increased mortality whereas working as healthcare personnel was protective (OR 
+      0.07, 95% CI: 0.01-0.34). At the start of these outbreaks, the reproduction number 
+      ranged from 1.0 to 5.7; it dropped below 1 within 2 to 6 weeks. This study provides 
+      a comprehensive characterization of MERS HCA-outbreaks. Our results highlight 
+      heterogeneities in the epidemiological profile of healthcare-associated outbreaks. 
+      The limitations of our study stress the urgent need for standardized data collection 
+      for high-threat respiratory pathogens, such as MERS-CoV.
+FAU - Bernard-Stoecklin, Sibylle
+AU  - Bernard-Stoecklin S
+AD  - Formerly Outbreak Investigation Task Force, Centre for Global Health, Institut 
+      Pasteur, 75015, Paris, France.
+AD  - Direction of infectious diseases, Santé publique France, Saint-Maurice, 94410, 
+      France.
+FAU - Nikolay, Birgit
+AU  - Nikolay B
+AD  - Mathematical Modelling of Infectious Diseases, Institut Pasteur, UMR2000, CNRS, 
+      75015, Paris, France.
+FAU - Assiri, Abdullah
+AU  - Assiri A
+AD  - Ministry of Health, Riyadh, Saudi Arabia.
+FAU - Bin Saeed, Abdul Aziz
+AU  - Bin Saeed AA
+AD  - Formerly Ministry of Health, Riyadh, Saudi Arabia.
+AD  - Department of Family and Community Medicine, College of Medicine, King Saud 
+      University, Riyadh, Saudi Arabia.
+FAU - Ben Embarek, Peter Karim
+AU  - Ben Embarek PK
+AD  - International Food Safety Authorities Network (INFOSAN) Management, Department of 
+      Food Safety and Zoonoses, World Health Organization, Geneva, Switzerland.
+FAU - El Bushra, Hassan
+AU  - El Bushra H
+AD  - Formerly Ministry of Health, Riyadh, Saudi Arabia.
+FAU - Ki, Moran
+AU  - Ki M
+AD  - Department of Cancer Control and Policy, Graduate School of Cancer Science and 
+      Policy, National Cancer Center, Goyang, Korea.
+FAU - Malik, Mamunur Rahman
+AU  - Malik MR
+AD  - Infectious Hazard Management Unit, Department of Health Emergencies, World Health 
+      Organization Regional Office for the Eastern Mediterranean, Cairo, Egypt.
+FAU - Fontanet, Arnaud
+AU  - Fontanet A
+AD  - Emerging Diseases Epidemiology Unit, Institut Pasteur, 75015, Paris, France.
+AD  - Centre for Global Health, Institut Pasteur, 75015, Paris, France.
+AD  - Conservatoire National des Arts et Métiers, Paris, France.
+FAU - Cauchemez, Simon
+AU  - Cauchemez S
+AD  - Mathematical Modelling of Infectious Diseases, Institut Pasteur, UMR2000, CNRS, 
+      75015, Paris, France.
+FAU - Van Kerkhove, Maria D
+AU  - Van Kerkhove MD
+AUID- ORCID: 0000-0002-6135-0018
+AD  - Formerly Outbreak Investigation Task Force, Centre for Global Health, Institut 
+      Pasteur, 75015, Paris, France. vankerkhovem@who.int.
+AD  - Infectious Hazards Management, Health Emergencies Programme, World Health 
+      Organization, Geneva, Switzerland. vankerkhovem@who.int.
+LA  - eng
+GR  - 001/World Health Organization/International
+PT  - Comparative Study
+PT  - Historical Article
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20190514
+TA  - Sci Rep
+JT  - Scientific reports
+JID - 101563288
+SB  - IM
+MH  - Adult
+MH  - Age Factors
+MH  - Aged
+MH  - Comorbidity
+MH  - Coronavirus Infections/*epidemiology/transmission/virology
+MH  - Cross Infection/*epidemiology/transmission/virology
+MH  - Disease Outbreaks/history/prevention & control/*statistics & numerical data
+MH  - Female
+MH  - Health Personnel/statistics & numerical data
+MH  - History, 21st Century
+MH  - Hospitals/*statistics & numerical data
+MH  - Humans
+MH  - Infectious Disease Transmission, Patient-to-Professional/prevention & 
+      control/statistics & numerical data
+MH  - Infectious Disease Transmission, Professional-to-Patient/prevention & 
+      control/statistics & numerical data
+MH  - Male
+MH  - Middle Aged
+MH  - Middle East Respiratory Syndrome Coronavirus/*isolation & purification
+MH  - Republic of Korea/epidemiology
+MH  - Risk Factors
+MH  - Saudi Arabia/epidemiology
+PMC - PMC6517387
+COIS- The authors declare no competing interests.
+EDAT- 2019/05/16 06:00
+MHDA- 2020/10/22 06:00
+CRDT- 2019/05/16 06:00
+PHST- 2018/11/11 00:00 [received]
+PHST- 2019/04/18 00:00 [accepted]
+PHST- 2019/05/16 06:00 [entrez]
+PHST- 2019/05/16 06:00 [pubmed]
+PHST- 2020/10/22 06:00 [medline]
+AID - 10.1038/s41598-019-43586-9 [pii]
+AID - 43586 [pii]
+AID - 10.1038/s41598-019-43586-9 [doi]
+PST - epublish
+SO  - Sci Rep. 2019 May 14;9(1):7385. doi: 10.1038/s41598-019-43586-9.
+
+PMID- 31287832
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200302
+LR  - 20200309
+IS  - 1932-6203 (Electronic)
+IS  - 1932-6203 (Linking)
+VI  - 14
+IP  - 7
+DP  - 2019
+TI  - Modeling household dynamics on Respiratory Syncytial Virus (RSV).
+PG  - e0219323
+LID - 10.1371/journal.pone.0219323 [doi]
+LID - e0219323
+AB  - Respiratory Syncytial Virus (RSV) is the most common cause of respiratory tract 
+      infection in infants and children and shows increasing trend among elderly people 
+      worldwide. In many developing country settings, population and household structures 
+      have gone through some significant changes in the past decades, namely fewer births, 
+      more elderly population, and smaller household size but more RSV high-risk 
+      individuals. These dynamics have been captured in a mathematical model with RSV 
+      transmission dynamics to predict the disease burden on the detailed population for 
+      future targeted interventions. The population and disease dynamics model was 
+      constructed and tested against the hospitalization data for Acute Lower Respiratory 
+      Tract Infection due to RSV in rural Thai settings between 2005 and 2011. The 
+      proportion of extended families is predicted to increase by about 10% from 2005 to 
+      2020, especially for those with elderly population, while the classic nuclear family 
+      type (with adults and children) will decline by about 10%. For RSV, infections from 
+      extended family type (approximately 60% of all household types) have majorly 
+      contributed to the force of infection (FOI). While the model predicted the increase 
+      of FOI from the extended family by 15% from 2005 to 2020, the FOI contributed by 
+      other household types would be either stable or decrease in the same time period. 
+      RSV incidence rate is predominantly high among babies (92.2%) and has been predicted 
+      to decrease slightly over time (from 940 to 864 cases per 100,000 population by 
+      2020), while the incidence rates among children and elderly people may remain 
+      steadily low over the same period. However, the estimated incidence rates among 
+      elderly people were twice than those in children. The model predicts that 
+      approximately 60% of FOI for RSV will come from members of the extended family type. 
+      The incidence rate of RSV among children and elderly in extended families was about 
+      20 times lower than that in infants and the trend is steady. Targeted intervention 
+      strategies, such as health education in some specific groups and targeted 
+      vaccination, may be considered, with the focus on extended family type. Target 
+      interventions on babies can lessen the transmission to children and elderly 
+      especially when transmission within households of extended family type is high.
+FAU - Mahikul, Wiriya
+AU  - Mahikul W
+AD  - Department of Tropical Hygiene, Faculty of Tropical Medicine, Mahidol University, 
+      Bangkok, Thailand.
+FAU - J White, Lisa
+AU  - J White L
+AD  - Mahidol-Oxford Tropical Medicine Research Unit, Faculty of Tropical Medicine, 
+      Mahidol University, Bangkok, Thailand.
+AD  - Centre for Tropical Medicine, Nuffield Department of Medicine, University of Oxford, 
+      Oxford, United Kingdom.
+FAU - Poovorawan, Kittiyod
+AU  - Poovorawan K
+AD  - Department of Clinical Tropical Medicine, Faculty of Tropical Medicine, Mahidol 
+      University, Bangkok, Thailand.
+FAU - Soonthornworasiri, Ngamphol
+AU  - Soonthornworasiri N
+AD  - Department of Tropical Hygiene, Faculty of Tropical Medicine, Mahidol University, 
+      Bangkok, Thailand.
+FAU - Sukontamarn, Pataporn
+AU  - Sukontamarn P
+AD  - College of Population Studies, Chulalongkorn University, Bangkok, Thailand.
+FAU - Chanthavilay, Phetsavanh
+AU  - Chanthavilay P
+AD  - Mahidol-Oxford Tropical Medicine Research Unit, Faculty of Tropical Medicine, 
+      Mahidol University, Bangkok, Thailand.
+AD  - Institute of Research and Education Development, UHS, Vientiane, Lao PDR.
+FAU - F Medley, Graham
+AU  - F Medley G
+AUID- ORCID: 0000-0002-0030-7278
+AD  - Centre for Mathematical Modelling of Infectious Disease & Department of Global 
+      Health and Development, London School of Hygiene and Tropical Medicine, London, 
+      United Kingdom.
+FAU - Pan-Ngum, Wirichada
+AU  - Pan-Ngum W
+AUID- ORCID: 0000-0002-9839-5359
+AD  - Department of Tropical Hygiene, Faculty of Tropical Medicine, Mahidol University, 
+      Bangkok, Thailand.
+AD  - Mahidol-Oxford Tropical Medicine Research Unit, Faculty of Tropical Medicine, 
+      Mahidol University, Bangkok, Thailand.
+LA  - eng
+GR  - 106698/Z/14/Z/WT_/Wellcome Trust/United Kingdom
+PT  - Historical Article
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20190709
+TA  - PLoS One
+JT  - PloS one
+JID - 101285081
+SB  - IM
+MH  - Adolescent
+MH  - Adult
+MH  - Child
+MH  - Child, Preschool
+MH  - Female
+MH  - History, 21st Century
+MH  - Hospitalization
+MH  - Humans
+MH  - Incidence
+MH  - Male
+MH  - Middle Aged
+MH  - *Models, Theoretical
+MH  - Respiratory Syncytial Virus Infections/*epidemiology/history/transmission/virology
+MH  - *Respiratory Syncytial Virus, Human/physiology
+MH  - Seasons
+MH  - Thailand/epidemiology
+MH  - Young Adult
+PMC - PMC6615606
+COIS- The authors have declared that no competing interests exist.
+EDAT- 2019/07/10 06:00
+MHDA- 2020/03/03 06:00
+CRDT- 2019/07/10 06:00
+PHST- 2019/02/02 00:00 [received]
+PHST- 2019/06/20 00:00 [accepted]
+PHST- 2019/07/10 06:00 [entrez]
+PHST- 2019/07/10 06:00 [pubmed]
+PHST- 2020/03/03 06:00 [medline]
+AID - PONE-D-19-03248 [pii]
+AID - 10.1371/journal.pone.0219323 [doi]
+PST - epublish
+SO  - PLoS One. 2019 Jul 9;14(7):e0219323. doi: 10.1371/journal.pone.0219323. eCollection 
+      2019.
+
+PMID- 24980276
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20150806
+LR  - 20141223
+IS  - 1469-0691 (Electronic)
+IS  - 1198-743X (Linking)
+VI  - 20
+IP  - 12
+DP  - 2014 Dec
+TI  - Risk factors for carbapenem-resistant Klebsiella pneumoniae bloodstream infection 
+      among rectal carriers: a prospective observational multicentre study.
+PG  - 1357-62
+LID - 10.1111/1469-0691.12747 [doi]
+AB  - Knowledge of carbapenem-resistant Klebsiella pneumoniae (CR-KP) colonization is 
+      important to prevent nosocomial spread but also to start prompt adequate antibiotic 
+      therapy in patients with suspicion of infection. However, few studies have examined 
+      the incidence and risk factors for CR-KP bloodstream infection (BSI) among rectal 
+      carriers. To identify risk factors for CR-KP BSI among carriers, we performed a 
+      multicentre prospective matched case-control study of all adult CR-KP rectal 
+      carriers hospitalized in five tertiary teaching hospitals in Italy over a 2-year 
+      period. Carriers who developed CR-KP BSI were compared with those who did not 
+      develop subsequent BSI. Overall, 143 CR-KP BSIs were compared with 572 controls 
+      without a documented infection during their hospitalization. Multivariate analysis 
+      revealed that admission to the Intensive Care Unit (ICU) (OR, 1.65; 95% CI, 
+      1.05-2.59; p 0.03), abdominal invasive procedure (OR, 1.87; 95% CI, 1.16-3.04; 
+      p 0.01), chemotherapy/radiation therapy (OR, 3.07; 95% CI, 1.78-5.29; p <0.0001), 
+      and number of additional colonization sites (OR, 3.37 per site; 95% CI, 2.56-4.43; 
+      p <0.0001) were independent risk factors for CR-KP BSI development among CR-KP 
+      rectal carriers. A CR-KP BSI risk score ranging from 0 to 28 was developed based on 
+      these four independent variables. At a cut-off of ≥2 the model exhibited a 
+      sensitivity, specificity, positive predictive value and negative predictive value of 
+      93%, 42%, 29% and 93%, respectively. Colonization at multiple sites with CR-KP was 
+      the strongest predictor of BSI development in our large cohort of CR-KP rectal 
+      carriers.
+CI  - © 2014 The Authors Clinical Microbiology and Infection © 2014 European Society of 
+      Clinical Microbiology and Infectious Diseases.
+FAU - Giannella, M
+AU  - Giannella M
+AD  - Infectious Diseases Unit, Department of Medical and Clinical Sciences, S. 
+      Orsola-Malpighi Hospital, Alma Mater Studiorum University of Bologna, Bologna, 
+      Italy.
+FAU - Trecarichi, E M
+AU  - Trecarichi EM
+FAU - De Rosa, F G
+AU  - De Rosa FG
+FAU - Del Bono, V
+AU  - Del Bono V
+FAU - Bassetti, M
+AU  - Bassetti M
+FAU - Lewis, R E
+AU  - Lewis RE
+FAU - Losito, A R
+AU  - Losito AR
+FAU - Corcione, S
+AU  - Corcione S
+FAU - Saffioti, C
+AU  - Saffioti C
+FAU - Bartoletti, M
+AU  - Bartoletti M
+FAU - Maiuro, G
+AU  - Maiuro G
+FAU - Cardellino, C S
+AU  - Cardellino CS
+FAU - Tedeschi, S
+AU  - Tedeschi S
+FAU - Cauda, R
+AU  - Cauda R
+FAU - Viscoli, C
+AU  - Viscoli C
+FAU - Viale, P
+AU  - Viale P
+FAU - Tumbarello, M
+AU  - Tumbarello M
+LA  - eng
+PT  - Journal Article
+PT  - Multicenter Study
+PT  - Observational Study
+DEP - 20140811
+PL  - England
+TA  - Clin Microbiol Infect
+JT  - Clinical microbiology and infection : the official publication of the European 
+      Society of Clinical Microbiology and Infectious Diseases
+JID - 9516420
+RN  - 0 (Anti-Bacterial Agents)
+RN  - 0 (Carbapenems)
+SB  - IM
+MH  - Adolescent
+MH  - Adult
+MH  - Aged
+MH  - Aged, 80 and over
+MH  - Anti-Bacterial Agents/*pharmacology
+MH  - Carbapenems/*pharmacology
+MH  - Carrier State/*epidemiology/microbiology
+MH  - Case-Control Studies
+MH  - Female
+MH  - Hospitals, Teaching
+MH  - Humans
+MH  - Incidence
+MH  - Italy/epidemiology
+MH  - Klebsiella Infections/*epidemiology/microbiology
+MH  - Klebsiella pneumoniae/*drug effects/isolation & purification
+MH  - Male
+MH  - Middle Aged
+MH  - Prospective Studies
+MH  - Rectum/*microbiology
+MH  - Risk Factors
+MH  - Tertiary Care Centers
+MH  - Young Adult
+MH  - *beta-Lactam Resistance
+OTO - NOTNLM
+OT  - Bloodstream infection
+OT  - carbapenem resistance
+OT  - colonization status
+OT  - rectal carriers
+EDAT- 2014/07/02 06:00
+MHDA- 2015/08/08 06:00
+CRDT- 2014/07/02 06:00
+PHST- 2014/04/07 00:00 [received]
+PHST- 2014/06/25 00:00 [revised]
+PHST- 2014/06/26 00:00 [accepted]
+PHST- 2014/07/02 06:00 [entrez]
+PHST- 2014/07/02 06:00 [pubmed]
+PHST- 2015/08/08 06:00 [medline]
+AID - S1198-743X(15)60042-8 [pii]
+AID - 10.1111/1469-0691.12747 [doi]
+PST - ppublish
+SO  - Clin Microbiol Infect. 2014 Dec;20(12):1357-62. doi: 10.1111/1469-0691.12747. Epub 
+      2014 Aug 11.
+
+PMID- 20148749
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20100916
+LR  - 20100607
+IS  - 1651-1980 (Electronic)
+IS  - 0036-5548 (Linking)
+VI  - 42
+IP  - 6-7
+DP  - 2010 Jul
+TI  - Quantitative evaluation of infection control models in the prevention of nosocomial 
+      transmission of SARS virus to healthcare workers: implication to nosocomial viral 
+      infection control for healthcare workers.
+PG  - 510-5
+LID - 10.3109/00365540903582400 [doi]
+AB  - Healthcare workers (HCWs) are at high risk of acquiring emerging infections while 
+      caring for patients, as has been shown in the recent SARS and swine flu epidemics. 
+      Using SARS as an example, we determined the effectiveness of infection control 
+      measures (ICMs) by logistic regression and structural equation modelling (SEM), a 
+      quantitative methodology that can test a hypothetical model and validates causal 
+      relationships among ICMs. Logistic regression showed that installing hand wash 
+      stations in the emergency room (p = 0.012, odds ratio = 1.07) was the only ICM 
+      significantly associated with the protection of HCWs from acquiring the SARS virus. 
+      The structural equation modelling results showed that the most important 
+      contributing factor (highest proportion of effectiveness) was installation of a 
+      fever screening station outside the emergency department (51%). Other measures 
+      included traffic control in the emergency department (19%), availability of an 
+      outbreak standard operation protocol (12%), mandatory temperature screening (9%), 
+      establishing a hand washing setup at each hospital checkpoint (3%), adding 
+      simplified isolation rooms (3%), and a standardized patient transfer protocol (3%). 
+      Installation of fever screening stations outside of the hospital and implementing 
+      traffic control in the emergency department contributed to 70% of the effectiveness 
+      in the prevention of SARS transmission. Our approach can be applied to the 
+      evaluation of control measures for other epidemic infectious diseases, including 
+      swine flu and avian flu.
+FAU - Yen, Muh-Yong
+AU  - Yen MY
+AD  - Taipei City Hospital, Taipei, Taiwan.
+FAU - Lu, Yun-Ching
+AU  - Lu YC
+FAU - Huang, Pi-Hsiang
+AU  - Huang PH
+FAU - Chen, Chen-Ming
+AU  - Chen CM
+FAU - Chen, Yee-Chun
+AU  - Chen YC
+FAU - Lin, Yusen E
+AU  - Lin YE
+LA  - eng
+PT  - Journal Article
+PL  - England
+TA  - Scand J Infect Dis
+JT  - Scandinavian journal of infectious diseases
+JID - 0215333
+SB  - IM
+MH  - Cross Infection/epidemiology/*prevention & control
+MH  - Disease Outbreaks/*prevention & control/statistics & numerical data
+MH  - Health Personnel/statistics & numerical data
+MH  - Humans
+MH  - *Infection Control/methods/standards
+MH  - Logistic Models
+MH  - Models, Biological
+MH  - *Models, Statistical
+MH  - SARS Virus
+MH  - Severe Acute Respiratory Syndrome/epidemiology/*prevention & control
+MH  - Time Factors
+EDAT- 2010/02/13 06:00
+MHDA- 2010/09/18 06:00
+CRDT- 2010/02/13 06:00
+PHST- 2010/02/13 06:00 [entrez]
+PHST- 2010/02/13 06:00 [pubmed]
+PHST- 2010/09/18 06:00 [medline]
+AID - 10.3109/00365540903582400 [doi]
+PST - ppublish
+SO  - Scand J Infect Dis. 2010 Jul;42(6-7):510-5. doi: 10.3109/00365540903582400.
+
+PMID- 32077650
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200224
+LR  - 20200224
+IS  - 1474-8231 (Print)
+IS  - 1474-8231 (Linking)
+VI  - 18
+DP  - 2019 Oct 24
+TI  - Systems Modeling Approach for Reducing the Risk of Healthcare-Associated Infections.
+LID - 10.1108/S1474-823120190000018013 [doi]
+AB  - Healthcare-associated infections (HAIs) are a major cause of concern because of the 
+      high levels of associated morbidity, mortality, and cost. In addition, children and 
+      intensive care unit (ICU) patients are more vulnerable to these infections due to 
+      low levels of immunity. Various medical interventions and statistical process 
+      control techniques have been suggested to counter the spread of these infections and 
+      aid early detection of an infection outbreak. Methods such as hand hygiene help in 
+      the prevention of HAIs and are well-documented in the literature. This chapter 
+      demonstrates the utilization of a systems methodology to model and validate factors 
+      that contribute to the risk of HAIs in a pediatric ICU. It proposes an approach that 
+      has three unique aspects: it studies the problem of HAIs as a whole by focusing on 
+      several HAIs instead of a single type, it projects the effects of interventions onto 
+      the general patient population using the system-level model, and it studies both 
+      medical and behavioral interventions and compares their effectiveness. This 
+      methodology uses a systems modeling framework that includes simulation, risk 
+      analysis, and statistical techniques for studying interventions to reduce the 
+      transmission likelihood of HAIs.
+CI  - Copyright © 2019 Emerald Publishing Limited.
+FAU - Limaye, Shreyas S
+AU  - Limaye SS
+FAU - Mastrangelo, Christina M
+AU  - Mastrangelo CM
+LA  - eng
+PT  - Journal Article
+PL  - Netherlands
+TA  - Adv Health Care Manag
+JT  - Advances in health care management
+JID - 101090746
+SB  - IM
+MH  - Child
+MH  - *Cross Infection
+MH  - Disease Outbreaks
+MH  - *Hand Hygiene
+MH  - Humans
+MH  - Infection Control
+MH  - Intensive Care Units, Pediatric
+MH  - *Systems Analysis
+OTO - NOTNLM
+OT  - Healthcare-associated infections
+OT  - experimental design
+OT  - mixture design experiments
+OT  - risk modeling
+OT  - simulation optimization
+OT  - systems engineering approach
+EDAT- 2020/02/23 06:00
+MHDA- 2020/02/25 06:00
+CRDT- 2020/02/21 06:00
+PHST- 2020/02/21 06:00 [entrez]
+PHST- 2020/02/23 06:00 [pubmed]
+PHST- 2020/02/25 06:00 [medline]
+AID - 10.1108/S1474-823120190000018013 [doi]
+PST - ppublish
+SO  - Adv Health Care Manag. 2019 Oct 24;18. doi: 10.1108/S1474-823120190000018013.
+
+PMID- 32690354
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200904
+LR  - 20210110
+IS  - 1526-0550 (Electronic)
+IS  - 1526-0542 (Print)
+IS  - 1526-0542 (Linking)
+VI  - 35
+DP  - 2020 Sep
+TI  - Role of modelling in COVID-19 policy development.
+PG  - 57-60
+LID - S1526-0542(20)30098-1 [pii]
+LID - 10.1016/j.prrv.2020.06.013 [doi]
+AB  - Models have played an important role in policy development to address the COVID-19 
+      outbreak from its emergence in China to the current global pandemic. Early 
+      projections of international spread influenced travel restrictions and border 
+      closures. Model projections based on the virus's infectiousness demonstrated its 
+      pandemic potential, which guided the global response to and prepared countries for 
+      increases in hospitalisations and deaths. Tracking the impact of distancing and 
+      movement policies and behaviour changes has been critical in evaluating these 
+      decisions. Models have provided insights into the epidemiological differences 
+      between higher and lower income countries, as well as vulnerable population groups 
+      within countries to help design fit-for-purpose policies. Economic evaluation and 
+      policies have combined epidemic models and traditional economic models to address 
+      the economic consequences of COVID-19, which have informed policy calls for easing 
+      restrictions. Social contact and mobility models have allowed evaluation of the 
+      pathways to safely relax mobility restrictions and distancing measures. Finally, 
+      models can consider future end-game scenarios, including how suppression can be 
+      achieved and the impact of different vaccination strategies.
+CI  - Copyright © 2020. Published by Elsevier Ltd.
+FAU - McBryde, Emma S
+AU  - McBryde ES
+AD  - Australian Institute of Tropical Health and Medicine, James Cook University, 
+      Australia. Electronic address: emma.mcbryde@jcu.edu.au.
+FAU - Meehan, Michael T
+AU  - Meehan MT
+AD  - Australian Institute of Tropical Health and Medicine, James Cook University, 
+      Australia.
+FAU - Adegboye, Oyelola A
+AU  - Adegboye OA
+AD  - Australian Institute of Tropical Health and Medicine, James Cook University, 
+      Australia.
+FAU - Adekunle, Adeshina I
+AU  - Adekunle AI
+AD  - Australian Institute of Tropical Health and Medicine, James Cook University, 
+      Australia.
+FAU - Caldwell, Jamie M
+AU  - Caldwell JM
+AD  - Department of Biology, University of Hawaii at Manoa, United States of America.
+FAU - Pak, Anton
+AU  - Pak A
+AD  - Australian Institute of Tropical Health and Medicine, James Cook University, 
+      Australia.
+FAU - Rojas, Diana P
+AU  - Rojas DP
+AD  - Department of Biology, University of Hawaii at Manoa, United States of America.
+FAU - Williams, Bridget M
+AU  - Williams BM
+AD  - Epidemiological Modelling Unit, School of Public Health and Preventive Medicine, 
+      Monash University, Australia.
+FAU - Trauer, James M
+AU  - Trauer JM
+AD  - Epidemiological Modelling Unit, School of Public Health and Preventive Medicine, 
+      Monash University, Australia.
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20200618
+TA  - Paediatr Respir Rev
+JT  - Paediatric respiratory reviews
+JID - 100898941
+RN  - 0 (COVID-19 Vaccines)
+RN  - 0 (Viral Vaccines)
+SB  - IM
+MH  - Betacoronavirus
+MH  - COVID-19
+MH  - COVID-19 Vaccines
+MH  - Coronavirus Infections/*epidemiology/prevention & control/transmission
+MH  - Developing Countries
+MH  - Epidemiologic Methods
+MH  - *Health Policy
+MH  - Humans
+MH  - Models, Economic
+MH  - *Models, Theoretical
+MH  - Pandemics/prevention & control
+MH  - Pneumonia, Viral/*epidemiology/prevention & control/transmission
+MH  - *Policy Making
+MH  - Public Health
+MH  - Public Policy
+MH  - SARS-CoV-2
+MH  - Travel
+MH  - Viral Vaccines/therapeutic use
+PMC - PMC7301791
+OTO - NOTNLM
+OT  - COVID-19
+OT  - Emerging infectious diseases
+OT  - Mathematical modelling
+OT  - Pandemic
+OT  - Public health policy
+EDAT- 2020/07/22 06:00
+MHDA- 2020/09/05 06:00
+CRDT- 2020/07/22 06:00
+PHST- 2020/06/11 00:00 [received]
+PHST- 2020/06/11 00:00 [accepted]
+PHST- 2020/07/22 06:00 [pubmed]
+PHST- 2020/09/05 06:00 [medline]
+PHST- 2020/07/22 06:00 [entrez]
+AID - S1526-0542(20)30098-1 [pii]
+AID - 10.1016/j.prrv.2020.06.013 [doi]
+PST - ppublish
+SO  - Paediatr Respir Rev. 2020 Sep;35:57-60. doi: 10.1016/j.prrv.2020.06.013. Epub 2020 
+      Jun 18.
+
+PMID- 30880267
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20190813
+LR  - 20190813
+IS  - 1532-2939 (Electronic)
+IS  - 0195-6701 (Linking)
+VI  - 102
+IP  - 2
+DP  - 2019 Jun
+TI  - Seasonality and community interventions in a mathematical model of Clostridium 
+      difficile transmission.
+PG  - 157-164
+LID - S0195-6701(19)30105-7 [pii]
+LID - 10.1016/j.jhin.2019.03.001 [doi]
+AB  - BACKGROUND: Clostridium difficile infection (CDI) is the leading cause of 
+      antibiotic-associated diarrhoea with peak incidence in late winter or early autumn. 
+      Although CDI is commonly associated with hospitals, community transmission is 
+      important. AIM: To explore potential drivers of CDI seasonality and the effect of 
+      community-based interventions to reduce transmission. METHODS: A mechanistic 
+      compartmental model of C. difficile transmission in a hospital and surrounding 
+      community was used to determine the effect of reducing transmission or antibiotic 
+      prescriptions in these settings. The model was extended to allow for seasonal 
+      antibiotic prescriptions and seasonal transmission. FINDINGS: Modelling antibiotic 
+      seasonality reproduced the seasonality of CDI, including approximate magnitude 
+      (13.9-15.1% above annual mean) and timing of peaks (0.7-1.0 months after peak 
+      antibiotics). Halving seasonal excess prescriptions reduced the incidence of CDI by 
+      6-18%. Seasonal transmission produced larger seasonal peaks in the prevalence of 
+      community colonization (14.8-22.1% above mean) than seasonal antibiotic 
+      prescriptions (0.2-1.7% above mean). Reducing transmission from symptomatic or 
+      hospitalized patients had little effect on community-acquired CDI, but reducing 
+      transmission in the community by ≥7% or transmission from infants by ≥30% eliminated 
+      the pathogen. Reducing antibiotic prescription rates led to approximately 
+      proportional reductions in infections, but limited reductions in the prevalence of 
+      colonization. CONCLUSION: Seasonal variation in antibiotic prescription rates can 
+      account for the observed magnitude and timing of C. difficile seasonality. Even 
+      complete prevention of transmission from hospitalized patients or symptomatic 
+      patients cannot eliminate the pathogen, but interventions to reduce transmission 
+      from community residents or infants could have a large impact on both hospital- and 
+      community-acquired infections.
+CI  - Copyright © 2019 The Healthcare Infection Society. Published by Elsevier Ltd. All 
+      rights reserved.
+FAU - McLure, A
+AU  - McLure A
+AD  - Research School of Population Health, Australian National University, Canberra, 
+      Australian Capital Territory, Australia. Electronic address: 
+      angus.mclure@anu.edu.au.
+FAU - Furuya-Kanamori, L
+AU  - Furuya-Kanamori L
+AD  - Research School of Population Health, Australian National University, Canberra, 
+      Australian Capital Territory, Australia; Department of Population Medicine, College 
+      of Medicine, Qatar University, Doha, Qatar.
+FAU - Clements, A C A
+AU  - Clements ACA
+AD  - Faculty of Health Sciences, Curtin University, Perth, Western Australia, Australia.
+FAU - Kirk, M
+AU  - Kirk M
+AD  - Research School of Population Health, Australian National University, Canberra, 
+      Australian Capital Territory, Australia.
+FAU - Glass, K
+AU  - Glass K
+AD  - Research School of Population Health, Australian National University, Canberra, 
+      Australian Capital Territory, Australia.
+LA  - eng
+PT  - Journal Article
+DEP - 20190315
+PL  - England
+TA  - J Hosp Infect
+JT  - The Journal of hospital infection
+JID - 8007166
+RN  - 0 (Anti-Bacterial Agents)
+MH  - Adult
+MH  - Aged
+MH  - Anti-Bacterial Agents/*therapeutic use
+MH  - Clostridium Infections/*prevention & control/*transmission
+MH  - Disease Transmission, Infectious/*prevention & control
+MH  - *Drug Utilization
+MH  - Humans
+MH  - Infant
+MH  - Infection Control/*methods
+MH  - *Models, Theoretical
+MH  - Prescriptions/statistics & numerical data
+MH  - Prevalence
+MH  - Seasons
+OTO - NOTNLM
+OT  - Clostridium difficile
+OT  - Community-acquired infections
+OT  - Hospital-acquired infections
+OT  - Mathematical model
+OT  - Seasonal infections
+EDAT- 2019/03/19 06:00
+MHDA- 2019/08/14 06:00
+CRDT- 2019/03/19 06:00
+PHST- 2018/12/03 00:00 [received]
+PHST- 2019/03/04 00:00 [accepted]
+PHST- 2019/03/19 06:00 [pubmed]
+PHST- 2019/08/14 06:00 [medline]
+PHST- 2019/03/19 06:00 [entrez]
+AID - S0195-6701(19)30105-7 [pii]
+AID - 10.1016/j.jhin.2019.03.001 [doi]
+PST - ppublish
+SO  - J Hosp Infect. 2019 Jun;102(2):157-164. doi: 10.1016/j.jhin.2019.03.001. Epub 2019 
+      Mar 15.
+
+PMID- 32735581
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200821
+LR  - 20201218
+IS  - 1932-6203 (Electronic)
+IS  - 1932-6203 (Linking)
+VI  - 15
+IP  - 7
+DP  - 2020
+TI  - A data-driven model to describe and forecast the dynamics of COVID-19 transmission.
+PG  - e0236386
+LID - 10.1371/journal.pone.0236386 [doi]
+LID - e0236386
+AB  - This paper proposes a dynamic model to describe and forecast the dynamics of the 
+      coronavirus disease COVID-19 transmission. The model is based on an approach 
+      previously used to describe the Middle East Respiratory Syndrome (MERS) epidemic. 
+      This methodology is used to describe the COVID-19 dynamics in six countries where 
+      the pandemic is widely spread, namely China, Italy, Spain, France, Germany, and the 
+      USA. For this purpose, data from the European Centre for Disease Prevention and 
+      Control (ECDC) are adopted. It is shown how the model can be used to forecast new 
+      infection cases and new deceased and how the uncertainties associated to this 
+      prediction can be quantified. This approach has the advantage of being relatively 
+      simple, grouping in few mathematical parameters the many conditions which affect the 
+      spreading of the disease. On the other hand, it requires previous data from the 
+      disease transmission in the country, being better suited for regions where the 
+      epidemic is not at a very early stage. With the estimated parameters at hand, one 
+      can use the model to predict the evolution of the disease, which in turn enables 
+      authorities to plan their actions. Moreover, one key advantage is the 
+      straightforward interpretation of these parameters and their influence over the 
+      evolution of the disease, which enables altering some of them, so that one can 
+      evaluate the effect of public policy, such as social distancing. The results 
+      presented for the selected countries confirm the accuracy to perform predictions.
+FAU - Paiva, Henrique Mohallem
+AU  - Paiva HM
+AUID- ORCID: 0000-0001-7081-8383
+AD  - Institute of Science and Technology (ICT), Federal University of São Paulo 
+      (UNIFESP), São José dos Campos, SP, Brazil.
+FAU - Afonso, Rubens Junqueira Magalhães
+AU  - Afonso RJM
+AUID- ORCID: 0000-0001-9209-2253
+AD  - Institute of Flight System Dynamics, Department of Aerospace and Geodesy, Technical 
+      University of Munich (TUM), Garching bei München, Bavaria, Germany.
+AD  - Department of Electronics Engineering, Aeronautics Institute of Technology (ITA), 
+      São José dos Campos, SP, Brazil.
+FAU - de Oliveira, Igor Luppi
+AU  - de Oliveira IL
+AD  - Institute of Science and Technology (ICT), Federal University of São Paulo 
+      (UNIFESP), São José dos Campos, SP, Brazil.
+FAU - Garcia, Gabriele Fernandes
+AU  - Garcia GF
+AUID- ORCID: 0000-0001-5816-0312
+AD  - Institute of Science and Technology (ICT), Federal University of São Paulo 
+      (UNIFESP), São José dos Campos, SP, Brazil.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20200731
+TA  - PLoS One
+JT  - PloS one
+JID - 101285081
+SB  - IM
+MH  - Asymptomatic Diseases
+MH  - *Betacoronavirus
+MH  - COVID-19
+MH  - China/epidemiology
+MH  - Community-Acquired Infections
+MH  - Coronavirus Infections/*epidemiology/mortality/*transmission/virology
+MH  - Cross Infection
+MH  - Data Accuracy
+MH  - Europe/epidemiology
+MH  - Forecasting/*methods
+MH  - Hospitalization
+MH  - Humans
+MH  - *Models, Theoretical
+MH  - Pandemics
+MH  - Pneumonia, Viral/*epidemiology/mortality/*transmission/virology
+MH  - SARS-CoV-2
+MH  - United States/epidemiology
+PMC - PMC7394373
+COIS- The authors have declared that no competing interests exist.
+EDAT- 2020/08/01 06:00
+MHDA- 2020/08/22 06:00
+CRDT- 2020/08/01 06:00
+PHST- 2020/04/13 00:00 [received]
+PHST- 2020/07/06 00:00 [accepted]
+PHST- 2020/08/01 06:00 [entrez]
+PHST- 2020/08/01 06:00 [pubmed]
+PHST- 2020/08/22 06:00 [medline]
+AID - PONE-D-20-10632 [pii]
+AID - 10.1371/journal.pone.0236386 [doi]
+PST - epublish
+SO  - PLoS One. 2020 Jul 31;15(7):e0236386. doi: 10.1371/journal.pone.0236386. eCollection 
+      2020.
