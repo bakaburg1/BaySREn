@@ -832,7 +832,7 @@ import_classification <- function(records, prev_records, IDs = records$ID) {
 #' create_session(Annotation_data)
 #' }
 create_session <- function(Records, session_name,
-                           sessions_folder = getOption("baysren.sessions_folder"),
+                           sessions_folder = getOption("baysren.sessions_folder", 'Sessions'),
                            DTM = NULL,
                            dup_session_action = c("skip", "stop", "silent", "add", "replace"),
                            use_time_stamp = TRUE) {
