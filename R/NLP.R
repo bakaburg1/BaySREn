@@ -333,7 +333,7 @@ DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
 
   mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
 
-  TTM <- (t(mat.sparse) %*% mat.sparse) / sqrt(tcrossprod(colSums(mat^2, na.rm = TRUE))) # Cosine similarity
+  TTM <- qlcMatrix::cosSparse(mat.sparse) # Cosine similarity
 
   ngram.cliques <- igraph::graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
     igraph::max_cliques(min = 2) %>% lapply(names) # Extracting cliques
@@ -373,7 +373,7 @@ DTM.aggr_synonyms <- function(DTM, min.sim = .9) {
 
   mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
 
-  TTM <- (t(mat.sparse) %*% mat.sparse) / sqrt(tcrossprod(colSums(mat^2, na.rm = TRUE))) # Cosine similarity
+  TTM <- qlcMatrix::cosSparse(mat.sparse) # Cosine similarity
 
   syn.components <- igraph::graph_from_adjacency_matrix(as.matrix(TTM) >= min.sim, mode = "undirected", diag = FALSE) %>% # From TTM to undirected network
     igraph::components() # Extracting connected subgraphs
