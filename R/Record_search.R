@@ -187,24 +187,14 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 	enforce_schema <- utils::getFromNamespace("enforce_schema", "wosr")
 	append_class <- utils::getFromNamespace("append_class", "wosr")
 
-	if (!requireNamespace("wosr", quietly = TRUE)) {
-		ans <- ask_user_permission(
-			q = "Package 'wosr' is required to download results from the WOS database. Do you want to install it now? y/n",
-			y_action = function() {
-				utils::install.packages("wosr")
-				return(TRUE)
-			},
-			n_action = function() return(FALSE)
-		)
-
-		if (isFALSE(ans)) {
-			warning("Research on WOS database will be skipped", call. = FALSE, immediate. = TRUE)
-
-			return(create_empty_df(output_template))
-		}
-	}
-
   message("Searching WOS...")
+
+  is_installed <- check_suggested_packages("wosr", is_required_msg = "to download results from the WOS database",
+  																				 stop_on_rejection = FALSE, on_rejection_msg = "Research on WOS database will be skipped.")
+
+  if (isFALSE(is_installed)) {
+  	return(create_empty_df(output_template))
+  }
 
   default_field <- "TS" # may change in the future
 
@@ -384,24 +374,14 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
 
   message("Searching Pubmed...")
 
-	if (!requireNamespace("rentrez", quietly = TRUE)) {
-		ans <- ask_user_permission(
-			q = "Package 'wosr' is required to download results from the PUBMED database. Do you want to install it now? y/n",
-			y_action = function() {
-				utils::install.packages("rentrez")
-				return(TRUE)
-			},
-			n_action = function() return(FALSE)
-		)
+  is_installed <- check_suggested_packages("rentrez", is_required_msg = "to download results from the PUBMED database",
+  																				 stop_on_rejection = FALSE, on_rejection_msg = "Research on PUBMED database will be skipped.")
 
-		if (isFALSE(ans)) {
-			warning("Research on PUBMED database will be skipped", call. = FALSE, immediate. = TRUE)
+  if (isFALSE(is_installed)) {
+  	return(create_empty_df(output_template))
+  }
 
-			return(create_empty_df(output_template))
-		}
-	}
-
-  if (is.null(api_key)) warning("NCBI API key is not set.", call. = FALSE, immediate. = TRUE)
+  if (is.null(api_key)) warning("NCBI API key is not set. NCBI server may stop answering after too large requests.", call. = FALSE, immediate. = TRUE)
 
   query <- stringr::str_squish(query)
 
@@ -538,6 +518,13 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
   message("Searching IEEE...")
 
+  is_installed <- check_suggested_packages(c("jsonlite", "httr"), is_required_msg = "for non-API downoload of results from IEEE",
+  																	stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped.")
+
+  if (!all(is_installed)) {
+  	return(create_empty_df(output_template))
+  }
+
   if (!is.null(additional_fields) & length(additional_fields) > 0) {
     if (!is.list(additional_fields)) stop("additional_fields must be a list.")
 
@@ -557,23 +544,11 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
     if (!allow_web_scraping) stop("If API key is not present web scraping must be allowed.")
 
-  	if (!requireNamespace("crrri", quietly = TRUE)) {
-  		ans <- ask_user_permission(
-  			q = "Package 'crrri' is required for non-API downoload of results from IEEE. Do you want to install it now? y/n",
-  			y_action = function() {
-  				utils::install.packages("crrri")
-  				return(TRUE)
-  				},
-  			n_action = function() {
-  				return(FALSE)
-  			}
-  		)
+  	is_installed <- check_suggested_packages("crrri", is_required_msg = "for non-API downoload of results from IEEE",
+  													 stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped.")
 
-  		if (isFALSE(ans)) {
-  			warning("Research on IEEE database will be skipped", call. = FALSE, immediate. = TRUE)
-
-  			return(create_empty_df(output_template))
-  		}
+  	if (isFALSE(is_installed)) {
+  		return(create_empty_df(output_template))
   	}
 
     default_fields <- list(

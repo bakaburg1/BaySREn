@@ -186,34 +186,28 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
                                run_in_sample = FALSE, mem_cache_for_speed = TRUE,
                                use_missing_data = TRUE, verbose = TRUE, ...) {
 
-	if (!requireNamespace("bartMachine", quietly = TRUE)) {
-		ans <- ask_user_permission(
-			q = "Package 'bartMachine' is required to run the model. Do you want to install it now? y/n",
-			y_action = function() {
-				utils::install.packages("bartMachine")
-				return(TRUE)
-			},
-			n_action = function() return(FALSE)
-		)
+	check_suggested_packages(c("rJava", "bartMachine"), is_required_msg = "to run the model",
+													 stop_on_rejection = TRUE, on_rejection_msg = "The model cannot be run without the {pkg} package.")
 
-		if (isFALSE(ans)) {
-			stop("The model cannot run without the 'bartMachine' package.")
-		}
+	if (is.null(getOption('baysren.BartMem')) & interactive()) {
+		mem <- readline("How much GB of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
+
+		if (is.na(as.numeric(mem))) stop('Input should be a number.')
+
+		mem <- paste0("-Xmx", mem, "g")
+
+		options(java.parameters = mem)
 	}
 
-	if (is.null(getOption('BartMem')) & interactive()) {
-		local({
-			mem <- readline("How much GB of memory should be used by the BART model? (better no more than 90% of available RAM) ")
+	if (is.null(getOption('baysren.BartCores')) & interactive()) {
+		cores <- readline(glue::glue("How CPU cores should be used by the BART model?\n(you have {parallel::detectCores()} cores available, use {parallel::detectCores() - 1} if you want keep using the machine during the operations)\n "))
 
-			if (is.na(as.numeric(mem))) stop('Input should be a number.')
+		if (is.na(as.numeric(cores))) stop('Input should be a number.')
 
-			mem <- paste0("-Xmx", mem, "g")
-
-			options(BartMem = mem)
-		})
+		bartMachine::set_bart_machine_num_cores(cores)
 	}
 
-	options(java.parameters = getOption('BartMem'))
+	#options(java.parameters = getOption('BartMem'))
 
 	if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
 
