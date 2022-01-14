@@ -548,7 +548,7 @@ analyse_grid_search <- function(session_folder = "Grid_Search", tot_pos = NULL,
 
 	if (plot) {
 		if (R.version$major >= 4) {
-			f <- grDevices::palette()[1:7] %>% grDevices::colorRampPalette()
+			f <- grDevices::palette()[1:7] %>% grDevices::colorRampPalette() #TODO: remove dependency on grDevices and viridis somehow
 			colors <- f(n_distinct(out$Rule)) %>% rev()
 		} else {
 			colors <- viridis::cividis(n_distinct(out$Rule))
