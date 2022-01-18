@@ -738,6 +738,8 @@ enrich_annotation_file <- function(session_name,
         Samples <- Samples + preds
       }
 
+      message("variable importance...")
+
       Var_imp[[i]] <- bartMachine::get_var_props_over_chain(bart.mod, "trees")
 
       rm(bart.mod, preds)
