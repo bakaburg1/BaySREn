@@ -189,21 +189,60 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
 	check_suggested_packages(c("rJava", "bartMachine"), is_required_msg = "to run the model",
 													 stop_on_rejection = TRUE, on_rejection_msg = "The model cannot be run without the {pkg} package.")
 
-	if (is.null(getOption('baysren.BartMem')) & interactive()) {
-		mem <- readline("How much GB of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
-
-		if (is.na(as.numeric(mem))) stop('Input should be a number.')
-
-		mem <- paste0("-Xmx", mem, "g")
-
-		options(java.parameters = mem)
+	get_java_memory <- function() {
+		rJava::.jcall(rJava::.jnew("java/lang/Runtime"), "J", "maxMemory") / 1e9
 	}
 
-	if (is.null(getOption('baysren.BartCores')) & interactive()) {
-		cores <- readline(glue::glue("How CPU cores should be used by the BART model?\n(you have {parallel::detectCores()} cores available, use {parallel::detectCores() - 1} if you want keep using the machine during the operations)\n "))
+	is_java_on <- function() {
+		tryCatch(rJava::.jcheck(silent = TRUE) == 0, error = function(e) FALSE)
+	}
 
-		if (is.na(as.numeric(cores))) stop('Input should be a number.')
+	if (is.null(getOption("baysren.BartMem")) & is_java_on()) {
+		warning(
+			paste("The BART model is running using", get_java_memory(), "GB of memory.\nIf you experience memory problems, consider restarting the R session and assign more memory (in GBs) using the 'baysren.BartMem' R option."),
+			call. = FALSE, immediate. = TRUE)
+	}
 
+	# if (is.null(getOption("baysren.BartMem"))) {
+	# 	if (is_java_on()) {
+	# 		warning(
+	# 			paste("No extra memory was assign to Java using 'getOption(\"baysren.BartMem\")'.\nIf you experience memory problems, consider restarting the R session before running the model and increasing the memory."),
+	# 			call. = FALSE, immediate. = TRUE)
+	# 	} else {
+	# 		if (interactive()) {
+	# 			mem <- readline("How much GBs of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
+	#
+	# 			if (is.na(as.numeric(mem))) stop('Input should be a number.')
+	#
+	# 			options(baysren.BartMem = mem)
+	#
+	# 			mem <- paste0("-Xmx", mem, "g")
+	#
+	# 			options(java.parameters = mem)
+	#
+	# 		} else {
+	# 			warning(
+	# 				"Java is using the default amount of memory to run the model. If you experience memory problems consider assign more memory (in GBs) using 'getOption(\"baysren.BartMem\")'.",
+	# 				call. = FALSE, immediate. = TRUE)
+	# 		}
+	#
+	# 		rJava::.jpackage('bartMachine')
+	# 		rJava::.jpackage('bartMachineJARs')
+	# 	}
+	# }
+	#
+	# print(paste("BART machine is running with", get_java_memory(), 'GB of memory'))
+
+	if (is.null(getOption('baysren.BartCores'))) {
+		if (interactive()) {
+			cores <- readline(glue::glue("How many CPU cores should be used by the BART model?\n(you have {parallel::detectCores()} cores available, use less cores if experience degraded performance using the OS while running the model.)\n "))
+
+			if (is.na(as.numeric(cores))) stop('Input should be a number.')
+		} else {
+			cores <- parallel::detectCores() - 1
+		}
+
+		options(baysren.BartCores = min(cores, parallel::detectCores()))
 		bartMachine::set_bart_machine_num_cores(cores)
 	}
 
