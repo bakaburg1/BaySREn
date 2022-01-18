@@ -135,23 +135,23 @@ get_website_resources <- function(url, url_filter = ".*", type_filter = ".*",
 #'
 #' @noRd
 ask_user_permission <- function(q, y_action, n_action = NULL) {
-	repeat {
-		ans <- readline(paste0(q, " "))
+  repeat {
+    ans <- readline(paste0(q, " "))
 
-		if (ans %nin% c("n", "y")) {
-			warning("Only accepted answers are 'y' or 'no'", immediate. = TRUE, call. = FALSE)
-		} else {
-			if (ans == "y") {
-				return(y_action())
-			} else {
-				if (is.function(n_action)) {
-					return(n_action())
-				}
-			}
+    if (ans %nin% c("n", "y")) {
+      warning("Only accepted answers are 'y' or 'no'", immediate. = TRUE, call. = FALSE)
+    } else {
+      if (ans == "y") {
+        return(y_action())
+      } else {
+        if (is.function(n_action)) {
+          return(n_action())
+        }
+      }
 
-			break
-		}
-	}
+      break
+    }
+  }
 }
 
 
@@ -169,38 +169,37 @@ ask_user_permission <- function(q, y_action, n_action = NULL) {
 #'
 #' @noRd
 check_suggested_packages <- function(pkgs, is_required_msg = "to use this function",
-																		stop_on_rejection = TRUE,
-																		on_rejection_msg = "The function cannot be run without the required packages.") {
+                                     stop_on_rejection = TRUE,
+                                     on_rejection_msg = "The function cannot be run without the required packages.") {
+  purrr::map_lgl(pkgs, function(pkg) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      ans <- ask_user_permission(
+        q = glue("Package '{pkg}' is required {is_required_msg}. Do you want to install it now? y/n"),
+        y_action = function() TRUE,
+        n_action = function() FALSE
+      )
 
-	purrr::map_lgl(pkgs, function(pkg) {
-		if (!requireNamespace(pkg, quietly = TRUE)) {
-			ans <- ask_user_permission(
-				q = glue("Package '{pkg}' is required {is_required_msg}. Do you want to install it now? y/n"),
-				y_action = function() TRUE,
-				n_action = function() FALSE
-			)
+      if (isTRUE(ans)) {
+        inst <- try(utils::install.packages(pkg))
 
-			if (isTRUE(ans)) {
-				 inst <- try(utils::install.packages(pkg))
+        if (class(inst != "try-error")) {
+          return(TRUE)
+        } else {
+          ans <- FALSE
+        }
+      }
 
-				 if (class(inst != "try-error")) {
-				 	return(TRUE)
-				 } else {
-				 	ans <- FALSE
-				 }
-			}
+      if (isFALSE(ans)) {
+        if (isTRUE(stop_on_rejection)) {
+          stop(on_rejection_msg)
+        } else {
+          warning(on_rejection_msg, call. = FALSE, immediate. = TRUE)
 
-			if (isFALSE(ans)) {
-				if (isTRUE(stop_on_rejection)) {
-					stop(on_rejection_msg)
-				} else {
-					warning(on_rejection_msg, call. = FALSE, immediate. = TRUE)
-
-					return(FALSE)
-				}
-			}
-		} else {
-			return(TRUE)
-		}
-	})
+          return(FALSE)
+        }
+      }
+    } else {
+      return(TRUE)
+    }
+  })
 }

@@ -5,16 +5,19 @@ year_query <- "2021"
 fake_ts <- structure(1642010354.70704, tzone = "", class = c("POSIXct", "POSIXt"))
 
 expected_parsed_files <- c(
-	"Embase_parsed.csv", "Pubmed_parsed.csv",
-	"Scopus_parsed.csv", "Pubmed_API.csv"
+  "Embase_parsed.csv", "Pubmed_parsed.csv",
+  "Scopus_parsed.csv", "Pubmed_API.csv"
 )
 
-withr::defer({
-	file.remove(file.path("Records", "SessionTest", "Query1", expected_parsed_files))
-	file.remove("Session_journal.csv")
+withr::defer(
+  {
+    file.remove(file.path("Records", "SessionTest", "Query1", expected_parsed_files))
+    file.remove("Session_journal.csv")
 
-	unlink(file.path("Sessions", "SessionTest"), recursive = TRUE)
-}, teardown_env())
+    unlink(file.path("Sessions", "SessionTest"), recursive = TRUE)
+  },
+  teardown_env()
+)
 
 test_that("record journal is created by perform_search_session()", {
   journal <- perform_search_session(
@@ -96,7 +99,6 @@ test_that("annotation data gets created correctly", {
 })
 
 test_that("session file get created correctly", {
-
   folder <- create_session(Annotation_data, session_name = "SessionTest", use_time_stamp = )
 
   record_file <- list.files(folder, pattern = "Records", full.names = TRUE)

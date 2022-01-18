@@ -41,8 +41,8 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
                           n.trees = 800, sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                           save_path = file.path(sessions_folder, session_name, "rule_data.rds"), ...) {
 
-	# Silence CMD CHECK about non standard eval
-	ID <- Target <- Score <- Term <- NULL
+  # Silence CMD CHECK about non standard eval
+  ID <- Target <- Score <- Term <- NULL
 
   message("Preparing the data")
 
@@ -101,7 +101,7 @@ extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.
   message("Computing trees")
 
   if (n.trees > ncol(Draws)) {
-  	warning("Number of trees > than number of MCMC draws. All draws will be used", call. = FALSE, immediate. = TRUE)
+    warning("Number of trees > than number of MCMC draws. All draws will be used", call. = FALSE, immediate. = TRUE)
   }
 
   # Add the median estimate and ensure it is included among the candidate draws
@@ -208,8 +208,8 @@ add_cumulative <- function(data, order_by = "score", rule_var = "rule") {
 generate_rule_selection_set <- function(rules, target_vec, target_data, add_negative_terms = TRUE,
                                         save_path = NULL) {
 
-	# Silence CMD CHECK about non standard eval
-	rule <- term <- neg_term <- rule_with_negs <- cum_pos <- score <- NULL
+  # Silence CMD CHECK about non standard eval
+  rule <- term <- neg_term <- rule_with_negs <- cum_pos <- score <- NULL
 
   rules <- rules[stringr::str_detect(rules, '"1"')] %>% # Only rules with a least one positive component
     tidytrees::simplify_rules() %>% # Remove redundant rule components
@@ -304,15 +304,15 @@ generate_rule_selection_set <- function(rules, target_vec, target_data, add_nega
 
 add_negative_terms <- function(rules, target_vec, target_data) {
 
-	# Silence CMD CHECK about non standard eval
-	pos <- word <- term <- selected_term <- NULL
+  # Silence CMD CHECK about non standard eval
+  pos <- word <- term <- selected_term <- NULL
 
   message("- retrieving negative terms")
   pbmcapply::pbmclapply(rules, function(rule) {
     filt <- with(target_data, which(eval(str2expression(rule))))
 
     target_data <- target_data[filt, ] %>%
-    	select(tidyselect::vars_select_helpers$where(~ n_distinct(.x) > 1))
+      select(tidyselect::vars_select_helpers$where(~ n_distinct(.x) > 1))
 
     target_vec <- target_vec[filt]
     tot_pos <- sum(target_vec == "y")
@@ -434,8 +434,8 @@ add_negative_terms <- function(rules, target_vec, target_data) {
 #' }
 simplify_ruleset <- function(ruleset, target_vec, target_data) {
 
-	# Silence CMD CHECK about non standard eval
-	cum_neg <- cum_pos <- selected_rule <- rule <- NULL
+  # Silence CMD CHECK about non standard eval
+  cum_neg <- cum_pos <- selected_rule <- rule <- NULL
 
   remove_redundant_rules <- function(data) {
     indexes <- data$pos_i
@@ -576,8 +576,8 @@ simplify_ruleset <- function(ruleset, target_vec, target_data) {
 #' }
 rules_to_query <- function(rules) {
 
-	# Silence CMD CHECK about non standard eval
-	. <- NULL
+  # Silence CMD CHECK about non standard eval
+  . <- NULL
 
   stringr::str_remove_all(rules, "\\bV__") %>%
     sapply(function(r) {

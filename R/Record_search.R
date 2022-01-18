@@ -117,34 +117,34 @@ clean_date_filter_arg <- function(year_query, cases,
   as.character(year_query)
 }
 
-#'Automatic search on Web Of Science database
+#' Automatic search on Web Of Science database
 #'
-#'This function performs an API search on Web Of Science (WOS), taking care of
-#'the authorization steps and query normalization. The user is needed to provide
-#'an API key by accessing \url{https://www.webofknowledge.com} with an
-#'authorized account (e.g. access through an academic VPN or proxy). The key can
-#'be found in the URL once the user is authorized. The key has a time limit, so
-#'it will need to be regenerated. The function is a wrapper over
-#'[wosr::pull_wos()] and requires the `wosr` package.
+#' This function performs an API search on Web Of Science (WOS), taking care of
+#' the authorization steps and query normalization. The user is needed to provide
+#' an API key by accessing \url{https://www.webofknowledge.com} with an
+#' authorized account (e.g. access through an academic VPN or proxy). The key can
+#' be found in the URL once the user is authorized. The key has a time limit, so
+#' it will need to be regenerated. The function is a wrapper over
+#' [wosr::pull_wos()] and requires the `wosr` package.
 #'
-#'@param query A boolean query with AND/OR/NOT operators, brackets for term
+#' @param query A boolean query with AND/OR/NOT operators, brackets for term
 #'  grouping and quotation marks for n-grams.
-#'@param year_query A year based filtering query. See [clean_date_filter_arg()]
+#' @param year_query A year based filtering query. See [clean_date_filter_arg()]
 #'  for more info.
-#'@param additional_fields Additional fields to add to the query. Won't be
+#' @param additional_fields Additional fields to add to the query. Won't be
 #'  normalized so it must already follow WOS specific syntax.
-#'@param api_key Necessary to access WOS database. See Details.
-#'@param parallel Whether to use parallel execution to speed up result
+#' @param api_key Necessary to access WOS database. See Details.
+#' @param parallel Whether to use parallel execution to speed up result
 #'  collection. Works only on Unix-based systems.
-#'@param parse_query Whether to normalize the query into WOS specific syntax. If
+#' @param parse_query Whether to normalize the query into WOS specific syntax. If
 #'  \code{FALSE}, it is assumed that the query is already in the format required
 #'  by WOS API.
-#'@param ... Additional arguments for [wosr::pull_wos()], excluding \code{query}
+#' @param ... Additional arguments for [wosr::pull_wos()], excluding \code{query}
 #'  and \code{sid}.
 #'
-#'@return A data frame of records.
+#' @return A data frame of records.
 #'
-#'@export
+#' @export
 #'
 #' @examples
 #'
@@ -162,38 +162,41 @@ clean_date_filter_arg <- function(year_query, cases,
 #' # results to one year period.
 #' year_filter <- "2010-2020"
 #'
-#'\dontrun{
+#' \dontrun{
 #' records <- search_wos(query, year_filter)
-#'}
+#' }
 search_wos <- function(query, year_query = NULL, additional_fields = NULL,
                        api_key = getOption("baysren.wos_api_key"),
                        parallel = TRUE, parse_query = TRUE, ...) {
 
-	# Silence CMD CHECK about non standard eval
-	schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
+  # Silence CMD CHECK about non standard eval
+  schema <- ut <- title <- abstract <- doi <- journal <- tot_cites <- display_name <- jsc <- doc_type <- keyword <- keywords_plus <- NULL
 
-	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
-											 DOI = "character", Journal = "character", N_citations = "integer",
-											 Published = "character", Source = "character", Source_type = "character",
-											 Creation_date = "character", Authors = "character", Topic = "character",
-											 Article_type = "character", Author_keywords = "character", Keywords = "character"
-	)
+  output_template <- c(
+    Order = "integer", ID = "character", Title = "character", Abstract = "character",
+    DOI = "character", Journal = "character", N_citations = "integer",
+    Published = "character", Source = "character", Source_type = "character",
+    Creation_date = "character", Authors = "character", Topic = "character",
+    Article_type = "character", Author_keywords = "character", Keywords = "character"
+  )
 
-	# Declare some non-exported wosr functions
-	one_parse <- utils::getFromNamespace("one_parse", "wosr")
-	download_wos <- utils::getFromNamespace("download_wos", "wosr")
-	data_frame_wos <- utils::getFromNamespace("data_frame_wos", "wosr")
-	process_wos_apply <- utils::getFromNamespace("process_wos_apply", "wosr")
-	enforce_schema <- utils::getFromNamespace("enforce_schema", "wosr")
-	append_class <- utils::getFromNamespace("append_class", "wosr")
+  # Declare some non-exported wosr functions
+  one_parse <- utils::getFromNamespace("one_parse", "wosr")
+  download_wos <- utils::getFromNamespace("download_wos", "wosr")
+  data_frame_wos <- utils::getFromNamespace("data_frame_wos", "wosr")
+  process_wos_apply <- utils::getFromNamespace("process_wos_apply", "wosr")
+  enforce_schema <- utils::getFromNamespace("enforce_schema", "wosr")
+  append_class <- utils::getFromNamespace("append_class", "wosr")
 
   message("Searching WOS...")
 
-  is_installed <- check_suggested_packages("wosr", is_required_msg = "to download results from the WOS database",
-  																				 stop_on_rejection = FALSE, on_rejection_msg = "Research on WOS database will be skipped.")
+  is_installed <- check_suggested_packages("wosr",
+    is_required_msg = "to download results from the WOS database",
+    stop_on_rejection = FALSE, on_rejection_msg = "Research on WOS database will be skipped."
+  )
 
   if (isFALSE(is_installed)) {
-  	return(create_empty_df(output_template))
+    return(create_empty_df(output_template))
   }
 
   default_field <- "TS" # may change in the future
@@ -283,8 +286,8 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
   )
 
   if (is.null(records_list$publication)) {
-  	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
-  	return(create_empty_df(output_template))
+    warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+    return(create_empty_df(output_template))
   }
 
   records <- records_list$publication %>%
@@ -364,21 +367,23 @@ search_wos <- function(query, year_query = NULL, additional_fields = NULL,
 search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
                           api_key = getOption("baysren.ncbi_api_key"),
                           record_limit = numeric()) {
-
-	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
-											 DOI = "character", Authors = "character", URL = "character",
-											 Journal = "character", Journal_short = "character", Article_type = "character",
-											 Mesh = "character", Author_keywords = "character", Published = "character",
-											 Source = "character", Source_type = "character", Creation_date = "POSIXct"
-	)
+  output_template <- c(
+    Order = "integer", ID = "character", Title = "character", Abstract = "character",
+    DOI = "character", Authors = "character", URL = "character",
+    Journal = "character", Journal_short = "character", Article_type = "character",
+    Mesh = "character", Author_keywords = "character", Published = "character",
+    Source = "character", Source_type = "character", Creation_date = "POSIXct"
+  )
 
   message("Searching Pubmed...")
 
-  is_installed <- check_suggested_packages("rentrez", is_required_msg = "to download results from the PUBMED database",
-  																				 stop_on_rejection = FALSE, on_rejection_msg = "Research on PUBMED database will be skipped.")
+  is_installed <- check_suggested_packages("rentrez",
+    is_required_msg = "to download results from the PUBMED database",
+    stop_on_rejection = FALSE, on_rejection_msg = "Research on PUBMED database will be skipped."
+  )
 
   if (isFALSE(is_installed)) {
-  	return(create_empty_df(output_template))
+    return(create_empty_df(output_template))
   }
 
   if (is.null(api_key)) warning("NCBI API key is not set. NCBI server may stop answering after too large requests.", call. = FALSE, immediate. = TRUE)
@@ -413,8 +418,8 @@ search_pubmed <- function(query, year_query = NULL, additional_fields = NULL,
   total_count <- min(res$count, record_limit)
 
   if (total_count == 0) {
-  	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
-  	return(create_empty_df(output_template))
+    warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+    return(create_empty_df(output_template))
   }
 
   message("- fetching records")
@@ -507,22 +512,26 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
                         api_key = getOption("baysren.ieee_api_key"), allow_web_scraping = TRUE,
                         wait_for = 20, record_limit = NULL) {
 
-	# Silence CMD CHECK about non standard eval
-	articleNumber <- articleTitle <- doi <- authors <- publicationTitle <- contentType <- citationCount <- publicationDate <- abstract_url <- title <- abstract <- publication_title <- content_type <- citing_paper_count <- publication_date <- kwd <- firstName <- lastName <- Order <- ID <- Title <- Abstract <- DOI <- URL <- Authors <- Journal <- Article_type <- Author_keywords <- Keywords <- Mesh <- N_citations <- Published <- Source <- Source_type <- NULL
+  # Silence CMD CHECK about non standard eval
+  articleNumber <- articleTitle <- doi <- authors <- publicationTitle <- contentType <- citationCount <- publicationDate <- abstract_url <- title <- abstract <- publication_title <- content_type <- citing_paper_count <- publication_date <- kwd <- firstName <- lastName <- Order <- ID <- Title <- Abstract <- DOI <- URL <- Authors <- Journal <- Article_type <- Author_keywords <- Keywords <- Mesh <- N_citations <- Published <- Source <- Source_type <- NULL
 
-	output_template <- c(Order = "integer", ID = "character", Title = "character", Abstract = "character",
-											 DOI = "character", URL = "character", Authors = "character",
-											 Journal = "character", Article_type = "character", Author_keywords = "character",
-											 Keywords = "character", N_citations = "integer", Published = "character",
-											 Source = "character", Source_type = "character")
+  output_template <- c(
+    Order = "integer", ID = "character", Title = "character", Abstract = "character",
+    DOI = "character", URL = "character", Authors = "character",
+    Journal = "character", Article_type = "character", Author_keywords = "character",
+    Keywords = "character", N_citations = "integer", Published = "character",
+    Source = "character", Source_type = "character"
+  )
 
   message("Searching IEEE...")
 
-  is_installed <- check_suggested_packages(c("jsonlite", "httr"), is_required_msg = "for non-API downoload of results from IEEE",
-  																	stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped.")
+  is_installed <- check_suggested_packages(c("jsonlite", "httr"),
+    is_required_msg = "for non-API downoload of results from IEEE",
+    stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped."
+  )
 
   if (!all(is_installed)) {
-  	return(create_empty_df(output_template))
+    return(create_empty_df(output_template))
   }
 
   if (!is.null(additional_fields) & length(additional_fields) > 0) {
@@ -544,12 +553,14 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
     if (!allow_web_scraping) stop("If API key is not present web scraping must be allowed.")
 
-  	is_installed <- check_suggested_packages("crrri", is_required_msg = "for non-API downoload of results from IEEE",
-  													 stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped.")
+    is_installed <- check_suggested_packages("crrri",
+      is_required_msg = "for non-API downoload of results from IEEE",
+      stop_on_rejection = FALSE, on_rejection_msg = "Research on IEEE database will be skipped."
+    )
 
-  	if (isFALSE(is_installed)) {
-  		return(create_empty_df(output_template))
-  	}
+    if (isFALSE(is_installed)) {
+      return(create_empty_df(output_template))
+    }
 
     default_fields <- list(
       rowsPerPage = 100
@@ -596,7 +607,7 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
 
     if (response$totalPages > 1) {
       if (response$totalPages > 100) {
-      	warning("Only results up to page 100 are available", call. = FALSE, immediate. = TRUE)
+        warning("Only results up to page 100 are available", call. = FALSE, immediate. = TRUE)
       }
 
       other_pages <- pbapply::pblapply(2:min(response$totalPages, 100), function(page) {
@@ -620,8 +631,8 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     }
 
     if (is.null(response$records)) {
-    	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
-    	return(create_empty_df(output_template))
+      warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+      return(create_empty_df(output_template))
     }
 
     records <- response$records %>%
@@ -689,8 +700,8 @@ search_ieee <- function(query, year_query = NULL, additional_fields = NULL,
     records <- results$articles
 
     if (is.null(records)) {
-    	warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
-    	return(create_empty_df(output_template))
+      warning("The query returned zero results.", call. = FALSE, immediate. = TRUE)
+      return(create_empty_df(output_template))
     }
 
     max_records <- additional_fields$max_records
@@ -886,11 +897,11 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
                                    sources = c("IEEE", "WOS", "Pubmed", "Scopus", "Embase"),
                                    session_name = "Session1", query_name = "Query1",
                                    records_folder = "Records", overwrite = FALSE,
-																	 skip_on_failure = FALSE,
+                                   skip_on_failure = FALSE,
                                    journal = "Session_journal.csv") {
 
-	# Silence CMD CHECK about non standard eval
-	write_csv <- Session_ID <- Query_ID <- Source <- Type <- Timestamp <- NULL
+  # Silence CMD CHECK about non standard eval
+  write_csv <- Session_ID <- Query_ID <- Source <- Type <- Timestamp <- NULL
 
   load_if_exists <- function(out_file, overwrite) {
     if (file.exists(out_file)) {
@@ -919,57 +930,59 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
     lapply(actions, function(action) {
       records <- NULL
 
-      trial <- try({
-      	if (action == "API") {
-      		## API search
+      trial <- try(
+        {
+          if (action == "API") {
+            ## API search
 
-      		output_file <- file.path(folder_path, glue("{source}_API.csv"))
+            output_file <- file.path(folder_path, glue("{source}_API.csv"))
 
-      		records <- load_if_exists(output_file, overwrite) # load records if output already existing
+            records <- load_if_exists(output_file, overwrite) # load records if output already existing
 
-      		search_fun <- paste0("search_", stringr::str_to_lower(source))
+            search_fun <- paste0("search_", stringr::str_to_lower(source))
 
-      		if (is.null(records) & exists(search_fun)) { # if output not existing search via API and API search is available
+            if (is.null(records) & exists(search_fun)) { # if output not existing search via API and API search is available
 
-      			records <- try(get(search_fun)(query = query, year_query = year_query), silent = TRUE)
+              records <- try(get(search_fun)(query = query, year_query = year_query), silent = TRUE)
+            }
+          } else if (action == "parsed") {
+            ## Parsing downloaded records
 
-      		}
-      	} else if (action == "parsed") {
-      		## Parsing downloaded records
+            # find input files (i.e. files not containing API or parsed in the name)
+            input_files <- list.files(folder_path, full.names = FALSE) %>%
+              stringr::str_subset("API|parsed", negate = TRUE) %>%
+              stringr::str_subset(stringr::regex(source, ignore_case = TRUE))
 
-      		# find input files (i.e. files not containing API or parsed in the name)
-      		input_files <- list.files(folder_path, full.names = FALSE) %>%
-      			stringr::str_subset("API|parsed", negate = TRUE) %>%
-      			stringr::str_subset(stringr::regex(source, ignore_case = TRUE))
+            if (length(input_files) > 0) { # continue if any input file exists
 
-      		if (length(input_files) > 0) { # continue if any input file exists
+              output_file <- file.path(folder_path, glue("{source}_parsed.csv"))
 
-      			output_file <- file.path(folder_path, glue("{source}_parsed.csv"))
+              records <- load_if_exists(output_file, overwrite) # load records if output already existing
 
-      			records <- load_if_exists(output_file, overwrite) # load records if output already existing
+              if (is.null(records)) { # in output not existing parse the raw data
+                records <- file.path(folder_path, input_files) %>%
+                  read_bib_files() %>%
+                  bind_rows()
+              }
 
-      			if (is.null(records)) { # in output not existing parse the raw data
-      				records <- file.path(folder_path, input_files) %>%
-      					read_bib_files() %>%
-      					bind_rows()
-      			}
+              input_files <- paste(input_files, collapse = ", ")
+            } else {
+              input_files <- NA
+            }
+          }
+        },
+        silent = TRUE
+      )
 
-      			input_files <- paste(input_files, collapse = ", ")
-      		} else {
-      			input_files <- NA
-      		}
-      	}
-      }, silent = TRUE)
-
-      if (class(trial) == 'try-error') {
-      	if (isTRUE(skip_on_failure)) {
-      		message <- glue(
-      			"Importing from source: \"{source}\" via action \"{action}\" failed with error:\n{attributes(records)$condition$message}"
-      		)
-      		warning(message, call. = FALSE, immediate. = TRUE)
-      	} else {
-      		stop(message)
-      	}
+      if (class(trial) == "try-error") {
+        if (isTRUE(skip_on_failure)) {
+          message <- glue(
+            "Importing from source: \"{source}\" via action \"{action}\" failed with error:\n{attributes(records)$condition$message}"
+          )
+          warning(message, call. = FALSE, immediate. = TRUE)
+        } else {
+          stop(message)
+        }
       }
 
       if (is.data.frame(records) && nrow(records) > 0) {
@@ -992,8 +1005,8 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
       }
     })
   }) %>%
-  	bind_rows() %>%
-  	mutate_all(as.character)
+    bind_rows() %>%
+    mutate_all(as.character)
 
   if (nrow(record_data) == 0) {
     warning("No records were added", call. = FALSE, immediate. = TRUE)
@@ -1010,7 +1023,7 @@ perform_search_session <- function(query, year_query = NULL, actions = c("API", 
 
     if (file.exists(journal)) {
       previous_data <- import_data(journal) %>%
-      	mutate_all(as.character)
+        mutate_all(as.character)
 
       record_data <- previous_data %>%
         bind_rows(record_data) %>%

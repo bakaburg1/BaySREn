@@ -30,22 +30,23 @@ NULL
 
 
 
-.onLoad = function(libname, pkgname) {
-	# options(java.parameters= "-Xmx16g")
-	# options(baysren.BartMem = '16')
+.onLoad <- function(libname, pkgname) {
+  # options(java.parameters= "-Xmx16g")
+  # options(baysren.BartMem = '16')
 
-	if (is.null(getOption("baysren.BartMem"))) {
-		if (interactive()) {
-			mem <- readline("How many GB of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
+  if (is.null(getOption("baysren.BartMem"))) {
+    if (interactive()) {
+      mem <- readline("How many GB of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
 
-			if (is.na(as.numeric(mem))) stop('Input should be a number.')
-		} else mem <- 16
+      if (is.na(as.numeric(mem))) stop("Input should be a number.")
+    } else {
+      mem <- 16
+    }
 
-		options(baysren.BartMem = mem)
-	}
+    options(baysren.BartMem = mem)
+  }
 
-	mem <- paste0("-Xmx", getOption("baysren.BartMem"), "g")
+  mem <- paste0("-Xmx", getOption("baysren.BartMem"), "g")
 
-	options(java.parameters = mem)
-
+  options(java.parameters = mem)
 }

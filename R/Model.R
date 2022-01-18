@@ -48,8 +48,8 @@ coalesce_labels <- function(data, label_cols = c("Rev_prediction_new", "Rev_pred
 #' }
 create_training_set <- function(Records, min_freq = 0.05) {
 
-	# Silence CMD CHECK about non standard eval
-	. <- ID <- Title <- Abstract <- Authors <- Keywords <- Mesh <- NULL
+  # Silence CMD CHECK about non standard eval
+  . <- ID <- Title <- Abstract <- Authors <- Keywords <- Mesh <- NULL
 
   if (min_freq <= 0 | min_freq > 1) stop('"min_freq" should be between 0 and 1.')
 
@@ -144,8 +144,8 @@ create_training_set <- function(Records, min_freq = 0.05) {
   ) %>%
     distinct() %>% # remove the duplicated positive matches
     select(
-    	tidyselect::vars_select_helpers$where(~ !is.numeric(.x)), # Keep ID and Target
-    	tidyselect::vars_select_helpers$where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
+      tidyselect::vars_select_helpers$where(~ !is.numeric(.x)), # Keep ID and Target
+      tidyselect::vars_select_helpers$where(~ suppressWarnings(sum(as.numeric(.x), na.rm = TRUE)) > 1) # Keep features with more than one match in a document
     )
 }
 
@@ -185,70 +185,72 @@ compute_BART_model <- function(train_data, Y, preds = NULL, save = FALSE,
                                num_iterations_after_burn_in = 2000,
                                run_in_sample = FALSE, mem_cache_for_speed = TRUE,
                                use_missing_data = TRUE, verbose = TRUE, ...) {
+  check_suggested_packages(c("rJava", "bartMachine"),
+    is_required_msg = "to run the model",
+    stop_on_rejection = TRUE, on_rejection_msg = "The model cannot be run without the {pkg} package."
+  )
 
-	check_suggested_packages(c("rJava", "bartMachine"), is_required_msg = "to run the model",
-													 stop_on_rejection = TRUE, on_rejection_msg = "The model cannot be run without the {pkg} package.")
+  get_java_memory <- function() {
+    rJava::.jcall(rJava::.jnew("java/lang/Runtime"), "J", "maxMemory") / 1e9
+  }
 
-	get_java_memory <- function() {
-		rJava::.jcall(rJava::.jnew("java/lang/Runtime"), "J", "maxMemory") / 1e9
-	}
+  is_java_on <- function() {
+    tryCatch(rJava::.jcheck(silent = TRUE) == 0, error = function(e) FALSE)
+  }
 
-	is_java_on <- function() {
-		tryCatch(rJava::.jcheck(silent = TRUE) == 0, error = function(e) FALSE)
-	}
+  if (is.null(getOption("baysren.BartMem")) & is_java_on()) {
+    warning(
+      paste("The BART model is running using", get_java_memory(), "GB of memory.\nIf you experience memory problems, consider restarting the R session and assign more memory (in GBs) using the 'baysren.BartMem' R option."),
+      call. = FALSE, immediate. = TRUE
+    )
+  }
 
-	if (is.null(getOption("baysren.BartMem")) & is_java_on()) {
-		warning(
-			paste("The BART model is running using", get_java_memory(), "GB of memory.\nIf you experience memory problems, consider restarting the R session and assign more memory (in GBs) using the 'baysren.BartMem' R option."),
-			call. = FALSE, immediate. = TRUE)
-	}
+  # if (is.null(getOption("baysren.BartMem"))) {
+  # 	if (is_java_on()) {
+  # 		warning(
+  # 			paste("No extra memory was assign to Java using 'getOption(\"baysren.BartMem\")'.\nIf you experience memory problems, consider restarting the R session before running the model and increasing the memory."),
+  # 			call. = FALSE, immediate. = TRUE)
+  # 	} else {
+  # 		if (interactive()) {
+  # 			mem <- readline("How much GBs of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
+  #
+  # 			if (is.na(as.numeric(mem))) stop('Input should be a number.')
+  #
+  # 			options(baysren.BartMem = mem)
+  #
+  # 			mem <- paste0("-Xmx", mem, "g")
+  #
+  # 			options(java.parameters = mem)
+  #
+  # 		} else {
+  # 			warning(
+  # 				"Java is using the default amount of memory to run the model. If you experience memory problems consider assign more memory (in GBs) using 'getOption(\"baysren.BartMem\")'.",
+  # 				call. = FALSE, immediate. = TRUE)
+  # 		}
+  #
+  # 		rJava::.jpackage('bartMachine')
+  # 		rJava::.jpackage('bartMachineJARs')
+  # 	}
+  # }
+  #
+  # print(paste("BART machine is running with", get_java_memory(), 'GB of memory'))
 
-	# if (is.null(getOption("baysren.BartMem"))) {
-	# 	if (is_java_on()) {
-	# 		warning(
-	# 			paste("No extra memory was assign to Java using 'getOption(\"baysren.BartMem\")'.\nIf you experience memory problems, consider restarting the R session before running the model and increasing the memory."),
-	# 			call. = FALSE, immediate. = TRUE)
-	# 	} else {
-	# 		if (interactive()) {
-	# 			mem <- readline("How much GBs of memory should be used by the BART model?\n(better no more than 90% of available RAM)\n ")
-	#
-	# 			if (is.na(as.numeric(mem))) stop('Input should be a number.')
-	#
-	# 			options(baysren.BartMem = mem)
-	#
-	# 			mem <- paste0("-Xmx", mem, "g")
-	#
-	# 			options(java.parameters = mem)
-	#
-	# 		} else {
-	# 			warning(
-	# 				"Java is using the default amount of memory to run the model. If you experience memory problems consider assign more memory (in GBs) using 'getOption(\"baysren.BartMem\")'.",
-	# 				call. = FALSE, immediate. = TRUE)
-	# 		}
-	#
-	# 		rJava::.jpackage('bartMachine')
-	# 		rJava::.jpackage('bartMachineJARs')
-	# 	}
-	# }
-	#
-	# print(paste("BART machine is running with", get_java_memory(), 'GB of memory'))
+  if (is.null(getOption("baysren.BartCores"))) {
+    if (interactive()) {
+      cores <- readline(glue::glue("How many CPU cores should be used by the BART model?\n(you have {parallel::detectCores()} cores available, use less cores if experience degraded performance using the OS while running the model.)\n "))
 
-	if (is.null(getOption('baysren.BartCores'))) {
-		if (interactive()) {
-			cores <- readline(glue::glue("How many CPU cores should be used by the BART model?\n(you have {parallel::detectCores()} cores available, use less cores if experience degraded performance using the OS while running the model.)\n "))
+      if (is.na(as.numeric(cores))) stop("Input should be a number.")
+    } else {
+      cores <- parallel::detectCores() - 1
+    }
 
-			if (is.na(as.numeric(cores))) stop('Input should be a number.')
-		} else {
-			cores <- parallel::detectCores() - 1
-		}
+    options(baysren.BartCores = min(cores, parallel::detectCores()))
+    bartMachine::set_bart_machine_num_cores(cores)
+  }
 
-		options(baysren.BartCores = min(cores, parallel::detectCores()))
-		bartMachine::set_bart_machine_num_cores(cores)
-	}
+  # options(java.parameters = getOption('BartMem'))
 
-	#options(java.parameters = getOption('BartMem'))
-
-	if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
+  if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
 
   model_file <- file.path(folder, glue("{name}.rds"))
 
@@ -462,7 +464,7 @@ enrich_annotation_file <- function(session_name,
                                    resample = FALSE,
                                    pred_quants = c(.01, .5, .99),
                                    #
-                                   sessions_folder = getOption("baysren.sessions_folder", 'Sessions'),
+                                   sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                                    pred_batch_size = 5000,
                                    autorun = TRUE,
                                    stop_on_unreviewed = TRUE,
@@ -475,19 +477,19 @@ enrich_annotation_file <- function(session_name,
                                      labeling_limit = NULL
                                    ),
                                    compute_performance = FALSE,
-                                   #test_data = NULL,
+                                   # test_data = NULL,
                                    use_prev_labels = TRUE,
                                    prev_classification = NULL,
                                    save_samples = TRUE,
                                    rebuild = FALSE, ...) {
 
-	# Silence CMD CHECK about non standard eval
-	Rev_manual <- . <- Rev_prediction <- ID <- Pred_Up <- Pred_Low <- Predicted_label <- Order <- Rev_previous <- Term <- Val <- Value <- NULL
+  # Silence CMD CHECK about non standard eval
+  Rev_manual <- . <- Rev_prediction <- ID <- Pred_Up <- Pred_Low <- Predicted_label <- Order <- Rev_previous <- Term <- Val <- Value <- NULL
 
   # pick the last annotated record file or the source one if any
   if (is.null(file)) {
     file <- with(get_session_files(session_name, sessions_folder), {
-    	c(last(Annotations), Records)[1]
+      c(last(Annotations), Records)[1]
     })
 
     if (is.null(file)) {
@@ -1024,8 +1026,8 @@ enrich_annotation_file <- function(session_name,
 #' @export
 #'
 consolidate_results <- function(session_name, sessions_folder = getOption("baysren.sessions_folder", "Sessions")) {
-	# Silence CMD CHECK about non standard eval
-	results_files <- Indicator <- results_files <- NULL
+  # Silence CMD CHECK about non standard eval
+  results_files <- Indicator <- results_files <- NULL
 
   annotations_files <- get_session_files(session_name, sessions_folder)$Annotations
 
@@ -1160,8 +1162,8 @@ perform_grid_evaluation <- function(records, sessions_folder = "Grid_Search",
                                       pos_target = NULL, labeling_limit = NULL
                                     )) {
 
-	# Silence CMD CHECK about non standard eval
-	Rev_previous <- Order <- NULL
+  # Silence CMD CHECK about non standard eval
+  Rev_previous <- Order <- NULL
 
   # file: 'Grid_Search/Classification_data.xlsx'
 
