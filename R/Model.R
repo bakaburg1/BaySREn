@@ -517,7 +517,7 @@ enrich_annotation_file <- function(session_name,
   # Read the file and use (theoretically) all rows to infer the column type, to
   # avoid misspecification errors.
 
-  Records <- import_data(file, guess_max = 10^6)
+  Records <- import_data(file)
 
   if (all(is.na(Records$Rev_manual))) {
     stop("No manually labeled entries found. This may also happen if there is a great number of missings before the first labeled record.")
