@@ -89,7 +89,7 @@ create_training_set <- function(Records, min_freq = 0.05) {
   Abstract_DTM <- with(
     Records,
     Abstract %>%
-      stringr::str_remove_all(regex("\\b(background|introduction|method\\w*|result\\w*|conclusion\\w*|discussion)", ignore_case = TRUE)) %>%
+      stringr::str_remove_all(stringr::regex("\\b(background|introduction|method\\w*|result\\w*|conclusion\\w*|discussion)", ignore_case = TRUE)) %>%
       text_to_DTM(
         min.freq = min_freq, label = "ABSTR__", ids = ID,
         freq.subset.ids = ID[Target %in% c("y", "n")]
