@@ -447,8 +447,9 @@ enrich_annotation_file <- function(session_name,
 
   # pick the last annotated record file or the source one if any
   if (is.null(file)) {
-    file <- get_session_files(session_name, sessions_folder)$Annotations %>%
-      last()
+    file <- with(get_session_files(session_name, sessions_folder), {
+    	c(last(Annotations), Records)[1]
+    })
 
     if (is.null(file)) {
       stop("No annotation files in this session, or the session folder doesn't exists.")
