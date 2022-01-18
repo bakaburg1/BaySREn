@@ -932,7 +932,7 @@ create_session <- function(Records, session_name,
 #' @export
 #'
 get_session_files <- function(session_name,
-                              sessions_folder = getOption("baysren.sessions_folder"),
+                              sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                               which = c(
                                 "Records", "Annotations",
                                 "DTM", "Samples", "Results"

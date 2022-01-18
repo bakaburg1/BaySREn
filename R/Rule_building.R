@@ -38,7 +38,7 @@
 #' @export
 #'
 extract_rules <- function(session_name, rebuild_dtm = FALSE, vimp.threshold = 1.25,
-                          n.trees = 800, sessions_folder = getOption("baysren.sessions_folder"),
+                          n.trees = 800, sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                           save_path = file.path(sessions_folder, session_name, "rule_data.rds"), ...) {
 
 	# Silence CMD CHECK about non standard eval

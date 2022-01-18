@@ -197,7 +197,7 @@ estimate_positivity_rate_model <- function(train_data, seed = 14129189) {
 #' }
 #'
 estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRUE,
-																 quants = getOption("baysren.probs"),
+																 quants = getOption("baysren.probs", c(.05, .5, .95)),
 																 nsamples = min(2500, sum(model$fit@sim$n_save)),
 																 seed = 23797297,
 																 save_preds = FALSE, save_model = FALSE) {
@@ -351,7 +351,7 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
 #' extract_var_imp("Session1")
 #' }
 extract_var_imp <- function(session_name, num_vars = 15, score_filter = 1.5, recompute_DTM = FALSE,
-														sessions_folder = getOption("baysren.sessions_folder")) {
+														sessions_folder = getOption("baysren.sessions_folder", "Sessions")) {
 
 	# Silence CMD CHECK about non standard eval
 	. <- ID <- Target <- Term <- Score <- Value <- std.error <- p.value <- NULL

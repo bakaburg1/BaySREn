@@ -462,7 +462,7 @@ enrich_annotation_file <- function(session_name,
                                    resample = FALSE,
                                    pred_quants = c(.01, .5, .99),
                                    #
-                                   sessions_folder = getOption("baysren.sessions_folder"),
+                                   sessions_folder = getOption("baysren.sessions_folder", 'Sessions'),
                                    pred_batch_size = 5000,
                                    autorun = TRUE,
                                    stop_on_unreviewed = TRUE,
@@ -1023,7 +1023,7 @@ enrich_annotation_file <- function(session_name,
 #'
 #' @export
 #'
-consolidate_results <- function(session_name, sessions_folder = getOption("baysren.sessions_folder")) {
+consolidate_results <- function(session_name, sessions_folder = getOption("baysren.sessions_folder", "Sessions")) {
 	# Silence CMD CHECK about non standard eval
 	results_files <- Indicator <- results_files <- NULL
 

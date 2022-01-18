@@ -138,7 +138,7 @@ summarise_by_source <- function(annotation_file, as_data_frame = FALSE,
 #' summarise_sources_by_session(add_global_totals = TRUE)
 #' }
 summarise_sources_by_session <- function(sessions = list.files(sessions_folder),
-                                         sessions_folder = getOption("baysren.sessions_folder"),
+                                         sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                                          add_global_totals = TRUE, keep_session_label = FALSE, ...) {
 
 	# Silence CMD CHECK about non standard eval
@@ -307,7 +307,7 @@ get_source_distribution <- function(annotation_file, as_propr = TRUE, format_fun
 #'
 #' summarise_annotations("Session1")
 #' }
-summarise_annotations <- function(session_name, sessions_folder = getOption("baysren.sessions_folder"),
+summarise_annotations <- function(session_name, sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                                   remove_empty_columns = TRUE, remove_raw_data = TRUE) {
 
 	# Silence CMD CHECK about non standard eval
@@ -413,7 +413,7 @@ summarise_annotations <- function(session_name, sessions_folder = getOption("bay
 #'
 #' summarise_annotations_by_session()
 #' }
-summarise_annotations_by_session <- function(sessions_folder = getOption("baysren.sessions_folder"),
+summarise_annotations_by_session <- function(sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
                                              remove_empty_columns = TRUE,
                                              remove_raw_data = TRUE) {
   sessions <- list.files(sessions_folder)
@@ -658,7 +658,7 @@ print_table <- function(data, caption = "", allow_math = FALSE, ...) {
 #' @export
 #'
 plot_predictive_densities <- function(session_name,
-                                      sessions_folder = getOption("baysren.sessions_folder")) {
+                                      sessions_folder = getOption("baysren.sessions_folder", "Sessions")) {
 
 	# Silence CMD CHECK about non standard eval
 	Target <- Rev_prediction_new <- Pred_Low <- Pred_Up <- ID <- Label <- . <- Iteration <- Samples <- Prob <- Dens <- Neg_lim <- Pos_lim <- NULL
