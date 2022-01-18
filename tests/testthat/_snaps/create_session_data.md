@@ -20,6 +20,11 @@
     "Records/SessionTest/Query1/Scopus_parsed.csv", "Records/SessionTest/Query1/Embase_parsed.csv"
     )
 
+# source files get parsed without errors
+
+    c("Pubmed_API.csv", "Pubmed_parsed.csv", "Scopus_parsed.csv", 
+    "Embase_parsed.csv")
+
 # record file get joined and deduplicated
 
     c("PMID:34940026", "PMID:32014114", "SCP:2-s2.0-84950252162", 

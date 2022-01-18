@@ -1,5 +1,0 @@
-Session_ID,Query_ID,Source,Type,Input_files,Output_file,Timestamp,Filter,N_results,Query
-SessionTest,Query1,Pubmed,API,NA,Pubmed_API.csv,2022-01-14 11:13:11,2021,21,(systematic review) AND ((heart failure) AND (COPD))
-SessionTest,Query1,Pubmed,parsed,Pubmed.nbib,Pubmed_parsed.csv,2022-01-14 11:13:11,2021,20,(systematic review) AND ((heart failure) AND (COPD))
-SessionTest,Query1,Scopus,parsed,"Scopus1.csv, Scopus2.csv",Scopus_parsed.csv,2022-01-14 11:13:11,2021,38,(systematic review) AND ((heart failure) AND (COPD))
-SessionTest,Query1,Embase,parsed,"Embase1.csv, Embase2.csv",Embase_parsed.csv,2022-01-14 11:13:11,2021,38,(systematic review) AND ((heart failure) AND (COPD))

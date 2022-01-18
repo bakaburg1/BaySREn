@@ -5,12 +5,16 @@ year_query <- "2021"
 fake_ts <- structure(1642010354.70704, tzone = "", class = c("POSIXct", "POSIXt"))
 
 expected_parsed_files <- c(
-  "Embase_parsed.csv", "Pubmed_parsed.csv",
-  "Scopus_parsed.csv", "Pubmed_API.csv"
+	"Embase_parsed.csv", "Pubmed_parsed.csv",
+	"Scopus_parsed.csv", "Pubmed_API.csv"
 )
 
-file.remove(file.path("Records", "SessionTest", "Query1", expected_parsed_files))
-file.remove("Session_journal.csv")
+withr::defer({
+	file.remove(file.path("Records", "SessionTest", "Query1", expected_parsed_files))
+	file.remove("Session_journal.csv")
+
+	unlink(file.path("Sessions", "SessionTest"), recursive = TRUE)
+}, teardown_env())
 
 test_that("record journal is created by perform_search_session()", {
   journal <- perform_search_session(
@@ -42,11 +46,7 @@ test_that("record file path extraction from extract_source_file_paths() works", 
 test_that("source files get parsed without errors", {
   record_list <- read_bib_files(parsed_files)
 
-  expect_length(record_list, 4)
-  expect_named(record_list, c(
-    "Pubmed_API.csv", "Pubmed_parsed.csv", "Scopus_parsed.csv",
-    "Embase_parsed.csv"
-  ))
+  expect_snapshot_value(names(record_list), style = "deparse")
 
   penv <- parent.env(environment())
   penv$record_list <- record_list
@@ -96,7 +96,6 @@ test_that("annotation data gets created correctly", {
 })
 
 test_that("session file get created correctly", {
-  unlink(file.path("Sessions", "SessionTemp"), recursive = TRUE)
 
   folder <- create_session(Annotation_data, session_name = "SessionTest", use_time_stamp = )
 
