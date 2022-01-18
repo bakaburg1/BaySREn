@@ -331,7 +331,7 @@ text_to_DTM <- function(corpus, min.freq = 20, ids = 1:length(corpus),
 DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
   mat <- as.matrix(DTM[, -1])
 
-  mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
+  mat.sparse <- Matrix::Matrix(mat, sparse = TRUE) # Using sparse matrices
 
   TTM <- qlcMatrix::cosSparse(mat.sparse) # Cosine similarity
 
@@ -371,7 +371,7 @@ DTM.add_ngrams <- function(DTM, min.sim = .5, max.terms = 10) {
 DTM.aggr_synonyms <- function(DTM, min.sim = .9) {
   mat <- as.matrix(DTM[, -1])
 
-  mat.sparse <- methods::as(mat, "dgCMatrix") # Using sparse matrices
+  mat.sparse <- Matrix::Matrix(mat, sparse = TRUE) # Using sparse matrices
 
   TTM <- qlcMatrix::cosSparse(mat.sparse) # Cosine similarity
 
