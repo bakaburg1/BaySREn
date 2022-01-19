@@ -9,7 +9,7 @@ estimate_performance(
   model = NULL,
   preds = NULL,
   plot = TRUE,
-  quants = getOption("baysren.probs"),
+  quants = getOption("baysren.probs", c(0.05, 0.5, 0.95)),
   nsamples = min(2500, sum(model$fit@sim$n_save)),
   seed = 23797297,
   save_preds = FALSE,

@@ -6,7 +6,7 @@
 \usage{
 consolidate_results(
   session_name,
-  sessions_folder = getOption("baysren.sessions_folder")
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions")
 )
 }
 \arguments{

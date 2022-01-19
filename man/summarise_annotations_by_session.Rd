@@ -5,7 +5,7 @@
 \title{Describe results of all Classification/Review sessions}
 \usage{
 summarise_annotations_by_session(
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   remove_empty_columns = TRUE,
   remove_raw_data = TRUE
 )

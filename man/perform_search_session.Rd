@@ -13,6 +13,7 @@ perform_search_session(
   query_name = "Query1",
   records_folder = "Records",
   overwrite = FALSE,
+  skip_on_failure = FALSE,
   journal = "Session_journal.csv"
 )
 }
@@ -41,6 +42,8 @@ records acquired with different queries in the same search session.}
 \item{overwrite}{Whether to overwrite results for a given
 \code{session_name}/\code{query_name}/\code{sources} if the search is
 repeated and a result file already exists.}
+
+\item{skip_on_failure}{Whether to skip problematic sources of fail.}
 
 \item{journal}{A path to a file (Excel or CSV) to store a summary of the
 search results. If the file already exists, the summary of the new

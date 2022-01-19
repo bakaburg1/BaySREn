@@ -6,7 +6,7 @@
 \usage{
 summarise_sources_by_session(
   sessions = list.files(sessions_folder),
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   add_global_totals = TRUE,
   keep_session_label = FALSE,
   ...

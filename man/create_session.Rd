@@ -7,7 +7,7 @@
 create_session(
   Records,
   session_name,
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   DTM = NULL,
   dup_session_action = c("skip", "stop", "silent", "add", "replace"),
   use_time_stamp = TRUE

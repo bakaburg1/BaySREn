@@ -9,7 +9,7 @@ extract_var_imp(
   num_vars = 15,
   score_filter = 1.5,
   recompute_DTM = FALSE,
-  sessions_folder = getOption("baysren.sessions_folder")
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions")
 )
 }
 \arguments{

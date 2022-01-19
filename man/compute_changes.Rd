@@ -36,6 +36,7 @@ str(out) # the easiest solution for fast inspection of results
 
 # To get a long format data frame
 tidyr::pivot_longer(out, everything(),
-  names_to = "Indicator", values_to = "Value")
+  names_to = "Indicator", values_to = "Value"
+)
 }
 }

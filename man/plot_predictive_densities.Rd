@@ -6,7 +6,7 @@
 \usage{
 plot_predictive_densities(
   session_name,
-  sessions_folder = getOption("baysren.sessions_folder")
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions")
 )
 }
 \arguments{

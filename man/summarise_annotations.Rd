@@ -6,7 +6,7 @@
 \usage{
 summarise_annotations(
   session_name,
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   remove_empty_columns = TRUE,
   remove_raw_data = TRUE
 )

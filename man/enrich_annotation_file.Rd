@@ -13,7 +13,7 @@ enrich_annotation_file(
   n_models = 10,
   resample = FALSE,
   pred_quants = c(0.01, 0.5, 0.99),
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   pred_batch_size = 5000,
   autorun = TRUE,
   stop_on_unreviewed = TRUE,

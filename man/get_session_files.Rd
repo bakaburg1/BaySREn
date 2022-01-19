@@ -6,7 +6,7 @@
 \usage{
 get_session_files(
   session_name,
-  sessions_folder = getOption("baysren.sessions_folder"),
+  sessions_folder = getOption("baysren.sessions_folder", "Sessions"),
   which = c("Records", "Annotations", "DTM", "Samples", "Results")
 )
 }
