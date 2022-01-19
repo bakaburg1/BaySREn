@@ -16,11 +16,7 @@ test_that("WOS can be searched using an API key", {
 
   skip_if(grepl("Session not found", results), "WOS API key is outdated and needs renewal")
 
-  expect_s3_class(results, class = "data.frame")
-
-  result_struct <- sapply(results, class) %>% unlist()
-
-  expect_mapequal(result_struct, expected = expected_struct)
+  test_search_result(results, expected_struct)
 })
 
 rm(query, year_query)

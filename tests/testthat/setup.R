@@ -13,7 +13,7 @@ opt_backup <- options()
 if (file.exists("secrets.R")) {
   source("secrets.R")
 } else {
-  warning("A secret.R file should be created into test/testthat to perform all tests.\nIn this file the \"baysren.ieee_api_key\", \"baysren.wos_api_key\", and \"baysren.ncbi_api_key\" options should be set or the API related tests will be skipped.",
+  warning("A secrets.R file should be created into test/testthat to perform all tests.\nIn this file the \"baysren.ieee_api_key\", \"baysren.wos_api_key\", and \"baysren.ncbi_api_key\" options should be set or the API related tests will be skipped.",
     call. = TRUE, immediate. = TRUE
   )
 }
