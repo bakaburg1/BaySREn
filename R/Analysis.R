@@ -206,6 +206,7 @@ estimate_performance <- function(records, model = NULL, preds = NULL, plot = TRU
   Order <- Target <- L <- M <- U <- NULL
 
   records <- import_data(records)
+  records$Target <- coalesce_labels(records)
 
   if (is.null(model)) {
     message("- build model...")
