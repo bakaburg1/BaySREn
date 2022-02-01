@@ -520,25 +520,56 @@ concepts for the topic of interest.
 
 ## New search session
 
-Once the new query was generated, a second search session called
-`Session2` was created, using the strategy described in the protocol.
-Due to the lower specificity of the second query, particular care may be
-needed in managing the far larger amount of records: multiple record
-files may need to be downloaded from Pubmed, EMBASE, and SCOPUS since
-they have limits on the number of records one can download at once;
-also, the machine learning classification processing time increases
-proportionally with the number of records to label.  
+Once the new query was generated, a second search session can be
+created, using the strategy described in the protocol. Due to the lower
+specificity of the second query, particular care may be needed in
+managing the far larger amount of records: multiple record files may
+need to be downloaded from Pubmed, EMBASE, and SCOPUS since they have
+limits on the number of records one can download at once; also, the
+machine learning classification processing time increases proportionally
+with the number of records to label.  
 It is advisable to consider removing the less specific rules iteratively
 from the new query until a manageable number of records is obtained,
 considering that the probability of finding new positive matches not
 already found by more specific queries drops exponentially.  
 
-Once the new records are collected, `enrich_annotation_file('Session2')`
-(or any other new session name) can be used to perform the new CR
+Once the new records are collected are manually collected for databases
+without an API access, a new search can be performed. The following code
+describe how to create a new session. Keep in mind to give the session a
+new name and to import the annotated records from the last session when
+generating the new annotation file.
+
+``` r
+# Repeat the search with the new query, giving a different Session name not to
+# override previous records
+journal <- perform_search_session(
+    query = query, year_query = year_filter,
+    session_name = 'Session2', query_name = 'Query1',
+    records_folder = 'Records',
+    journal = 'Session_journal.csv')
+
+# Get the path to the annotated data in the previous session
+previousAnnotations <- get_session_files('Session1')$Annotations %>% last()
+
+# Create the new annotation file passing the folder with the new records
+Annotation_data <- create_annotation_file(
+    file.path('Records', 'Session2'),
+    reorder_query = query,
+    prev_records = previousAnnotations
+)
+
+# Create the new annotation session
+create_session(Annotation_data, session_name = "Session2")
+```
+
+Once the new annotation session data is created,
+`enrich_annotation_file('Session2')` can be used to perform the CR
 iterations. It may be possible that during the first CR iteration, the
-number of records requiring manual review is significant: we suggest
-evaluating still not more than 250, keeping in mind to set the
-`stop_on_unreviewed` argument to `FALSE`.
+number of records requiring manual review is very large: we suggest
+evaluating still not more than 250, setting the `stop_on_unreviewed`
+argument to `FALSE` to proceed in the automatic classification even if
+some uncertain records from the precedent iteration are still
+unreviewed.
 
 ## Result analysis and reporting
 
