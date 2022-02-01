@@ -60,7 +60,7 @@ resistant))'
 # common logical comparators can be used, i.e. <, <=, >, >=, while dashes
 # denotes inclusive date intervals. A single year restricts results to one year
 # period.
-year_filter <- '2010-2020'
+year_filter <- "2010-2020"
 ```
 
 The query is passed to the `perform_search_session()` function, together
@@ -92,9 +92,9 @@ example code (the “*baysren*” prefix identifies the package specific
 options):
 
 ``` r
-options(baysren.ieee_api_key = 'your-ieee-api-key')
-options(baysren.ncbi_api_key = 'your-ncbi-api-key')
-options(baysren.wos_api_key = 'your-wos-api-key')
+options(baysren.ieee_api_key = "your-ieee-api-key")
+options(baysren.ncbi_api_key = "your-ncbi-api-key")
+options(baysren.wos_api_key = "your-wos-api-key")
 ```
 
 This file will be automatically parsed from the framework.
@@ -128,10 +128,11 @@ search for records using the APIs and parsing bibliography files.
 # Session1/Query1 folder.
 
 journal <- perform_search_session(
-    query = query, year_query = year_filter,
-    session_name = 'Session1', query_name = 'Query1',
-    records_folder = 'Records',
-    journal = 'Session_journal.csv')
+  query = query, year_query = year_filter,
+  session_name = "Session1", query_name = "Query1",
+  records_folder = "Records",
+  journal = "Session_journal.csv"
+)
 ```
 
 Once the records are stored, they must be read and merged into an
@@ -144,26 +145,22 @@ evaluation:
 # Extract the file paths of records. Arguments can be used to filter by session
 # query, source. Only parsed files will be returned, not the raw ones downloaded
 # manually.
-Annotation_data <- extract_source_file_paths(journal) %>% 
-    
-    # Read record files. Will parse them if raw data is downloaded manually (not
-    # necessary in this case). Return a list of records, one per file.
-    read_bib_files() %>% 
-    
-    # Join a list of records into one dataframe, solving duplicated records
-    join_records() %>% 
-    
-    # Order records by the relative frequency of the query terms in the title +
-    # abstract text. Increases the chance of encountering relevant records at the
-    # beginning of the manual classification.
-    order_by_query_match(query) %>% 
-    
-    # Add fields for the manual classification
-    mutate(
-            Rev_manual = NA, # Where the first manual classification will be made
-            Rev_prediction = NA, # Column for the evaluation of the predicted classes
-            .before = DOI
-        )
+Annotation_data <- extract_source_file_paths(journal) %>%
+  # Read record files. Will parse them if raw data is downloaded manually (not
+  # necessary in this case). Return a list of records, one per file.
+  read_bib_files() %>%
+  # Join a list of records into one dataframe, solving duplicated records
+  join_records() %>%
+  # Order records by the relative frequency of the query terms in the title +
+  # abstract text. Increases the chance of encountering relevant records at the
+  # beginning of the manual classification.
+  order_by_query_match(query) %>%
+  # Add fields for the manual classification
+  mutate(
+    Rev_manual = NA, # Where the first manual classification will be made
+    Rev_prediction = NA, # Column for the evaluation of the predicted classes
+    .before = DOI
+  )
 ```
 
 All these steps are joined into the `create_annotation_file()` function.
@@ -187,16 +184,16 @@ record_files <- extract_source_file_paths(journal)
 
 # create_annotation_file() accept a great variety of inputs:
 
-    # either record file paths
+# either record file paths
 input <- record_files
 
-    # or specific record file folders
-input <- file.path('Records', 'Session1', 'Query1')
+# or specific record file folders
+input <- file.path("Records", "Session1", "Query1")
 
-    # or parent folders, since it searches for files recursively
-input <- 'Records'
+# or parent folders, since it searches for files recursively
+input <- "Records"
 
-    # or the already parsed files
+# or the already parsed files
 input <- read_bib_files(record_files)
 
 # We can then call create_annotation_file() with one of the above input
@@ -211,7 +208,7 @@ sessions.
 
 ``` r
 # Create the first session
-create_session(Annotation_data, session_name = 'Session1')
+create_session(Annotation_data, session_name = "Session1")
 ```
 
 The file annotation file is called `Records_{date}`, situated in the
@@ -228,18 +225,16 @@ can be all performed in one call:
 
 # perform searches and parse files; save and return the journal
 Records <- perform_search_session(
-    query = query, year_query = year_filter,
-    session_name = 'Session1', query_name = 'Query1',
-    journal = 'Session_journal.csv') %>% 
-    
-    # return the record file paths
-    extract_source_file_paths() %>%
-    
-    # read, join, reorder records and save them in the Sessions folder
-    create_annotation_file(reorder_query = query) %>%
-    
-    # Create a new session with the records
-    create_session(session_name = 'Session1')
+  query = query, year_query = year_filter,
+  session_name = "Session1", query_name = "Query1",
+  journal = "Session_journal.csv"
+) %>%
+  # return the record file paths
+  extract_source_file_paths() %>%
+  # read, join, reorder records and save them in the Sessions folder
+  create_annotation_file(reorder_query = query) %>%
+  # Create a new session with the records
+  create_session(session_name = "Session1")
 ```
 
 ## Manual classification and prediction
@@ -312,7 +307,7 @@ function, the only input needed is the session name; the function will
 automatically identify the relevant file to make predictions on.
 
 ``` r
-New_annotations <- enrich_annotation_file('Session1')
+New_annotations <- enrich_annotation_file("Session1")
 ```
 
 This function will produce a new file which is stored in the Annotations
@@ -379,9 +374,9 @@ matches have been found. These three parameters are passed to the
 
 ``` r
 list(
-    stop_after = 4,
-    pos_target = NULL,
-    labeling_limit = NULL
+  stop_after = 4,
+  pos_target = NULL,
+  labeling_limit = NULL
 )
 ```
 
@@ -444,7 +439,7 @@ The steps for generating a query are the following:
 # computation time. By default results will be saved in a file called
 # rule_data.rds in the session folder.
 
-candidate_queries <- extract_rules('Session1')
+candidate_queries <- extract_rules("Session1")
 
 # The 'candidate_queries' contains the rules, the DMT and the labels on which
 # the rules were built, which must be passed to generate_rule_selection_set().
@@ -462,22 +457,23 @@ SpecificDTM <- candidate_queries$SpecificDTM
 
 # No default is given for the save file, since generate_rule_selection_set()
 # have no info about the session it's working on.
-selection_set_file <- file.path('Sessions', 'Session1', 'Selected_rules.xlsx')
+selection_set_file <- file.path("Sessions", "Session1", "Selected_rules.xlsx")
 
 selection_set <- generate_rule_selection_set(
-    candidate_queries$rule,
-    target_vec = Target,
-    target_data = SpecificDTM,
-    save_path = selection_set_file)
+  candidate_queries$rule,
+  target_vec = Target,
+  target_data = SpecificDTM,
+  save_path = selection_set_file
+)
 
 # Once the manual selection is performed the selected rules can be further
 # simplified in order to remove redundant rules and terms. The aim is to provide
 # the shortest rule without loss of sensitivity.
 
-simplified_rules <- file.path('Sessions', 'Session1', 'Selected_rules.xlsx') %>%
-    import_data() %>%
-    simplify_ruleset(target_vec = Target, target_data = SpecificDTM) %>%
-    pull(rule)
+simplified_rules <- file.path("Sessions", "Session1", "Selected_rules.xlsx") %>%
+  import_data() %>%
+  simplify_ruleset(target_vec = Target, target_data = SpecificDTM) %>%
+  pull(rule)
 
 # Finally, the selected rules need to be joined in a query that scientific
 # search engines can understand
@@ -543,19 +539,20 @@ generating the new annotation file.
 # Repeat the search with the new query, giving a different Session name not to
 # override previous records
 journal <- perform_search_session(
-    query = query, year_query = year_filter,
-    session_name = 'Session2', query_name = 'Query1',
-    records_folder = 'Records',
-    journal = 'Session_journal.csv')
+  query = query, year_query = year_filter,
+  session_name = "Session2", query_name = "Query1",
+  records_folder = "Records",
+  journal = "Session_journal.csv"
+)
 
 # Get the path to the annotated data in the previous session
-previousAnnotations <- get_session_files('Session1')$Annotations %>% last()
+previousAnnotations <- get_session_files("Session1")$Annotations %>% last()
 
 # Create the new annotation file passing the folder with the new records
 Annotation_data <- create_annotation_file(
-    file.path('Records', 'Session2'),
-    reorder_query = query,
-    prev_records = previousAnnotations
+  file.path("Records", "Session2"),
+  reorder_query = query,
+  prev_records = previousAnnotations
 )
 
 # Create the new annotation session
@@ -648,17 +645,19 @@ Once the folder and the file are ready, run:
 
 ``` r
 Grid_search <- perform_grid_evaluation(
-    records, sessions_folder = 'Grid_Search',
-    prev_classification = records,
-    ## Model parameters (can be changed by users)
-    resample = c(FALSE, TRUE),
-    n_init = c(50, 100, 250, 500),
-    n_models = c(1, 5, 10, 20, 40, 60),
-    pos_mult = c(1, 10, 20),
-    pred_quants = list(
-        c(.1, .5, .9),
-        c(.05, .5, .95),
-        c(.01, .5, .99))
+  records,
+  sessions_folder = "Grid_Search",
+  prev_classification = records,
+  ## Model parameters (can be changed by users)
+  resample = c(FALSE, TRUE),
+  n_init = c(50, 100, 250, 500),
+  n_models = c(1, 5, 10, 20, 40, 60),
+  pos_mult = c(1, 10, 20),
+  pred_quants = list(
+    c(.1, .5, .9),
+    c(.05, .5, .95),
+    c(.01, .5, .99)
+  )
 )
 ```
 
