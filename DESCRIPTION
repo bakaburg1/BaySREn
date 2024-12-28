@@ -58,6 +58,7 @@ Imports:
 Suggests:
     bartMachine (>= 1.2.6),
     crrri (>= 0.0.13),
+    fs (>= 1.6.5),
     httr (>= 1.4.2),
     jsonlite (>= 1.7.2),
     kableExtra (>= 1.3.4),
