@@ -16,6 +16,8 @@ vignettes/*.html
 vignettes/*.pdf
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
+# API keys and other environment variables
+.Renviron
 # knitr and R markdown default cache directories
 /*_cache/
 /cache/
@@ -27,3 +29,5 @@ rsconnect/
 .DS_Store
 # Custom ignores
 tests/testthat/secrets.R
+# Target stores created next to target scripts in experiments/targets_scripts
+experiments/targets_scripts/_*/
