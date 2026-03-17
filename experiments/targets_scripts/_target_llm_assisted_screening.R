@@ -119,6 +119,7 @@ default_assisted_config <- function() {
     ),
     labeller_model = assisted_labeller_registry$labeller_model[[1]],
     label_api_args = assisted_labeller_registry$label_api_args[[1]],
+    label_response_mode = "structured",
     human_after_warmup = TRUE,
     warmup_refiner = TRUE,
     refiner_model = "openai/gpt-5.1",
@@ -470,26 +471,19 @@ generate_seed_abstracts <- function(
     as.character() |>
     as.list()
 
-  chats <- parallel_chat_promises(
-    chat = chat,
+  solved <- llm_solver(
     prompts = prompts,
-    max_active = min(3L, n_seed),
-    rpm = 60,
+    chat = chat,
+    schema = NULL,
     cache_dir = cache_dir,
-    backoff_base = 5,
-    backoff_cap = 120,
-    halve_rpm_on_retry = TRUE
+    max_attempts = 10L,
+    max_active = min(3L, n_seed),
+    rpm = 60
   )
 
-  seed_texts <- purrr::map_chr(chats, \(conversation) {
-    txt <- tryCatch(
-      conversation$last_turn()@text,
-      error = function(...) ""
-    )
-    trimws(txt)
-  })
+  seed_texts <- purrr::map_chr(solved$text, trimws)
 
-  if (any(!nzchar(seed_texts))) {
+  if (any(!nzchar(seed_texts) | solved$has_error)) {
     cli::cli_abort("Failed to generate all seed abstracts for warmup ranking.")
   }
 
@@ -537,19 +531,118 @@ rank_with_seed_abstracts <- function(
 }
 
 # Evaluate one model on a record subset for a fixed criteria snapshot.
+build_label_prompts <- function(data) {
+  # Build the record-level prompts expected by both labeling modes.
+  paste(
+    "Title: {{title}}\nAbstract: {{abstract}}\n",
+    "Authors: {{authors}}\nKeywords: {{keywords}}",
+    sep = ""
+  ) |>
+    ellmer::interpolate(
+      title = data$title,
+      abstract = data$abstract,
+      authors = data$authors,
+      keywords = data$keywords
+    ) |>
+    as.character() |>
+    as.list()
+}
+
+# Build the minimal structured schema used for assisted-screening labels.
+build_structured_label_schema <- function() {
+  ellmer::type_object(
+    final_decision = ellmer::type_boolean(
+      "Whether the record should be included for review"
+    ),
+    justification = ellmer::type_string(
+      "One short sentence naming the decisive evidence"
+    )
+  )
+}
+
+# Build a concise structured system prompt that avoids verbose free-text output.
+build_structured_label_system_prompt <- function(criteria) {
+  paste(
+    "You are screening records for a systematic review.",
+    "Use only the criteria below and the provided record text.",
+    "Return a structured result with two fields only:",
+    "- `final_decision`: TRUE when the record should be kept for review.",
+    "- `justification`: one short sentence citing the decisive evidence.",
+    "Decision rules:",
+    "- Prioritize recall when the record explicitly matches the review objective and no exclusion criterion is triggered.",
+    "- Do not invent publication metadata or rely on outside knowledge.",
+    "- If the abstract lacks decisive evidence for a required criterion, set `final_decision` to FALSE.",
+    "<inclusion criteria>",
+    scalar_default(criteria$include, ""),
+    "</inclusion criteria>",
+    "<exclusion criteria>",
+    scalar_default(criteria$exclude, ""),
+    "</exclusion criteria>",
+    sep = "\n\n"
+  )
+}
+
+# Evaluate one model on a record subset for a fixed criteria snapshot.
 label_with_single_model <- function(
   data,
   criteria,
   model,
   api_args,
-  cache_dir
+  cache_dir,
+  response_mode = "structured"
 ) {
+  # Build the shared chat object once per labeling batch.
   chat <- ellmer::chat_openrouter(
     model = model,
     api_args = api_args,
     echo = "none"
   )
 
+  # Route labeling through the structured path when requested.
+  if (identical(response_mode, "structured")) {
+    chat$set_system_prompt(build_structured_label_system_prompt(criteria))
+
+    classified <- llm_solver(
+      prompts = build_label_prompts(
+        data |>
+          dplyr::select("title", "abstract", "authors", "keywords")
+      ),
+      chat = chat,
+      schema = build_structured_label_schema(),
+      cache_dir = cache_dir,
+      max_attempts = 20L,
+      max_active = min(100L, nrow(data)),
+      rpm = 1000,
+      cache_batch_size = 50L
+    )
+
+    # Validate the wrapped output before coercing the final decision.
+    if (is.null(classified) || !is.data.frame(classified)) {
+      cli::cli_abort("Structured labeling failed before any rows were returned.")
+    }
+
+    # Surface unresolved structured rows without reviving the regex parser.
+    if (any(classified$has_error)) {
+      failed_list <- paste0(
+        which(classified$has_error),
+        ": ",
+        classified$error_message[classified$has_error]
+      )
+      cli::cli_alert_warning(
+        "{sum(classified$has_error)} structured responses were unresolved after retries: {failed_list}"
+      )
+      invisible(failed_list)
+    }
+
+    return(
+      tibble::tibble(
+        id = data$id,
+        match = as.logical(classified$final_decision)
+      )
+    )
+  }
+
+  # Preserve the existing free-text classifier as an explicit fallback path.
   classified <- classify_citations(
     data = data |>
       dplyr::select("title", "abstract", "authors", "keywords"),
@@ -572,7 +665,8 @@ llm_label_records <- function(
   labeller_model,
   api_args,
   cache_root,
-  dataset_name
+  dataset_name,
+  response_mode = "structured"
 ) {
   if (rlang::is_empty(data) || !nrow(data)) {
     return(
@@ -599,7 +693,8 @@ llm_label_records <- function(
     criteria = criteria,
     model = labeller_model,
     api_args = api_args,
-    cache_dir = model_cache
+    cache_dir = model_cache,
+    response_mode = response_mode
   )
 
   tibble::tibble(
@@ -745,18 +840,23 @@ refine_warmup_criteria <- function(
     sample_n = sample_n
   )
 
-  response <- chat_prompt_with_retry(
+  schema <- ellmer::type_object(
+    include = ellmer::type_string("unchanged or updated text"),
+    exclude = ellmer::type_string("unchanged or updated text"),
+    protocol_mismatch_signal = ellmer::type_boolean("true or false"),
+    reasoning = ellmer::type_string("short rationale")
+  )
+
+  solved <- llm_solver(
+    prompts = list(prompt),
     chat = chat,
-    prompt = prompt,
-    cache_dir = cache_dir
+    schema = schema,
+    cache_dir = cache_dir,
+    max_attempts = 10L,
+    max_active = 1L
   )
 
-  parsed <- tryCatch(
-    extract_json_object(response),
-    error = function(...) NULL
-  )
-
-  if (is.null(parsed)) {
+  if (isTRUE(solved$has_error[[1]])) {
     return(list(
       criteria = criteria,
       criteria_change_suggested = FALSE,
@@ -765,21 +865,16 @@ refine_warmup_criteria <- function(
     ))
   }
 
-  refined_include <- scalar_default(parsed$include, "unchanged") |>
+  refined_include <- scalar_default(solved$include[[1]], "unchanged") |>
     as.character() |>
     trimws()
-  refined_exclude <- scalar_default(parsed$exclude, "unchanged") |>
+  refined_exclude <- scalar_default(solved$exclude[[1]], "unchanged") |>
     as.character() |>
     trimws()
   protocol_mismatch_signal <- scalar_default(
-    parsed$protocol_mismatch_signal,
+    solved$protocol_mismatch_signal[[1]],
     FALSE
   )
-
-  if (is.character(protocol_mismatch_signal)) {
-    protocol_mismatch_signal <- tolower(trimws(protocol_mismatch_signal)) %in%
-      c("true", "yes", "1")
-  }
 
   refined_criteria <- list(
     include = if (
@@ -802,7 +897,7 @@ refine_warmup_criteria <- function(
     criteria = refined_criteria,
     criteria_change_suggested = criteria_changed(criteria, refined_criteria),
     protocol_mismatch_signal = isTRUE(protocol_mismatch_signal),
-    reasoning = scalar_default(parsed$reasoning, "No rationale provided.")
+    reasoning = scalar_default(solved$reasoning[[1]], "No rationale provided.")
   )
 }
 
@@ -958,7 +1053,8 @@ run_warmup_phase <- function(
       labeller_model = config$labeller_model,
       api_args = config$label_api_args,
       cache_root = config$cache_root,
-      dataset_name = dataset_name
+      dataset_name = dataset_name,
+      response_mode = config$label_response_mode
     )
 
     reviewed_batch <- candidates |>
@@ -1499,7 +1595,8 @@ run_assisted_screening <- function(
       labeller_model = config$labeller_model,
       api_args = config$label_api_args,
       cache_root = config$cache_root,
-      dataset_name = dataset_name
+      dataset_name = dataset_name,
+      response_mode = config$label_response_mode
     )
 
     update_tbl <- candidates |>

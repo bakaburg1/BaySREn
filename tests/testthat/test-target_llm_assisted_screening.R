@@ -195,6 +195,47 @@ test_that("assisted target script writes durable run logs", {
   expect_match(script_text, 'branch_summaries.tsv', fixed = TRUE)
 })
 
+test_that("assisted target script defaults to structured labeling", {
+  script_path <- normalizePath(
+    file.path(
+      "..",
+      "..",
+      "experiments",
+      "targets_scripts",
+      "_target_llm_assisted_screening.R"
+    ),
+    mustWork = TRUE
+  )
+
+  script_text <- paste(readLines(script_path, warn = FALSE), collapse = "\n")
+
+  expect_match(
+    script_text,
+    'label_response_mode = "structured"',
+    fixed = TRUE
+  )
+  expect_match(
+    script_text,
+    'llm_solver\\(',
+    perl = TRUE
+  )
+  expect_match(
+    script_text,
+    'schema = build_structured_label_schema\\(\\)',
+    perl = TRUE
+  )
+  expect_match(
+    script_text,
+    'max_attempts = 20L',
+    fixed = TRUE
+  )
+  expect_match(
+    script_text,
+    'cache_batch_size = 50L',
+    fixed = TRUE
+  )
+})
+
 test_that("assisted aggregate targets flatten nested experiment results", {
   script_path <- normalizePath(
     file.path(
