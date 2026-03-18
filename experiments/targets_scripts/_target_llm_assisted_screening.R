@@ -114,7 +114,7 @@ default_assisted_config <- function() {
     seed_count = 3L,
     seed_model = "openai/gpt-5.1",
     seed_api_args = list(
-      reasoning = list(effort = "minimal"),
+      reasoning = list(effort = "high"),
       temperature = 0
     ),
     labeller_model = assisted_labeller_registry$labeller_model[[1]],
@@ -387,7 +387,9 @@ load_vella_revision_lookup <- function(path) {
 build_scenario_context <- function(dataset_name) {
   scenario_info <- scenario_paths[[dataset_name]]
   if (is.null(scenario_info)) {
-    cli::cli_abort("No scenario configuration found for {.field {dataset_name}}.")
+    cli::cli_abort(
+      "No scenario configuration found for {.field {dataset_name}}."
+    )
   }
 
   if (identical(scenario_info$scenario_type, "adjudication")) {
@@ -424,7 +426,7 @@ seed_prompt <- function(criteria, seed_index, seed_count) {
   paste(
     "Generate one synthetic abstract for systematic-review screening.",
     "The abstract must represent a prototypical included study.",
-    "Write exactly one abstract paragraph and nothing else.",
+    "Write exactly the abstract body text and nothing else.",
     "Use plain text only.",
     paste0("This is abstract ", seed_index, " of ", seed_count, "."),
     "<inclusion_criteria>",
@@ -444,7 +446,7 @@ generate_seed_abstracts <- function(
   cache_root,
   n_seed = 3L,
   model = "openai/gpt-5.1",
-  api_args = list(reasoning = list(effort = "minimal"), temperature = 0)
+  api_args = list(reasoning = list(effort = "high"), temperature = 0)
 ) {
   criteria_hash <- make_criteria_hash(criteria)
   cache_dir <- fs::path(cache_root, "seed_cache", dataset_name, criteria_hash)
@@ -618,7 +620,9 @@ label_with_single_model <- function(
 
     # Validate the wrapped output before coercing the final decision.
     if (is.null(classified) || !is.data.frame(classified)) {
-      cli::cli_abort("Structured labeling failed before any rows were returned.")
+      cli::cli_abort(
+        "Structured labeling failed before any rows were returned."
+      )
     }
 
     # Surface unresolved structured rows without reviving the regex parser.
@@ -757,8 +761,13 @@ build_warmup_refiner_prompt <- function(
     paste0("Warmup round: ", round_index),
     paste0("Scenario type: ", scenario_type),
     paste0("Reviewed records: ", nrow(reviewed_data), " of ", n_total),
-    paste0("Batch reviewed: ", batch_confusion$TP + batch_confusion$TN +
-      batch_confusion$FP + batch_confusion$FN),
+    paste0(
+      "Batch reviewed: ",
+      batch_confusion$TP +
+        batch_confusion$TN +
+        batch_confusion$FP +
+        batch_confusion$FN
+    ),
     paste0("Batch FN: ", batch_confusion$FN[[1]]),
     paste0("Batch FP: ", batch_confusion$FP[[1]]),
     paste0("Cumulative FN: ", cumulative_confusion$FN[[1]]),
@@ -877,16 +886,12 @@ refine_warmup_criteria <- function(
   )
 
   refined_criteria <- list(
-    include = if (
-      identical(tolower(refined_include), "unchanged")
-    ) {
+    include = if (identical(tolower(refined_include), "unchanged")) {
       criteria$include
     } else {
       refined_include
     },
-    exclude = if (
-      identical(tolower(refined_exclude), "unchanged")
-    ) {
+    exclude = if (identical(tolower(refined_exclude), "unchanged")) {
       criteria$exclude
     } else {
       refined_exclude
@@ -1096,9 +1101,9 @@ run_warmup_phase <- function(
         criteria_version_reviewed = criteria_version_before,
         final_label = ifelse(.data$human_label, "y", "n"),
         review_source = "human_warmup",
-      review_round = round_idx,
-      review_phase = paste0("warmup_", criteria_version_before)
-    )
+        review_round = round_idx,
+        review_phase = paste0("warmup_", criteria_version_before)
+      )
 
     state <- update_state_from_review_batch(state, reviewed_batch)
 
@@ -1134,11 +1139,10 @@ run_warmup_phase <- function(
     )
 
     # Run warmup refinement in both scenarios while Gastaldi still allows it.
-    refinement_allowed <- isTRUE(config$warmup_refiner) && (
-      !identical(scenario_context$scenario_type, "protocol_amendment") ||
+    refinement_allowed <- isTRUE(config$warmup_refiner) &&
+      (!identical(scenario_context$scenario_type, "protocol_amendment") ||
         !isTRUE(protocol_amendment_applied) ||
-        isTRUE(post_amendment_refinement_pending)
-    )
+        isTRUE(post_amendment_refinement_pending))
 
     if (refinement_allowed) {
       refiner_result <- refine_warmup_criteria(
@@ -1157,7 +1161,9 @@ run_warmup_phase <- function(
       )
     }
 
-    criteria_change_suggested <- isTRUE(refiner_result$criteria_change_suggested)
+    criteria_change_suggested <- isTRUE(
+      refiner_result$criteria_change_suggested
+    )
     protocol_mismatch_signal <- isTRUE(refiner_result$protocol_mismatch_signal)
     criteria_changed_now <- FALSE
     criteria_version_after <- criteria_version_before
@@ -1166,11 +1172,9 @@ run_warmup_phase <- function(
     # Apply regular warmup refinement before any scenario-specific switch.
     if (
       criteria_change_suggested &&
-        !(
-          identical(scenario_context$scenario_type, "protocol_amendment") &&
-            isTRUE(protocol_amendment_applied) &&
-            !isTRUE(post_amendment_refinement_pending)
-        )
+        !(identical(scenario_context$scenario_type, "protocol_amendment") &&
+          isTRUE(protocol_amendment_applied) &&
+          !isTRUE(post_amendment_refinement_pending))
     ) {
       current_criteria <- refiner_result$criteria
       criteria_changed_now <- TRUE
@@ -1277,8 +1281,7 @@ run_warmup_phase <- function(
         cap_hit = FALSE,
         protocol_amendment_applied = protocol_amendment_applied,
         protocol_amendment_round = protocol_amendment_round,
-        post_amendment_refinement_completed =
-          post_amendment_refinement_completed,
+        post_amendment_refinement_completed = post_amendment_refinement_completed,
         residual_issue_logged = residual_issue_logged,
         residual_issue_n = residual_issue_n,
         refiner_reasoning = scalar_default(refiner_result$reasoning, "")
@@ -1549,12 +1552,14 @@ run_assisted_screening <- function(
         )
 
       state <- state |>
-        dplyr::select(-dplyr::any_of(c(
-          "Pred_Med",
-          "Pred_Low",
-          "Pred_Up",
-          "Predicted_label"
-        ))) |>
+        dplyr::select(
+          -dplyr::any_of(c(
+            "Pred_Med",
+            "Pred_Low",
+            "Pred_Up",
+            "Predicted_label"
+          ))
+        ) |>
         dplyr::left_join(
           prediction_tbl |>
             dplyr::select(
@@ -1688,7 +1693,10 @@ run_assisted_screening <- function(
     # Keep the current AI-only reranking mechanic, but log TP/FP inflow.
     if (rerank_triggered) {
       positive_query <- state |>
-        dplyr::filter(.data$id %in% update_tbl$id, .data$final_label %in% "y") |>
+        dplyr::filter(
+          .data$id %in% update_tbl$id,
+          .data$final_label %in% "y"
+        ) |>
         dplyr::mutate(
           snippet = paste0(
             "Title: ",
@@ -1840,8 +1848,7 @@ run_assisted_screening <- function(
       criteria_version_final = criteria_version,
       protocol_amendment_applied = warmup_result$protocol_amendment_applied,
       protocol_amendment_round = warmup_result$protocol_amendment_round,
-      post_amendment_refinement_completed =
-        warmup_result$post_amendment_refinement_completed,
+      post_amendment_refinement_completed = warmup_result$post_amendment_refinement_completed,
       residual_issue_n = warmup_result$residual_issue_n,
       adjudications_triggered = sum(
         all_review_log$adjudication_triggered,
@@ -1863,8 +1870,7 @@ run_assisted_screening <- function(
     dplyr::mutate(
       protocol_amendment_applied = warmup_result$protocol_amendment_applied,
       protocol_amendment_round = warmup_result$protocol_amendment_round,
-      post_amendment_refinement_completed =
-        warmup_result$post_amendment_refinement_completed,
+      post_amendment_refinement_completed = warmup_result$post_amendment_refinement_completed,
       residual_issue_n = warmup_result$residual_issue_n
     )
 
@@ -1893,8 +1899,7 @@ run_assisted_screening <- function(
       protocol_amendment_applied = TRUE,
       protocol_amendment_round = warmup_result$protocol_amendment_round,
       criteria_version_final = criteria_version,
-      post_amendment_refinement_completed =
-        warmup_result$post_amendment_refinement_completed,
+      post_amendment_refinement_completed = warmup_result$post_amendment_refinement_completed,
       residual_issue_n = warmup_result$residual_issue_n
     )
   } else {
@@ -1996,11 +2001,12 @@ run_assisted_experiment <- function(
           main_stop_reason = assisted_result$stop_reason,
           warmup_rounds = nrow(warmup_result$warmup_log),
           warmup_reviewed = sum(
-            warmup_result$review_log$review_phase %in% c(
-              "warmup_original",
-              "warmup_revised",
-              "warmup_revised_refined"
-            )
+            warmup_result$review_log$review_phase %in%
+              c(
+                "warmup_original",
+                "warmup_revised",
+                "warmup_revised_refined"
+              )
           ),
           .before = 1
         )
