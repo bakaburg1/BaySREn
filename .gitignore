@@ -20,7 +20,6 @@ vignettes/*.pdf
 .Renviron
 # knitr and R markdown default cache directories
 /*_cache/
-/cache/
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
@@ -29,5 +28,16 @@ rsconnect/
 .DS_Store
 # Custom ignores
 tests/testthat/secrets.R
-# Target stores created next to target scripts in experiments/targets_scripts
-experiments/targets_scripts/_*/
+# Interim experiments and target/runtime scratch state
+experiments/
+# Unused review datasets
+data-raw/_unsatisfactory
+
+# Targets components
+_targets/
+**/_targets/
+method_pipelines/*/_targets/
+*.sqlite-wal
+*.sqlite-shm
+*.wal
+*.shm

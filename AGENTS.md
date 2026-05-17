@@ -1,49 +1,288 @@
-## General instructions
+## Project Description
 
-For any requested change or task which is not trivial, you should always assess the situation, test your assumptions in the console (e.g., small repros or focused checks), make tests, and then present a detailed plan of action before ANY change to the code. Run relevant unit tests after the edit (not before), unless explicitly requested otherwise.
-You'll enact your plan of action after the plan has been approved by the user.
+BaySREn is an R package and method-benchmarking repository for testing
+systematic-review automation methods. The repository is currently organized as
+a method-testing workbench rather than a final user-directed package: official
+benchmarks live in tracked method pipelines, while exploratory and failed
+iterations live in ignored interim experiment space.
 
-**Exception:** The planning and wait for approval process is not needed when asked to add documentation.
+## Agent Operative System
 
-**⚠️ IMPORTANT: When In Doubt, Ask First**
+This repository is governed by the canonical coordination files:
+`AGENTS.md`, `PLAN.md`, `ARCHITECTURE.md`, `BACKLOG.md`, and
+`.agents/memory/`. Use them as the repo operating system for coordination,
+planning, execution, and durable memory.
+
+### Canonical Coordination Files
+
+- `AGENTS.md` is the repo-wide operating manual. It defines stable,
+   horizontal working rules for agents and contributors. It must not be used
+   for live task status, implementation backlog detail, or method-specific
+   target design.
+- `PLAN.md` describes the intended end state, roadmap, and major project
+   contracts. Update it only when the target state changes.
+- `ARCHITECTURE.md` describes implemented reality only. Update it when landed
+   code, data layout, cache layout, or tooling actually changes.
+- `BACKLOG.md` is the canonical execution tracker. Work to do is listed
+   there, with stable task IDs and explicit status markers.
+- `.agents/memory/` stores durable decisions, constraints, risks, questions,
+   learning points, solved issues, errors, and resolutions that should survive
+   across sessions. It must not become a diary or duplicate the plan or
+   backlog.
+
+The gap between `PLAN.md` and `ARCHITECTURE.md` is expected. `BACKLOG.md`
+should make that gap actionable and show progress as it closes.
+
+### Required Read Order
+
+- Read `AGENTS.md`.
+- Read `PLAN.md`.
+- Read `ARCHITECTURE.md`.
+- Read `BACKLOG.md`.
+- Read `.agents/memory/MEMORY.json` if present.
+- Read only the child memory files needed for the task.
+- Read the relevant source files and roxygen documentation before using,
+   modifying, or discussing a function.
+
+### Execution Loop
+
+- Pick the next unblocked backlog item unless the user redirects the work.
+- Assess the live repo state before changing nontrivial code.
+- Test assumptions in the console with focused checks or small repros.
+- Present a detailed plan before any nontrivial code change and wait for user
+   approval.
+- Implement the approved change.
+- Add or update focused tests when code behavior changes.
+- Run relevant tests after the edit.
+- Update `BACKLOG.md` when task status or newly discovered work changes.
+- Update `ARCHITECTURE.md` if implemented reality changed.
+- Update `.agents/memory/` with `$project-memory` rules if durable learning
+    was produced.
+- Update `PLAN.md` only if the target state or roadmap changed.
+
+Exception: the planning and wait-for-approval process is not needed when the
+user asks only to add documentation.
+
+### When In Doubt, Ask First
 
 Do not blindly interpret and enact changes if:
 
-- The requirements or desiderata are not clear.
+- Requirements or desiderata are not clear.
 - There are two or more drastically different approaches to solve an issue.
-- Some evidence you found would lead you to take bold or significant choices.
-- You noticed something else that seems to be wrong or not working as expected while trying to perform a requested task.
+- Evidence found during inspection would require bold or significant choices.
+- Something else appears wrong or unexpectedly broken while working.
 
-**Always ask to confirm the course of action before proceeding.** When in doubt, ask.
+Always ask to confirm the course of action when in doubt.
 
-### Structured communication and referencing
+## Backlog Discipline
 
-When presenting headings, plans, questions, or lists, always use ordered numbering or lettering (e.g., 1, 2, 3; a, b, c; I, II, III) and nest them hierarchically when necessary. This allows easy reference when the user replies or comments on specific points.
+- Use stable task IDs.
+- Use the default status markers:
+  - `[ ]` pending.
+  - `[-]` in progress.
+  - `[x]` done.
+  - `[!]` blocked.
+  - `[a]` aborted/deprecated.
+- Keep tasks atomic and finishable in one focused implementation effort.
+- Record explicit dependencies when they matter for sequencing or parallel
+   work.
+- Keep decision gates visible as explicit backlog items.
+- Reference architecture sections and memory IDs where useful.
+- Ask user permission before adding newly discovered work to the backlog
+   unless the user explicitly asks you to update it.
 
-Examples:
+## Memory Usage
 
-- Use numbered lists for main points: 1. First point, 2. Second point, 3. Third point
-- Use lettered sub-points when needed: a. Sub-point, b. Another sub-point
-- Use nested numbering for hierarchical structures: 1. Main item, 1.1. Sub-item, 1.2. Another sub-item
-- Apply this to all structured content: plans of action, questions, lists of options, step-by-step instructions, etc.
+Use `$project-memory` for initialization and maintenance of `.agents/memory/`.
 
-### Agent skills and guidelines
+- Read `.agents/memory/MEMORY.json` first.
+- Use the root `branches` list and `tag_index` to decide which child memory
+   to open.
+- Traverse selectively; do not scan the full memory tree by default.
+- Use the traversal helper described in the project-memory skill when a tag
+   or keyword lookup is needed.
+- When tests fail, runtime behavior regresses, or a repeated issue appears,
+   inspect relevant memory before assuming the problem is new.
+- Store only durable learnings: decisions, constraints, preferences, risks,
+   questions, test outcomes, errors, and resolutions.
+- Do not store routine progress notes, raw logs, or copies of `PLAN.md`,
+   `ARCHITECTURE.md`, or `BACKLOG.md`.
+- Keep traceability by linking backlog task IDs and source files in memory
+   records when useful.
 
-Read and follow these guidelines when appropriate:
+## Structured Communication
 
-- Writing R code, to read whenever R code is written: <https://raw.githubusercontent.com/bakaburg1/my-ai-skills/main/R/R-rules.md>
-- Writing R unit tests, to read whenever R unit tests are written: <https://raw.githubusercontent.com/bakaburg1/my-ai-skills/main/R/unit-testing.md>
-- Writing and performing git commits: <https://raw.githubusercontent.com/bakaburg1/llm-commands/refs/heads/main/commit.md?token=GHSAT0AAAAAADQTRX5XEH6LVZ6U66CKTCAS2K2JA7A>
-- Assess and apply code review recommendations: <https://raw.githubusercontent.com/bakaburg1/llm-commands/refs/heads/main/verify.md?token=GHSAT0AAAAAADQTRX5X6GHRJ2U3Z6462RKS2K2JDZA>
-- Write git Pull Request descriptions: <https://raw.githubusercontent.com/bakaburg1/llm-commands/refs/heads/main/pr.md?token=GHSAT0AAAAAADQTRX5XREGUYOQKWLGPGTWI2K2JEPQ>
+- When answering the user in chat, present headings, plans, questions, and
+   lists with ordered numbering or lettering so replies can be referenced
+   precisely.
+- Use nested numbering or lettered sub-points in chat when hierarchy is needed.
+- Apply the chat numbering rule to plans of action, questions, options,
+   step-by-step instructions, and review findings.
+- Do not force ordered numbering into generated or edited Markdown files.
+   Markdown files should use the structure that best fits the artifact, such
+   as prose, headings, unordered lists, ordered lists, tables, or task lists.
 
-Do not read these guidelines if not relevant to the task at hand.
+## Skills And Guidelines
 
-### Track learning points
+- Use the `$r-guidelines` skill
+   whenever writing or reviewing R code, tests, targets pipelines, helpers,
+   package structure, or style.
+- Use `$project-memory` when initializing or maintaining `.agents/memory/`.
+- Use the `$commit` skill
+   whenever the user asks to stage, draft, organize, or apply commits.
+- Use the verify-review and PR-description guidance when the user asks for
+   review application or pull-request text.
+- Do not read unrelated guidelines when they are not relevant to the current
+   task.
 
-Update progressively this document when you learn something about how to better perform your tasks related to this project. This could be coding best practices, implementation details, overall design decisions, etc. and expecially, corrections and remarks from the user.
+## Git Rules
 
-Update the list below with the new learning points, filing each memory into the correct group:
+- Preserve user changes; never revert or discard work you did not create
+   unless the user explicitly asks for that operation.
+- Always ask for explicit user confirmation before any write operation to the
+   git repository, including commit, push, merge, tag, branch rewrite, or other
+   history-changing operation.
+- Do not stage files until the user approves a staging boundary.
+- On commit requests, follow the `$commit` skill
+   workflow: inspect the repository state, inspect the relevant diffs, check
+   recent commit style, identify a relevant backlog or milestone ID when one
+   is clearly applicable, propose the exact staging boundary and commit
+   message, and wait for explicit confirmation before staging or committing.
+- Use conventional-style commit messages with a short imperative title, a
+   scoped type when appropriate, body bullets for the committed items, and a
+   `Why:` line explaining the rationale.
+- Mention milestone or backlog IDs in commit messages only when a relevant ID
+   is clearly identifiable from the repo context. Do not invent IDs and do not
+   mention unrelated milestones, uncommitted work, excluded artifacts, or future
+   commits in the commit message.
+
+## Method Benchmarking Structure
+
+### Official And Interim Split
+
+- `method_pipelines/` contains official, tracked method benchmarks.
+- `experiments/` contains interim experiments, failed pathways, scratch
+   target stores, exploratory scripts, and scratch logs. It is ignored and is
+   not committed.
+- Each official method pipeline has one method folder with:
+   - `_targets.R`.
+   - `diary.md`.
+- Each `diary.md` is the single tracked prose file for the method track. It
+   contains the track introduction, target/cache instructions, official
+   benchmark results, interim findings, failed pathways that should not be
+   retried blindly, interpretation, and next benchmark decisions.
+- Do not add per-track `README.md` files; put track prose in `diary.md`.
+- Diaries must not record paths to interim experiment stores or scratch
+   outputs because those paths are not part of the git tree.
+
+### Official Method Tracks
+
+- `abstract_concentration`: positive abstract early concentration for ML
+   training via embeddings.
+- `criteria_refiner`: criteria update via an LLM refiner agent followed by
+   repeated abstract concentration.
+- `candidate_abstract_selection`: post-warmup candidate abstract selection
+   using BART or other fast predictive methods, named by the benchmark
+   question rather than posterior mechanics.
+- `llm_classifier`: LLM classifier agent evaluation.
+- `integrated_workflow`: all method tracks combined end to end.
+
+### Cache Policy
+
+- Top-level `cache/` is the official reusable cache root and is tracked when
+   official cache files are produced by official benchmarks.
+- `cache/llm/` stores official LLM cache families.
+- `cache/embeddings/` stores official embedding cache families.
+- `experiments/cache/` is the ignored interim overlay cache.
+- Official pipelines read and write `cache/`.
+- Interim experiments read through `cache/` first and then
+   `experiments/cache/`.
+- Interim experiments write cache misses only to `experiments/cache/`.
+- Cache reuse must be keyed by stable cache hashes/specifications. A target
+   pipeline may reuse a model cache only when the cache hash/spec matches.
+
+### Targets Pipelines
+
+- Each `method_pipelines/*/_targets.R` contains only:
+   - package loading.
+   - `tar_option_set()`.
+   - method-local static configuration.
+   - target declarations.
+   - simple target-local code when it is run once and is easier to read
+      inline.
+- `_targets.R` files must not contain:
+   - reusable helper definitions.
+   - complex LLM/cache code.
+   - duplicated method implementations.
+   - target-store paths intended for git.
+- If multiple approaches test the same problem, use one general target and
+   switch the called method function through a parameter or grid row.
+- Do not commit any `_targets/` store.
+- Before any `targets` command, check the active store explicitly with
+   `targets::tar_config_get("store")`.
+
+### R Helper Boundaries
+
+- Consolidate tracked and untracked experiment helpers in `R/`.
+- Do not write reusable helpers inside `_targets.R` pipelines.
+- Use explicit inline code in a target only when the operation is simple,
+   target-local, and run once.
+- Use helpers for repeated behavior or large/complex code, such as the LLM
+   solver.
+- Use dot-prefixed functions for internal helpers that are not called
+   directly by target pipelines.
+- Avoid atomic helpers for trivial one-off operations of a couple of lines.
+- Every function, including helpers, must have roxygen documentation.
+- Internal helpers must have roxygen documentation and `@keywords internal`.
+- Every minimal logical code block should have a preceding comment unless it
+   is totally self-evident.
+- Documentation comments should explain why the block exists more than what
+    it does, unless the operation is not self-explicit.
+- Never hand-edit `.Rd` files or `NAMESPACE`; regenerate them with
+    `devtools::document()`.
+- Do not introduce or update `renv.lock` unless the user explicitly requests
+    it.
+
+## Project Structure
+
+- `R/`: package functions and reusable method-benchmarking helpers.
+- `method_pipelines/`: official, tracked benchmarking target pipelines.
+- `cache/`: official, tracked reusable model caches produced by official
+   pipelines.
+- `experiments/`: ignored interim experiments and scratch state.
+- `man/`: roxygen-generated documentation; do not edit by hand.
+- `NAMESPACE`: roxygen-generated namespace; do not edit by hand.
+- `README.Rmd`: source for `README.md`.
+- `data-raw/`: scripts and inputs used to build packaged datasets.
+- `data/`: packaged datasets.
+- `tests/testthat/`: unit tests.
+
+## Testing Workflow
+
+- Use console repros or focused checks to test assumptions before nontrivial
+   edits.
+- Run tests after implementation, not before, unless explicitly requested.
+- Run test files with `Rscript -e 'devtools::test(filter = "...")'`.
+- Use `devtools::load_all(quiet = TRUE)` only for small console repros and
+   package-load checks, not as a substitute for tests.
+- After changing ignore rules, verify:
+   - `git check-ignore -v experiments experiments/cache .cursor .playwright-mcp`.
+   - `git check-ignore cache` returns no match.
+- Inspect `git status --short --untracked-files=all` before proposing any
+   staging list.
+
+## Dependency Management
+
+- `renv` is not used in this repository unless explicitly requested.
+- Only update or introduce `renv.lock` when stable versions are reached and
+   the user asks for it.
+- Add packages with `usethis::use_package(..., min_version = TRUE)` when
+   dependency metadata must change.
+
+## Learning Points
+
+Update this list when durable project-specific or general workflow lessons are
+learned. File each memory into the correct group.
 
 ```yaml
 current_project:
@@ -65,6 +304,12 @@ current_project:
   - name: seed ranking distance direction
     description: Multi-seed embedding aggregation must respect that rank_by_embeddings defaults to cosine_distance, so lower embedding_score is better and aggregate rankings must sort ascending, not descending.
     scope: assisted screening ranking
+  - name: dynamic ranking needs review order
+    description: Any ranking strategy based on the last reviewed positives or negatives must persist an explicit review_order in branch state; batch membership alone is not enough to reconstruct the anchor history.
+    scope: exploratory screening ranking
+  - name: vella data-raw source path
+    description: The maintained Vella source files live under data-raw/Vella, not data-raw/SIIAM/Vella; rebuilding the packaged dataset must use the current path and apply the adjudication workbook there.
+    scope: vella dataset maintenance
 general:
   - name: cli alert level conventions
     description: Use cli_alert for action logs, cli_alert_info for supplemental details, cli_warn for runtime logical issues that would have used warning(), and cli_alert_warning for non-code cautions when results need careful interpretation (e.g., low-quality input, incomplete data).
@@ -110,11 +355,10 @@ general:
     scope: shell
 ```
 
-### Tested assumptions
+## Tested Assumptions
 
 Record every time an assumption was tested and found to be wrong, to avoid
-repeating the same errors or beliefs. If you are unsure which group applies,
-ask the user before recording the memory.
+repeating the same errors or beliefs.
 
 ```yaml
 current_project:
@@ -155,39 +399,4 @@ general:
     test: "Computed `rowSums(labels %in% TRUE)` inside `combine_llm_labels()` tests."
     outcome: "`%in%` flattened the matrix, causing `rowSums()` to fail (`x must be an array`)."
     correction: "Use `rowSums(labels, na.rm = TRUE)` directly on the logical matrix."
-```
-
-### Dependency Management (`renv`)
-
-`renv` is not used in this repository unless explicitly requested. Only update
-or introduce `renv.lock` when stable versions are reached and the user asks for
-it.
-
-## Project structure
-
-This repository contains the BaySREn R package for automating parts of
-systematic reviews (citation collection, screening, and query generation).
-
-Key locations:
-
-- `R/`: package functions.
-- `man/`: roxygen-generated documentation (do not edit by hand).
-- `NAMESPACE`: generated by roxygen.
-- `README.Rmd`: source for `README.md` (regenerate after edits).
-- `data-raw/`: scripts and inputs used to build any packaged datasets.
-- `data/`: packaged datasets (if present).
-- `tests/testthat/`: unit tests.
-- `experiments/`: prototypes and research scripts.
-
-## Targets / experiments
-
-When running experiment target pipelines, update the targets config in your R
-session before calling `tar_make()`, for example:
-
-```r
-targets::tar_config_set(
-  script = here::here("experiments/targets_scripts/_target_llm_screening.R"),
-  store = here::here("experiments/targets_scripts/_target_llm_screening"),
-  use_crew = TRUE
-)
 ```
