@@ -10,8 +10,12 @@
 #' @noRd
 .compute_backoff_wait <- function(err, delay, cap) {
   # First, try to extract retry-after header from HTTP response
-  if (!is.null(err) && is.list(err) && "resp" %in% names(err)) {
-    resp <- err$resp
+  if (
+    !is.null(err) &&
+      is.list(err) &&
+      ("resp" %in% names(err) || "response" %in% names(err))
+  ) {
+    resp <- if ("resp" %in% names(err)) err$resp else err$response
     # Check for explicit retry-after header (in seconds)
     ra_secs <- suppressWarnings(as.numeric(httr2::resp_headers(resp)[[
       "retry-after"
@@ -28,8 +32,9 @@
       }
     }
     # Use server-provided delay if available, capped at maximum
-    if (rlang::is_scalar_double(ra_secs) && ra_secs > 0)
+    if (rlang::is_scalar_double(ra_secs) && ra_secs > 0) {
       return(min(cap, ra_secs))
+    }
   }
   # Fallback to exponential backoff with jitter
   base <- min(cap, delay * 2)
@@ -62,6 +67,46 @@
 }
 
 
+#' Best-effort repair for slightly malformed JSON payloads
+#'
+#' Some providers occasionally append non-JSON bytes after a valid JSON object
+#' or return leading noise. This helper attempts a minimal, safe recovery by:
+#' - Dropping any prefix before the first opening brace `{` or bracket `[`.
+#' - Trimming any suffix after the last closing brace `}` or bracket `]`.
+#' Returns a character string containing the trimmed JSON text, or NULL if it
+#' cannot detect plausible JSON bounds.
+#' @noRd
+.repair_json_text <- function(txt) {
+  if (!rlang::is_string(txt) || !nzchar(txt)) {
+    return(NULL)
+  }
+  # Find first plausible JSON start
+  m_start <- regexpr("[\\{\\[]", txt, perl = TRUE)
+  if (is.na(m_start) || m_start < 1L) {
+    return(NULL)
+  }
+  core <- substring(txt, m_start[1])
+  # Find last closing brace/bracket
+  close_braces <- gregexpr("}", core, fixed = TRUE)[[1]]
+  close_bracks <- gregexpr("]", core, fixed = TRUE)[[1]]
+  last_brace <- if (length(close_braces) && close_braces[1] != -1L) {
+    max(close_braces)
+  } else {
+    -1L
+  }
+  last_brack <- if (length(close_bracks) && close_bracks[1] != -1L) {
+    max(close_bracks)
+  } else {
+    -1L
+  }
+  last_close <- max(last_brace, last_brack)
+  if (last_close <= 0L) {
+    return(NULL)
+  }
+  substring(core, 1L, last_close)
+}
+
+
 #' Colorize helper for TTY output
 #'
 #' @noRd
@@ -79,7 +124,9 @@
     bright_yellow = "\033[93m"
   )
   # Skip colorization if NO_COLOR env var is set or not in interactive session
-  if (Sys.getenv("NO_COLOR") != "" || !interactive()) return(text)
+  if (Sys.getenv("NO_COLOR") != "" || !interactive()) {
+    return(text)
+  }
   paste0(colors[[color]], text, colors$reset)
 }
 
@@ -89,8 +136,13 @@
 #' Tries to read `err$resp` from httr2 errors, otherwise returns NA.
 #' @noRd
 .extract_http_status <- function(err) {
-  if (!is.null(err) && is.list(err) && "resp" %in% names(err)) {
-    status <- tryCatch(httr2::resp_status(err$resp), error = \(e) NA_real_)
+  if (
+    !is.null(err) &&
+      is.list(err) &&
+      ("resp" %in% names(err) || "response" %in% names(err))
+  ) {
+    resp <- if ("resp" %in% names(err)) err$resp else err$response
+    status <- tryCatch(httr2::resp_status(resp), error = \(e) NA_real_)
     if (is.finite(status)) return(as.integer(status))
   }
   NA_integer_
@@ -102,7 +154,9 @@
 #' Retries on 408, 429, and any 5xx.
 #' @noRd
 .is_retryable_status <- function(status) {
-  if (is.null(status) || length(status) != 1L || is.na(status)) return(FALSE)
+  if (is.null(status) || length(status) != 1L || is.na(status)) {
+    return(FALSE)
+  }
   status <- as.integer(status)
   status == 408L || status == 429L || (status >= 500L && status <= 599L)
 }
@@ -114,7 +168,9 @@
 #' @noRd
 .should_retry_http <- function(err) {
   status <- .extract_http_status(err)
-  if (.is_retryable_status(status)) return(TRUE)
+  if (.is_retryable_status(status)) {
+    return(TRUE)
+  }
   msg <- tryCatch(conditionMessage(err), error = \(e) "")
   grepl("HTTP (429|408|50[0-9])", msg)
 }
@@ -131,6 +187,12 @@
     as.numeric(difftime(Sys.time(), state$qs$start_time, units = "secs")),
     1
   )
+  # Estimate next client-side rate-limiter delay in seconds using the
+  # timestamp reserved for the following slot (if any).
+  rl_delay <- 0
+  if (isTRUE(state$rate$enabled) && !is.null(state$rate$next_time)) {
+    rl_delay <- max(0, round(state$rate$next_time - as.numeric(Sys.time())))
+  }
   # Build status parts, conditionally including non-zero sections
   parts <- c(
     .ansi_colorize(sprintf("[%s]", tag), "bright_cyan"),
@@ -142,15 +204,27 @@
       sprintf("R:%d (%d s)", state$qs$retries, round(state$qs$max_delay)),
       "yellow"
     ),
-    if (state$qs$active > 0)
-      .ansi_colorize(sprintf("A:%d", state$qs$active), "bright_magenta") else
-      NULL,
-    if (state$qs$cache_hits > 0)
-      .ansi_colorize(sprintf("C:%d", state$qs$cache_hits), "bright_green") else
-      NULL,
+    if (rl_delay > 0) {
+      .ansi_colorize(sprintf("L:(%d s)", rl_delay), "yellow")
+    } else {
+      NULL
+    },
+    if (state$qs$active > 0) {
+      .ansi_colorize(sprintf("A:%d", state$qs$active), "bright_magenta")
+    } else {
+      NULL
+    },
+    if (state$qs$cache_hits > 0) {
+      .ansi_colorize(sprintf("C:%d", state$qs$cache_hits), "bright_green")
+    } else {
+      NULL
+    },
     .ansi_colorize(sprintf("S:%d/%d", state$qs$success, total_reqs), "green"),
-    if (state$qs$failed > 0)
-      .ansi_colorize(sprintf("F:%d", state$qs$failed), "red") else NULL,
+    if (state$qs$failed > 0) {
+      .ansi_colorize(sprintf("F:%d", state$qs$failed), "red")
+    } else {
+      NULL
+    },
     .ansi_colorize(sprintf("[%.1fs]", elapsed), "bright_yellow")
   )
   # Print padded line to overwrite previous output
@@ -197,7 +271,9 @@
     },
     interrupt = function(e) {
       # Handle Ctrl+C gracefully by calling abort function if provided
-      if (is.function(abort_fun)) abort_fun()
+      if (is.function(abort_fun)) {
+        abort_fun()
+      }
       cli::cli_alert_warning(
         "Aborted by user
       "
@@ -225,13 +301,20 @@
 
   initial_cache <- global_cache
 
-  if (!fs::dir_exists(temp_dir)) return(global_cache)
+  if (!fs::dir_exists(temp_dir)) {
+    return(global_cache)
+  }
 
   temp_files <- fs::dir_ls(temp_dir, glob = "*.json")
-  if (rlang::is_empty(temp_files)) return(global_cache)
+  if (rlang::is_empty(temp_files)) {
+    return(global_cache)
+  }
 
   for (file_path in temp_files) {
-    hash_key <- fs::path_ext_remove(fs::path_file(file_path))
+    stem <- fs::path_ext_remove(fs::path_file(file_path))
+    # Allow for unique temp suffixes like "<id>_<i>_<attempt>"; consolidate by
+    # base id
+    hash_key <- sub("[-_].*$", "", stem)
     json <- tryCatch(
       jsonlite::fromJSON(file_path, simplifyVector = FALSE),
       error = \(e) NULL
@@ -281,6 +364,9 @@
     resp <- err_obj$resp
     status <- tryCatch(httr2::resp_status(resp), error = \(e) NA_integer_)
     headers <- tryCatch(as.list(httr2::resp_headers(resp)), error = \(e) list())
+    if (inherits(headers, "httr2_headers")) {
+      headers <- unclass(headers)
+    }
     body_json <- tryCatch(
       httr2::resp_body_json(resp, simplifyVector = FALSE),
       error = \(e) NULL
@@ -353,6 +439,14 @@
 #'   cut-off: retries continue only while the current backoff delay is strictly
 #'   less than this cap. Any server-provided wait (e.g., `Retry-After`) is
 #'   capped at this value as well.
+#' @param max_concurrency Optional positive integer cap on concurrently active
+#'   HTTP requests. Set to `NULL` (default) for no client-side concurrency
+#'   limit.
+#' @param halve_rpm_on_retry Logical flag to reduce client-side throughput when
+#'   the server signals trouble. When `TRUE` and a retry is scheduled due to a
+#'   retryable failure, the effective RPM used by the client-side rate limiter
+#'   is halved (down to a minimum of 1). This helps alleviate pressure during
+#'   congestion or rate limiting events.
 #'
 #' @return A list with one element per request. Each element is a list with
 #'   fields `kind` ("ok" or "err"), and either `json` (parsed JSON result) on
@@ -398,7 +492,9 @@ req_perform_parallel_promises <- function(
   temp_cache_dir = NULL,
   rpm = NULL,
   backoff_base = 5,
-  backoff_cap = 20
+  backoff_cap = 120,
+  max_concurrency = NULL,
+  halve_rpm_on_retry = FALSE
 ) {
   # Check if promises is installed
   rlang::check_installed("promises")
@@ -430,6 +526,9 @@ req_perform_parallel_promises <- function(
         as.list(httr2::resp_headers(resp)),
         error = function(e) list()
       )
+      if (inherits(headers, "httr2_headers")) {
+        headers <- unclass(headers)
+      }
       body_json <- tryCatch(
         httr2::resp_body_json(resp, simplifyVector = FALSE),
         error = function(e) NULL
@@ -490,11 +589,28 @@ req_perform_parallel_promises <- function(
     state$rate <- list(
       enabled = TRUE,
       rpm = as.integer(rpm),
-      base_time = NULL, # set on first scheduled call
-      scheduled_count = 0L # total requests scheduled so far
+      initial_rpm = as.integer(rpm),
+      floor_rpm = 1L,
+      next_time = NULL, # next slot reserved for throttled call
+      halve_on_retry = isTRUE(halve_rpm_on_retry)
     )
   } else {
     state$rate <- list(enabled = FALSE)
+  }
+  # Optional concurrency limiter
+  if (
+    !is.null(max_concurrency) &&
+      is.finite(max_concurrency) &&
+      max_concurrency > 0
+  ) {
+    state$concurrency <- list(
+      enabled = TRUE,
+      limit = max(1L, as.integer(max_concurrency)),
+      inflight = 0L,
+      queue = list()
+    )
+  } else {
+    state$concurrency <- list(enabled = FALSE)
   }
   # Global abort flag to stop all operations on interrupt
   state$aborted <- FALSE
@@ -516,31 +632,80 @@ req_perform_parallel_promises <- function(
   )
 
   # Schedule a function call respecting optional rate limit and minimum delay
-  schedule_call <- function(expr_fun, min_delay = 0) {
+  schedule_call <- function(expr_fun, min_delay = 0, use_rate_limit = TRUE) {
     promises::promise(function(resolve, reject) {
       now <- as.numeric(Sys.time())
       # Earliest due to explicit backoff
       start_at <- now + max(0, min_delay)
-      if (isTRUE(state$rate$enabled)) {
-        if (is.null(state$rate$base_time)) state$rate$base_time <- now
-        idx <- state$rate$scheduled_count
-        state$rate$scheduled_count <- idx + 1L
-        # Assign to a minute window in order, rpm per window
-        window <- floor(idx / state$rate$rpm)
-        planned <- state$rate$base_time + window * 60
-        if (planned > start_at) start_at <- planned
+      if (use_rate_limit && isTRUE(state$rate$enabled)) {
+        # Ensure we never schedule earlier than the next reserved slot.
+        next_time <- state$rate$next_time
+        if (
+          !is.numeric(next_time) || length(next_time) != 1L || is.na(next_time)
+        ) {
+          next_time <- now
+        }
+        if (start_at < next_time) {
+          start_at <- next_time
+        }
+        # Reserve the subsequent slot according to the current RPM.
+        spacing <- 60 / max(1, as.numeric(state$rate$rpm))
+        state$rate$next_time <- start_at + spacing
       }
       delay_s <- max(0, start_at - now)
       if (delay_s > 0) {
-        state$qs$max_delay <- max(state$qs$max_delay, delay_s)
         later::later(
-          function() expr_fun() %...>% resolve %...!% (function(e) reject(e)),
+          function() {
+            expr_fun() %...>%
+              resolve %...!%
+              (function(e) {
+                # Propagate error to the outer promise to avoid unhandled
+                # rejections.
+                reject(e)
+              })
+          },
           delay = delay_s
         )
       } else {
-        expr_fun() %...>% resolve %...!% (function(e) reject(e))
+        expr_fun() %...>%
+          resolve %...!%
+          (function(e) {
+            # Propagate error to the outer promise to avoid unhandled
+            # rejections.
+            reject(e)
+          })
       }
     })
+  }
+
+  acquire_concurrency <- function() {
+    if (!isTRUE(state$concurrency$enabled)) {
+      return(promises::promise_resolve(FALSE))
+    }
+    promises::promise(function(resolve, reject) {
+      grant <- function() {
+        state$concurrency$inflight <- state$concurrency$inflight + 1L
+        resolve(TRUE)
+      }
+      if (state$concurrency$inflight < state$concurrency$limit) {
+        grant()
+      } else {
+        state$concurrency$queue <- c(state$concurrency$queue, list(grant))
+      }
+    })
+  }
+
+  release_concurrency <- function() {
+    if (!isTRUE(state$concurrency$enabled)) {
+      return(invisible(NULL))
+    }
+    state$concurrency$inflight <- max(0L, state$concurrency$inflight - 1L)
+    if (length(state$concurrency$queue)) {
+      next_grant <- state$concurrency$queue[[1]]
+      state$concurrency$queue <- state$concurrency$queue[-1]
+      later::later(next_grant, delay = 0)
+    }
+    invisible(NULL)
   }
 
   # Cancel active transfers and scheduled retries
@@ -548,7 +713,9 @@ req_perform_parallel_promises <- function(
     state$aborted <- TRUE
     # Cancel all active curl handles
     handles <- curl::multi_list(pool)$handle
-    if (length(handles)) lapply(handles, curl::multi_cancel)
+    if (length(handles)) {
+      lapply(handles, curl::multi_cancel)
+    }
     # Cancel all scheduled retry timers
     lapply(
       state$retry_tokens,
@@ -559,7 +726,9 @@ req_perform_parallel_promises <- function(
   # Core per-request retry logic
   retry_one <- function(i, delay = backoff_base, skip_rpm = FALSE) {
     # Early exit if globally aborted
-    if (isTRUE(state$aborted)) return(promises::reject("aborted"))
+    if (isTRUE(state$aborted)) {
+      return(promises::promise_reject("aborted"))
+    }
 
     # Global cache hit short-circuit
     id <- ids[[i]]
@@ -580,114 +749,197 @@ req_perform_parallel_promises <- function(
     state$attempts[[i]] <- state$attempts[[i]] + 1L
     first_attempt <- state$attempts[[i]] == 1L
     req <- reqs[[i]]
-    path_i <- if (isTRUE(caching_enabled))
-      fs::path(temp_cache_dir, paste0(id, ".json")) else NULL
+    path_i <- if (isTRUE(caching_enabled)) {
+      # Use a unique temp filename per request attempt to avoid concurrent
+      # writers clobbering the same file when multiple identical requests run
+      # in parallel (e.g., replicates with identical bodies).
+      attempt_idx <- state$attempts[[i]]
+      fs::path(temp_cache_dir, paste0(id, "_", i, "_", attempt_idx, ".json"))
+    } else {
+      NULL
+    }
 
-    # Function to start the HTTP request (returns a promise)
-    start_request <- function() {
-      # Transition one request from pending to active only on first attempt
+    release_active <- function() {
+      if (state$qs$active > 0L) {
+        state$qs$active <- state$qs$active - 1L
+      } else {
+        state$qs$active <- 0L
+      }
+      if (isTRUE(state$concurrency$enabled)) {
+        release_concurrency()
+      }
+    }
+
+    begin_request <- function() {
       if (isTRUE(first_attempt)) {
         state$qs$pending <- state$qs$pending - 1L
       }
       state$qs$active <- state$qs$active + 1L
       .log_q(state, "working", length(reqs))
       if (!is.null(path_i)) {
-        # Ensure temp directory exists for this run
-        if (!fs::dir_exists(temp_cache_dir)) fs::dir_create(temp_cache_dir)
+        if (!fs::dir_exists(temp_cache_dir)) {
+          fs::dir_create(temp_cache_dir)
+        }
         httr2::req_perform_promise(req, pool = pool, path = path_i)
       } else {
         httr2::req_perform_promise(req, pool = pool)
       }
     }
 
-    # Perform request, possibly gated by rate limiter
-    prom <- if (isTRUE(state$rate$enabled) && !isTRUE(skip_rpm)) {
-      schedule_call(function() start_request())
-    } else {
-      start_request()
+    start_request <- function() {
+      safe_launch <- function() {
+        if (isTRUE(state$aborted)) {
+          return(promises::promise_reject("aborted"))
+        }
+        tryCatch(
+          begin_request(),
+          error = function(e) {
+            attr(e, "slot_released") <- TRUE
+            release_active()
+            stop(e)
+          }
+        )
+      }
+      if (isTRUE(state$concurrency$enabled)) {
+        acquire_concurrency() %...>%
+          (function(...) {
+            if (isTRUE(state$aborted)) {
+              release_concurrency()
+              return(promises::promise_reject("aborted"))
+            }
+            safe_launch()
+          })
+      } else {
+        safe_launch()
+      }
     }
 
-    # Handle successful response (may still be non-2xx)
+    # Perform request, optionally gated by client-side rate limiter
+    prom <- schedule_call(
+      function() start_request(),
+      min_delay = 0,
+      use_rate_limit = isTRUE(state$rate$enabled) && !isTRUE(skip_rpm)
+    )
+
+    release_once_factory <- function() {
+      released <- FALSE
+      function() {
+        if (!released) {
+          release_active()
+          released <<- TRUE
+        }
+      }
+    }
+
     prom %...>%
       (function(resp) {
-        # One HTTP attempt finished successfully
-        state$qs$active <- state$qs$active - 1L
-        if (is.null(resp))
+        release_once <- release_once_factory()
+        on.exit(release_once(), add = TRUE)
+        if (is.null(resp)) {
+          release_once()
           return(list(kind = "err", err = simpleError("NULL response")))
-        # Inspect HTTP status
+        }
         status <- tryCatch(
           httr2::resp_status(resp),
           error = function(e) NA_integer_
         )
-        # If non-2xx, decide whether to retry or return error
-        if (!is.na(status) && (status < 200L || status >= 300L)) {
-          # Remove any temp cache file to avoid caching error payloads
+        if (is.na(status) || status < 200L || status >= 300L) {
           if (!is.null(path_i) && fs::file_exists(path_i)) {
             fs::file_delete(path_i)
           }
-          # Retry on retryable statuses with capped backoff
-          if (
-            .is_retryable_status(status) &&
-              delay < backoff_cap &&
-              !isTRUE(state$aborted)
-          ) {
-            wait <- .compute_backoff_wait(list(resp = resp), delay, backoff_cap)
-            state$qs$retries <- state$qs$retries + 1L
-            state$qs$max_delay <- max(state$qs$max_delay, wait)
-            .log_q(state, "working", length(reqs))
-            return(schedule_call(
-              function()
-                retry_one(
-                  i,
-                  delay = max(delay * 2, backoff_base),
-                  skip_rpm = FALSE
-                ),
-              min_delay = wait
-            ))
-          }
-          err_obj <- list(resp = resp)
-          .write_error_payload(ids[[i]], err_obj, state$error_dir)
-          return(list(kind = "err", err = err_obj))
+          err <- tryCatch(
+            httr2::resp_check_status(resp),
+            error = function(e) e
+          )
+          release_once()
+          attr(err, "slot_released") <- TRUE
+          stop(err)
         }
-        # Parse JSON from cache file or response body
-        json <- if (!is.null(path_i))
-          jsonlite::fromJSON(path_i, simplifyVector = FALSE) else
-          httr2::resp_body_json(resp)
+        json <- NULL
+        if (!is.null(path_i)) {
+          json <- tryCatch(
+            jsonlite::fromJSON(path_i, simplifyVector = FALSE),
+            error = function(e) NULL
+          )
+          if (is.null(json)) {
+            txt <- tryCatch(readr::read_file(path_i), error = function(e) NULL)
+            if (rlang::is_string(txt) && nzchar(txt)) {
+              repaired <- .repair_json_text(txt)
+              if (!is.null(repaired)) {
+                json <- tryCatch(
+                  jsonlite::fromJSON(repaired, simplifyVector = FALSE),
+                  error = function(e) NULL
+                )
+              }
+            }
+          }
+        } else {
+          json <- tryCatch(
+            httr2::resp_body_json(resp, simplifyVector = FALSE),
+            error = function(e) NULL
+          )
+          if (is.null(json)) {
+            txt <- tryCatch(httr2::resp_body_string(resp), error = function(e) {
+              NULL
+            })
+            if (rlang::is_string(txt) && nzchar(txt)) {
+              repaired <- .repair_json_text(txt)
+              if (!is.null(repaired)) {
+                json <- tryCatch(
+                  jsonlite::fromJSON(repaired, simplifyVector = FALSE),
+                  error = function(e) NULL
+                )
+              }
+            }
+          }
+        }
+        if (is.null(json)) {
+          err <- simpleError("Failed to parse JSON result")
+          attr(err, "slot_released") <- TRUE
+          release_once()
+          stop(err)
+        }
+        release_once()
         list(kind = "ok", json = json, cached = FALSE)
       }) %...!%
       (function(err) {
-        # One HTTP attempt finished with error
-        state$qs$active <- state$qs$active - 1L
-        # Unwrap promises error wrapper if present
         if (
           inherits(err, "promises_error") &&
             is.list(err) &&
             inherits(err$cnd, "condition")
-        )
+        ) {
           err <- err$cnd
-        # Check for HTTP 429 (rate limit) and retry conditions
+        }
+        if (!isTRUE(attr(err, "slot_released"))) {
+          release_active()
+        }
         if (
           .should_retry_http(err) &&
             delay < backoff_cap &&
             !isTRUE(state$aborted)
         ) {
-          # Calculate wait time from headers or exponential backoff
           wait <- .compute_backoff_wait(err, delay, backoff_cap)
           state$qs$retries <- state$qs$retries + 1L
           state$qs$max_delay <- max(state$qs$max_delay, wait)
           .log_q(state, "working", length(reqs))
-          # Schedule retry after wait period
+          if (isTRUE(state$rate$enabled) && isTRUE(state$rate$halve_on_retry)) {
+            state$rate$rpm <- max(
+              state$rate$floor_rpm,
+              as.integer(ceiling(state$rate$rpm / 2))
+            )
+          }
           return(schedule_call(
-            function()
+            function() {
               retry_one(
                 i,
                 delay = max(delay * 2, backoff_base),
-                skip_rpm = FALSE
-              ),
-            min_delay = wait
+                skip_rpm = TRUE
+              )
+            },
+            min_delay = wait,
+            use_rate_limit = FALSE
           ))
         }
-        # Return error for non-retryable or give-up failures; write diagnostics
         .write_error_payload(ids[[i]], err, state$error_dir)
         list(kind = "err", err = err)
       })
@@ -703,8 +955,11 @@ req_perform_parallel_promises <- function(
     retry_one(i) %...>%
       (function(res) {
         # Completion counters updated in handlers; just store result here
-        if (res$kind == "ok") state$qs$success <- state$qs$success + 1L else
+        if (res$kind == "ok") {
+          state$qs$success <- state$qs$success + 1L
+        } else {
           state$qs$failed <- state$qs$failed + 1L
+        }
         state$results[[i]] <- res
         .log_q(state, "working", length(reqs))
         res
@@ -747,7 +1002,7 @@ req_perform_parallel_promises <- function(
   # table
   if (!rlang::is_empty(err_files)) {
     # Build simple status table
-    .read_err_status <- \(path)
+    .read_err_status <- \(path) {
       tryCatch(
         purrr::pluck(
           jsonlite::read_json(path, simplifyVector = TRUE),
@@ -756,6 +1011,7 @@ req_perform_parallel_promises <- function(
         ),
         error = \(e) NA_integer_
       )
+    }
 
     statuses <- purrr::map_int(err_files, .read_err_status)
     tbl <- sort(table(statuses, useNA = "always"), decreasing = TRUE)

@@ -5,8 +5,6 @@
   if (!is.list(json)) {
     return(NULL)
   }
-  `%||%` <- rlang::`%||%`
-
   # Helper to extract error from first choice if available
   choices_first <- function(j) {
     ch <- tryCatch(j$choices, error = \(e) NULL)
@@ -28,8 +26,6 @@
   if (is.null(err)) {
     return(NA_character_)
   }
-  `%||%` <- rlang::`%||%`
-
   # Try to get error code from standard location or metadata
   code <- purrr::pluck(err, "code") %||%
     purrr::pluck(err, "metadata", "raw", "code")
@@ -413,7 +409,6 @@ purge_llm_cache_errors <- function(cache_dir) {
     if (!is.list(json)) {
       return(NULL)
     }
-    `%||%` <- rlang::`%||%`
     # First choice error if present
     choices_first <- function(j) {
       ch <- tryCatch(j$choices, error = \(e) NULL)
@@ -621,10 +616,10 @@ llm_solver <- function(
 
   build_cache_key <- function(prompt, rep) {
     rlang::hash(list(
-      provider = rlang::`%||%`(provider_name, NA_character_),
-      model = rlang::`%||%`(model_name, NA_character_),
-      api_args = rlang::`%||%`(api_args, list()),
-      system_prompt = rlang::`%||%`(system_prompt, ""),
+      provider = provider_name %||% NA_character_,
+      model = model_name %||% NA_character_,
+      api_args = api_args %||% list(),
+      system_prompt = system_prompt %||% "",
       prompt = prompt,
       mode = if (is.null(schema)) "text" else "structured",
       schema = schema_hash,
@@ -862,7 +857,7 @@ llm_solver <- function(
     payload_template <- ellmer:::convert_from_type(list(NULL), ellmer:::type_array(schema))
     for (col in names(payload_template)) {
       if (!col %in% names(result_index)) {
-        result_index[[col]] <- payload_template[[col]][FALSE]
+        result_index[[col]] <- payload_template[[col]][NA_integer_]
       }
     }
   }
