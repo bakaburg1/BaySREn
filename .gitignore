@@ -41,3 +41,7 @@ method_pipelines/*/_targets/
 *.sqlite-shm
 *.wal
 *.shm
+_targets.yaml
+
+# Deprecated mixed result/cache export from the interim abstract concentration runner.
+cache/
