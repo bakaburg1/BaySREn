@@ -979,8 +979,8 @@ make_rank_metrics_row <- function(
 #' @param embedding_profile Embedding-profile label.
 #' @param document_embedding_model Document embedding-model label.
 #' @param seed_embedding_model Seed and criteria embedding-model label.
-#' @param document_input_type Document embedding modality.
-#' @param seed_input_type Seed and criteria embedding modality.
+#' @param document_embedding_mode Document embedding modality.
+#' @param seed_embedding_mode Seed and criteria embedding modality.
 #' @param data_dir Directory containing packaged datasets.
 #' @param cache_root Official cache root.
 #' @param seed_model Seed-generation chat model.
@@ -998,8 +998,8 @@ prepare_abstract_concentration_inputs <- function(
   embedding_profile = embedding_model,
   document_embedding_model = embedding_model,
   seed_embedding_model = embedding_model,
-  document_input_type = "search_document",
-  seed_input_type = "search_query",
+  document_embedding_mode = "document",
+  seed_embedding_mode = "query",
   data_dir = "data",
   cache_root = "cache",
   seed_model = "google/gemini-3.1-pro-preview",
@@ -1015,13 +1015,6 @@ prepare_abstract_concentration_inputs <- function(
   if (is.null(embedding_model)) {
     embedding_model <- embedding_profile
   }
-  if (length(document_input_type) == 1L && is.na(document_input_type)) {
-    document_input_type <- NULL
-  }
-  if (length(seed_input_type) == 1L && is.na(seed_input_type)) {
-    seed_input_type <- NULL
-  }
-
   loaded <- get_dataset(dataset, data_dir = data_dir)
   data <- tibble::as_tibble(loaded$data) |>
     dplyr::mutate(id = dplyr::row_number(), .before = 1L)
@@ -1039,40 +1032,40 @@ prepare_abstract_concentration_inputs <- function(
   criteria_item_bank <- make_criteria_seed_bank(criteria, level = "item")
   criteria_block_bank <- make_criteria_seed_bank(criteria, level = "block")
 
-  document_embedder <- make_embedding_transport(
-    document_embedding_model,
-    input_type = document_input_type
-  )
-  query_embedder <- make_embedding_transport(
-    seed_embedding_model,
-    input_type = seed_input_type
-  )
-  document_embeddings <- get_embeddings(
+  document_embeddings <- generate_embeddings(
     texts = document_text,
-    embedding_model = attr(document_embedder, "model_spec"),
-    embedder = document_embedder,
-    cache_root = file.path(cache_root, "embeddings"),
+    embedding_model = document_embedding_model,
+    dataset = dataset,
+    text_role = "abstracts",
+    embedding_mode = document_embedding_mode,
+    cache_root = here::here(cache_root, "embeddings"),
     batch_size = embedding_batch_size
   )
-  seed_embeddings <- get_embeddings(
+  seed_embeddings <- generate_embeddings(
     texts = seed_bank$text,
-    embedding_model = attr(query_embedder, "model_spec"),
-    embedder = query_embedder,
-    cache_root = file.path(cache_root, "embeddings"),
+    embedding_model = seed_embedding_model,
+    dataset = dataset,
+    text_role = "seed_abstracts",
+    embedding_mode = seed_embedding_mode,
+    cache_root = here::here(cache_root, "embeddings"),
     batch_size = embedding_batch_size
   )
-  criteria_item_embeddings <- get_embeddings(
+  criteria_item_embeddings <- generate_embeddings(
     texts = criteria_item_bank$text,
-    embedding_model = attr(query_embedder, "model_spec"),
-    embedder = query_embedder,
-    cache_root = file.path(cache_root, "embeddings"),
+    embedding_model = seed_embedding_model,
+    dataset = dataset,
+    text_role = "criteria_items",
+    embedding_mode = seed_embedding_mode,
+    cache_root = here::here(cache_root, "embeddings"),
     batch_size = embedding_batch_size
   )
-  criteria_block_embeddings <- get_embeddings(
+  criteria_block_embeddings <- generate_embeddings(
     texts = criteria_block_bank$text,
-    embedding_model = attr(query_embedder, "model_spec"),
-    embedder = query_embedder,
-    cache_root = file.path(cache_root, "embeddings"),
+    embedding_model = seed_embedding_model,
+    dataset = dataset,
+    text_role = "criteria_blocks",
+    embedding_mode = seed_embedding_mode,
+    cache_root = here::here(cache_root, "embeddings"),
     batch_size = embedding_batch_size
   )
 
@@ -1082,8 +1075,8 @@ prepare_abstract_concentration_inputs <- function(
     embedding_model = embedding_model,
     document_embedding_model = document_embedding_model,
     seed_embedding_model = seed_embedding_model,
-    document_input_type = document_input_type,
-    seed_input_type = seed_input_type,
+    document_embedding_mode = document_embedding_mode,
+    seed_embedding_mode = seed_embedding_mode,
     data = data,
     criteria = criteria,
     seed_bank = seed_bank,
@@ -1230,8 +1223,8 @@ run_abstract_concentration_benchmark <- function(
 #' @param embedding_profile Embedding-profile label.
 #' @param document_embedding_model Document embedding-model label.
 #' @param seed_embedding_model Seed and criteria embedding-model label.
-#' @param document_input_type Document embedding modality.
-#' @param seed_input_type Seed and criteria embedding modality.
+#' @param document_embedding_mode Document embedding modality.
+#' @param seed_embedding_mode Seed and criteria embedding modality.
 #' @param datasets Tibble of dataset metadata from `get_datasets()`.
 #' @param method_grid Tibble of method functions and arguments.
 #' @param ... Additional arguments forwarded to
@@ -1245,8 +1238,8 @@ run_abstract_concentration_profile <- function(
   embedding_profile,
   document_embedding_model,
   seed_embedding_model,
-  document_input_type = NULL,
-  seed_input_type = NULL,
+  document_embedding_mode = "document",
+  seed_embedding_mode = "query",
   datasets,
   method_grid,
   ...
@@ -1256,8 +1249,8 @@ run_abstract_concentration_profile <- function(
     embedding_profile <- profile$embedding_profile
     document_embedding_model <- profile$document_embedding_model
     seed_embedding_model <- profile$seed_embedding_model
-    document_input_type <- profile$document_input_type
-    seed_input_type <- profile$seed_input_type
+    document_embedding_mode <- profile$document_embedding_mode
+    seed_embedding_mode <- profile$seed_embedding_mode
     if (is.null(embedding_profile) || !length(embedding_profile)) {
       embedding_profile <- profile[[1]]
     }
@@ -1272,8 +1265,8 @@ run_abstract_concentration_profile <- function(
         embedding_profile = embedding_profile,
         document_embedding_model = document_embedding_model,
         seed_embedding_model = seed_embedding_model,
-        document_input_type = document_input_type,
-        seed_input_type = seed_input_type,
+        document_embedding_mode = document_embedding_mode,
+        seed_embedding_mode = seed_embedding_mode,
         ...
       )
 
@@ -1324,8 +1317,8 @@ run_abstract_concentration_model <- function(
     embedding_profile = embedding_model,
     document_embedding_model = embedding_model,
     seed_embedding_model = embedding_model,
-    document_input_type = "search_document",
-    seed_input_type = "search_query",
+    document_embedding_mode = "document",
+    seed_embedding_mode = "query",
     datasets = datasets,
     method_grid = method_grid,
     ...

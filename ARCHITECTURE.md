@@ -32,7 +32,16 @@
 ### Caches
 
 - Top-level `cache/` is the official reusable cache root.
-- The current commit contains the cache policy, but no official cache files.
+- `cache/embeddings/` stores reusable dataset-level embedding artifacts in a
+   role-first layout:
+   `cache/embeddings/<text_role>/<dataset>/<cache_model_slug>__<document|query>_embeddings.rds`.
+   Each file stores one row per unique normalized text hash. Older sharded or
+   model-first cache trees are migration inputs only, not the current layout.
+- `cache/llm/` stores reusable LLM artifacts by task content, model, and
+   criteria hash. Synthetic seed-abstract replies live under
+   `cache/llm/seed_abstracts/<dataset>/` so other method tracks can reuse them.
+- Final stabilized abstract-concentration outputs are written to
+   `method_pipelines/abstract_concentration/outputs/`.
 - Interim overlay cache behavior is defined in `AGENTS.md` and implemented by
    the method cache helper work.
 
@@ -45,6 +54,42 @@
    helpers and interim target scripts.
 - LLM transport and caching helpers exist in current parallel LLM code, with
    additional shared cache/solver contracts planned for method benchmarks.
+- Abstract-concentration helper logic is implemented in
+   `R/method_abstract_concentration.R`, covering track input preparation,
+   scoring, metric calculation, mixed-model fitting, marginal summaries, and
+   final output writing. Shared packaged-dataset discovery/loading helpers are
+   named `get_datasets()` and `get_dataset()`.
+
+### Abstract Concentration
+
+- `R/method_embedding_cache.R` provides the reusable cache-first embedding
+   layer keyed by normalized text content and a supported-model registry with
+   explicit cache slugs. Supported labels are `cohere/embed-v4.0`,
+   `google/gemini-embedding-001`, `google/gemini-embedding-2-preview`,
+   `perplexity/pplx-embed-v1-0.6b`, and `perplexity/pplx-embed-v1-4b`.
+   The public interface uses shared `embedding_mode = document/query` values,
+   mapped to native Cohere `input_type`, native Gemini `taskType`, and
+   OpenRouter for Perplexity. Text roles are `abstracts`, `seed_abstracts`,
+   `criteria_items`, and `criteria_blocks`. Cache files are written
+   atomically, read with full mode/role validation, and regenerated with
+   row-scoped `force`.
+- `R/method_abstract_concentration.R` owns track-specific input preparation,
+   seed-bank generation, scoring orchestration, metric calculation,
+   mixed-model fitting, marginal summaries, and final output writing.
+- `method_pipelines/abstract_concentration/_targets.R` is the official target
+   graph for the abstract-concentration benchmark.
+- The graph discovers all packaged datasets with matching criteria artifacts,
+   defines the method grid in the target script, branches across embedding
+   profiles with `crew`, keeps dataset and method work sequential within each
+   branch, and writes final outputs to
+   `method_pipelines/abstract_concentration/outputs/`.
+- The current embedding profiles compare Cohere query/document vs
+   document/document, Gemini 001 and Gemini 2-preview query/document vs
+   document/document through the native Gemini API, and Perplexity `0.6b` vs
+   `4b` through OpenRouter.
+- The graph compares synthetic positive seeds, contrastive variants, criteria
+   item/block variants, positive-seed-negative-criteria variants, and the
+   weighted centroid ensemble.
 
 ## Dependency And Tooling Shape
 
@@ -79,5 +124,7 @@
 - `M2` official benchmark scaffold is in progress.
 - `M3` shared cache, model-spec, and LLM-solver contracts are partially
    implemented.
-- `M4` method implementation migration is pending.
-- `M5` official benchmark runs are pending.
+- `M4` method implementation migration has started with abstract
+   concentration.
+- `M5` official benchmark runs are pending user confirmation after the
+   abstract-concentration target graph is validated.
