@@ -33,7 +33,7 @@ experiments/
 # Unused review datasets
 data-raw/_unsatisfactory
 
-# Targets components
+# Pipelines components
 _targets/
 **/_targets/
 method_pipelines/*/_targets/
@@ -42,6 +42,5 @@ method_pipelines/*/_targets/
 *.wal
 *.shm
 _targets.yaml
-
-# Deprecated mixed result/cache export from the interim abstract concentration runner.
 cache/
+.solver_log/
