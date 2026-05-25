@@ -55,6 +55,7 @@
     "batch_size",
     "parallelize_batches",
     "cache_dir",
+    "cache_failure",
     "max_retries",
     "max_retry",
     "rpm",
@@ -71,7 +72,12 @@
     "prompts"
   )
 
-  dots[setdiff(names(dots), drop_keys)]
+  remaining <- dots[setdiff(names(dots), drop_keys)]
+  if (rlang::is_empty(remaining)) {
+    return(list())
+  }
+
+  remaining
 }
 
 #' Extract the cache-relevant provider configuration
@@ -151,8 +157,7 @@
     provider = provider_spec,
     system_prompt = system_prompt,
     type = type_repr,
-    dots = .caching_normalize(.caching_drop_runtime_controls(dots)),
-    cache_failure = isTRUE(cache_failure)
+    dots = .caching_normalize(.caching_drop_runtime_controls(dots))
   ) |>
     .caching_normalize()
 }
@@ -345,7 +350,7 @@
     return(FALSE)
   }
 
-  # Namespace, schema version, and normalized spec must all match.
+  # Namespace, schema version, and normalized spec must all match exactly.
   if (!identical(cache_payload$namespace_hash, namespace_hash)) {
     return(FALSE)
   }

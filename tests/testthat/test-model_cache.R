@@ -45,6 +45,135 @@ test_that("model cache namespace hashes ignore runtime-only controls", {
   expect_identical(.caching_namespace_hash(spec_a), .caching_namespace_hash(spec_b))
 })
 
+test_that("model cache namespace hashes ignore cache_failure", {
+  skip_if_not_installed("jsonlite")
+
+  chat <- make_model_cache_fake_chat()
+
+  # Failure-caching is runtime-only and must not split successful cache hits.
+  spec_false <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(),
+    cache_failure = FALSE
+  )
+  spec_true <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(),
+    cache_failure = TRUE
+  )
+
+  expect_false("cache_failure" %in% names(spec_true))
+  expect_false("cache_failure" %in% names(spec_false))
+  expect_identical(
+    .caching_namespace_hash(spec_false),
+    .caching_namespace_hash(spec_true)
+  )
+  expect_identical(
+    .caching_stable_path(
+      cache_dir = tempdir(),
+      cache_spec = spec_false,
+      namespace_hash = .caching_namespace_hash(spec_false)
+    ),
+    .caching_stable_path(
+      cache_dir = tempdir(),
+      cache_spec = spec_true,
+      namespace_hash = .caching_namespace_hash(spec_true)
+    )
+  )
+})
+
+test_that("cache_failure forwarded in dots is dropped from cache spec", {
+  skip_if_not_installed("jsonlite")
+
+  chat <- make_model_cache_fake_chat()
+  clean_spec <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(),
+    cache_failure = FALSE
+  )
+  dotted_spec <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(cache_failure = TRUE),
+    cache_failure = TRUE
+  )
+
+  expect_false("cache_failure" %in% names(dotted_spec))
+  expect_false("cache_failure" %in% names(dotted_spec$dots))
+  expect_identical(
+    .caching_namespace_hash(clean_spec),
+    .caching_namespace_hash(dotted_spec)
+  )
+})
+
+test_that("model and system prompt changes still alter namespace hash", {
+  skip_if_not_installed("jsonlite")
+
+  base_chat <- make_model_cache_fake_chat()
+  alt_model_chat <- make_model_cache_fake_chat(model = "other-model")
+  alt_prompt_chat <- make_model_cache_fake_chat(system_prompt = "other prompt")
+
+  base_spec <- .caching_spec(chat = base_chat, type = NULL, dots = list())
+  alt_model_spec <- .caching_spec(chat = alt_model_chat, type = NULL, dots = list())
+  alt_prompt_spec <- .caching_spec(chat = alt_prompt_chat, type = NULL, dots = list())
+
+  base_hash <- .caching_namespace_hash(base_spec)
+  expect_false(identical(base_hash, .caching_namespace_hash(alt_model_spec)))
+  expect_false(identical(base_hash, .caching_namespace_hash(alt_prompt_spec)))
+})
+
+test_that("model cache rejects stale namespace hashes", {
+  skip_if_not_installed("jsonlite")
+
+  chat <- make_model_cache_fake_chat()
+  current_spec <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(),
+    cache_failure = FALSE
+  )
+  namespace_hash <- .caching_namespace_hash(current_spec)
+
+  payload <- .caching_payload(
+    cache_spec = current_spec,
+    namespace_hash = "stale-hash",
+    rows = list()
+  )
+
+  expect_false(.caching_validate(payload, current_spec, namespace_hash))
+})
+
+test_that("model cache rejects payloads with cache_failure in cache_spec", {
+  skip_if_not_installed("jsonlite")
+
+  chat <- make_model_cache_fake_chat()
+  current_spec <- .caching_spec(
+    chat = chat,
+    type = NULL,
+    dots = list(),
+    cache_failure = FALSE
+  )
+  namespace_hash <- .caching_namespace_hash(current_spec)
+
+  stale_spec_payload <- .caching_payload(
+    cache_spec = list(
+      model = current_spec$model,
+      provider = current_spec$provider,
+      system_prompt = current_spec$system_prompt,
+      type = current_spec$type,
+      dots = list(),
+      cache_failure = TRUE
+    ) |> .caching_normalize(),
+    namespace_hash = namespace_hash,
+    rows = list()
+  )
+
+  expect_false(.caching_validate(stale_spec_payload, current_spec, namespace_hash))
+})
+
 test_that("model cache uses flat provider_model_hash paths", {
   skip_if_not_installed("fs")
   skip_if_not_installed("jsonlite")
